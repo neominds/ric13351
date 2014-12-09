@@ -1,0 +1,14 @@
+#   Document no: @(#) $Name: release6_9_2 $ $RCSfile: common.vxconfig,v $ $Revision: 1.8 $
+#   $Source: /home/interpeak/CVSRoot/ipssl2/config/common.vxconfig,v $
+#   $Author: myakan $
+#   $State: Exp $ $Locker:  $
+#
+#   INTERPEAK_COPYRIGHT_STRING
+
+#hidden option that enables IPSSL
+config SUPPORTS_SSL
+	bool
+	default y
+
+
+
