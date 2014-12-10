@@ -1203,6 +1203,23 @@ int ssl_cipher_list_to_bytes(SSL *s,STACK_OF(SSL_CIPHER) *sk,unsigned char *p)
 		j=ssl_put_cipher_by_char(s,c,p);
 		p+=j;
 		}
+
+	if (p != q)
+                {
+
+               // if (s->mode & SSL_MODE_SEND_FALLBACK_SCSV)
+	          if(s->version != SSL2_VERSION)
+                        {
+                        static SSL_CIPHER scsv =
+                                {
+                                0, NULL, SSL3_CK_FALLBACK_SCSV, 0, 0, 0, 0, 0, 0, 0,
+                                };
+                        j = ssl_put_cipher_by_char(s,&scsv,p);
+                        p+=j;
+                        }
+
+                }
+
 	return(p-q);
 	}
 
@@ -1229,6 +1246,23 @@ STACK_OF(SSL_CIPHER) *ssl_bytes_to_cipher_list(SSL *s,unsigned char *p,int num,
 
 	for (i=0; i<num; i+=n)
 		{
+			if ((n != 3 || !p[0]) &&
+					(p[n-2] == ((SSL3_CK_FALLBACK_SCSV >> 8) & 0xff)) &&
+					(p[n-1] == (SSL3_CK_FALLBACK_SCSV & 0xff)))
+			{
+				printf("\nn=%d,p[0]=%d\n",n,p[0]);
+				/* The SCSV indicates that the client previously tried a higher version.
+				 * Fail if the current version is an unexpected downgrade. */
+				if (!SSL_ctrl(s, SSL_CTRL_CHECK_PROTO_VERSION, 0, NULL))
+				{
+					SSLerr(SSL_F_SSL_BYTES_TO_CIPHER_LIST,SSL_R_INAPPROPRIATE_FALLBACK);
+					if (s->s3)
+						ssl3_send_alert(s,SSL3_AL_FATAL,SSL_AD_INAPPROPRIATE_FALLBACK);
+					goto err;
+				}
+				continue;
+			}
+
 		c=ssl_get_cipher_by_char(s,p);
 		p+=n;
 		if (c != NULL)

@@ -83,7 +83,7 @@ extern "C" {
 #define TLS1_AD_INTERNAL_ERROR		80	/* fatal */
 #define TLS1_AD_USER_CANCELLED		90
 #define TLS1_AD_NO_RENEGOTIATION	100
-
+#define TLS1_AD_INAPPROPRIATE_FALLBACK	86
 /* Additional TLS ciphersuites from draft-ietf-tls-56-bit-ciphersuites-00.txt
  * (available if TLS1_ALLOW_EXPERIMENTAL_CIPHERSUITES is defined, see
  * s3_lib.c).  We actually treat them like SSL 3.0 ciphers, which we probably

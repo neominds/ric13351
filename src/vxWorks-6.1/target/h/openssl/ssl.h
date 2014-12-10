@@ -234,6 +234,9 @@ extern "C" {
 #define SSL_MIN_RSA_MODULUS_LENGTH_IN_BYTES	(512/8)
 #define SSL_MAX_KEY_ARG_LENGTH			8
 #define SSL_MAX_MASTER_KEY_LENGTH		48
+#define SSL_R_INAPPROPRIATE_FALLBACK            373
+#define SSL_AD_INAPPROPRIATE_FALLBACK   	86
+#define SSL_R_TLSV1_ALERT_INAPPROPRIATE_FALLBACK	 1086
 
 /* These are used to specify which ciphers to use and not to use */
 #define SSL_TXT_LOW		"LOW"
@@ -524,7 +527,7 @@ typedef struct ssl_session_st
 #define SSL_MODE_AUTO_RETRY 0x00000004L
 /* Don't attempt to automatically build certificate chain */
 #define SSL_MODE_NO_AUTO_CHAIN 0x00000008L
-
+#define SSL_MODE_SEND_FALLBACK_SCSV 0x00000080L
 
 /* Note: SSL[_CTX]_set_{options,mode} use |= op on the previous value,
  * they cannot be used to clear bits. */

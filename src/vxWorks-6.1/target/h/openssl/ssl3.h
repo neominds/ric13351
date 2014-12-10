@@ -165,6 +165,7 @@ extern "C" {
 /*    VRS Additional Kerberos5 entries
  */
 #define SSL3_CK_KRB5_DES_64_CBC_SHA		0x0300001E
+#define SSL3_CK_FALLBACK_SCSV                   0x03005600
 #define SSL3_CK_KRB5_DES_192_CBC3_SHA		0x0300001F
 #define SSL3_CK_KRB5_RC4_128_SHA		0x03000020
 #define SSL3_CK_KRB5_IDEA_128_CBC_SHA	       	0x03000021

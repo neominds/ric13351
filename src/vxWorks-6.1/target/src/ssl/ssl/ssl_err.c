@@ -215,6 +215,8 @@ static ERR_STRING_DATA SSL_str_functs[]=
 static ERR_STRING_DATA SSL_str_reasons[]=
 	{
 {SSL_R_APP_DATA_IN_HANDSHAKE             ,"app data in handshake"},
+{SSL_R_INAPPROPRIATE_FALLBACK            ,"inappropriate fallback"},
+{SSL_R_TLSV1_ALERT_INAPPROPRIATE_FALLBACK,"tlsv1 alert inappropriate fallback"},
 {SSL_R_ATTEMPT_TO_REUSE_SESSION_IN_DIFFERENT_CONTEXT,"attempt to reuse session in different context"},
 {SSL_R_BAD_ALERT_RECORD                  ,"bad alert record"},
 {SSL_R_BAD_AUTHENTICATION_TYPE           ,"bad authentication type"},
