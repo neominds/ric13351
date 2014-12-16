@@ -1263,11 +1263,13 @@ long ssl3_ctrl(SSL *s, int cmd, long larg, void *parg)
 		}
 		break;
 #endif
+
+	#ifdef WRKK_RIC13351
 	case SSL_CTRL_CHECK_PROTO_VERSION:    
 		if (s->version == s->ctx->method->version)
 			return 1;
 		else return 0;
-
+	#endif
 
 	default:
 		break;

@@ -690,7 +690,9 @@ int ssl3_alert_code(int code)
 	case SSL_AD_INSUFFICIENT_SECURITY:return(SSL3_AD_HANDSHAKE_FAILURE);
 	case SSL_AD_INTERNAL_ERROR:	return(SSL3_AD_HANDSHAKE_FAILURE);
 	case SSL_AD_USER_CANCELLED:	return(SSL3_AD_HANDSHAKE_FAILURE);
+	#ifdef WRKK_RIC13351
 	case SSL_AD_INAPPROPRIATE_FALLBACK:return(TLS1_AD_INAPPROPRIATE_FALLBACK);
+	#endif
 	case SSL_AD_NO_RENEGOTIATION:	return(-1); /* Don't send it :-) */
 	default:			return(-1);
 		}

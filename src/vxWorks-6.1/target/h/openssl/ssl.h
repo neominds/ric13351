@@ -189,6 +189,7 @@ extern "C" {
  * Version 1 - added the optional peer certificate
  */
 #define SSL_SESSION_ASN1_VERSION 0x0001
+ #define WRKK_RIC13351 
 
 /* text strings for the ciphers */
 #define SSL_TXT_NULL_WITH_MD5		SSL2_TXT_NULL_WITH_MD5			
@@ -1124,7 +1125,7 @@ size_t SSL_get_peer_finished(SSL *s, void *buf, size_t count);
 #define SSL_CTRL_SESS_CACHE_FULL		31
 #define SSL_CTRL_OPTIONS			32
 #define SSL_CTRL_MODE				33
-
+#define SSL_CTRL_CHECK_PROTO_VERSION		119
 #define SSL_CTRL_GET_READ_AHEAD			40
 #define SSL_CTRL_SET_READ_AHEAD			41
 #define SSL_CTRL_SET_SESS_CACHE_SIZE		42

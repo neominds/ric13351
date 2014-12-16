@@ -1204,11 +1204,12 @@ int ssl_cipher_list_to_bytes(SSL *s,STACK_OF(SSL_CIPHER) *sk,unsigned char *p)
 		p+=j;
 		}
 
+#ifdef WRKK_RIC13351
 	if (p != q)
                 {
 
-               // if (s->mode & SSL_MODE_SEND_FALLBACK_SCSV)
-	          if(s->version != SSL2_VERSION)
+                if (s->mode & SSL_MODE_SEND_FALLBACK_SCSV)// do "SL_set_mode(SSL *, SSL_MODE_SEND_FALLBACK_SCSV);" to add FALLBACK_SCSV support in your WRSSL Client
+	         
                         {
                         static SSL_CIPHER scsv =
                                 {
@@ -1219,7 +1220,7 @@ int ssl_cipher_list_to_bytes(SSL *s,STACK_OF(SSL_CIPHER) *sk,unsigned char *p)
                         }
 
                 }
-
+#endif
 	return(p-q);
 	}
 
@@ -1246,11 +1247,13 @@ STACK_OF(SSL_CIPHER) *ssl_bytes_to_cipher_list(SSL *s,unsigned char *p,int num,
 
 	for (i=0; i<num; i+=n)
 		{
+
+#ifdef WRKK_RIC13351
 			if ((n != 3 || !p[0]) &&
 					(p[n-2] == ((SSL3_CK_FALLBACK_SCSV >> 8) & 0xff)) &&
 					(p[n-1] == (SSL3_CK_FALLBACK_SCSV & 0xff)))
 			{
-				printf("\nn=%d,p[0]=%d\n",n,p[0]);
+				
 				/* The SCSV indicates that the client previously tried a higher version.
 				 * Fail if the current version is an unexpected downgrade. */
 				if (!SSL_ctrl(s, SSL_CTRL_CHECK_PROTO_VERSION, 0, NULL))
@@ -1262,7 +1265,7 @@ STACK_OF(SSL_CIPHER) *ssl_bytes_to_cipher_list(SSL *s,unsigned char *p,int num,
 				}
 				continue;
 			}
-
+#endif
 		c=ssl_get_cipher_by_char(s,p);
 		p+=n;
 		if (c != NULL)
