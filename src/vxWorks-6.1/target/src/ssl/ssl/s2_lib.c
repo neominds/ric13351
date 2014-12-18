@@ -343,6 +343,14 @@ long ssl2_ctrl(SSL *s, int cmd, long larg, void *parg)
 	case SSL_CTRL_GET_SESSION_REUSED:
 		ret=s->hit;
 		break;
+
+	#ifdef WRKK_RIC13351
+	case SSL_CTRL_CHECK_PROTO_VERSION:    
+		if (s->version == s->ctx->method->version)
+			return 1;
+		else return 0;
+	#endif
+
 	default:
 		break;
 		}
