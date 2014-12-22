@@ -1,0 +1,11 @@
+erver_main("6","-accept","443","-cert","cert.crt","-key","rsa.pem")
+Using default temp DH parameters
+ACCEPT
+bad gethostbyaddr
+ERROR
+1560930272:error:140A1175:SSL routines:SSL_BYTES_TO_CIPHER_LIST:inappropriate fa
+llback:ssl_lib.c:1261:
+shutting down SSL
+CONNECTION CLOSED
+ACCEPT
+

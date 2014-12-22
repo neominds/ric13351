@@ -1,0 +1,131 @@
+	errstr, mode, type, file, line);
+		}
+	}
+
+
+int main(int Argc, char *Argv[])
+	{
+	ARGS arg;
+#define PROG_NAME_SIZE	39
+	char pname[PROG_NAME_SIZE+1];
+	FUNCTION f,*fp;
+	MS_STATIC const char *prompt;
+	MS_STATIC char buf[1024];
+	char *to_free=NULL;
+	int n,i,ret=0;
+	int argc;
+	char **argv,*p;
+	LHASH *prog=NULL;
+	long errline;
+ 
+	arg.data=NULL;
+	arg.count=0;
+
+	in_FIPS_mode = 0;
+
+	if(getenv("OPENSSL_FIPS")) {
+#ifdef OPENSSL_FIPS
+		if (!FIPS_mode_set(1)) {
+			ERR_load_crypto_strings();
+			ERR_print_errors(BIO_new_fp(stderr,BIO_NOCLOSE));
+			EXIT(1);
+		}
+		in_FIPS_mode = 1;
+#else
+		fprintf(stderr, "FIPS mode not supported.\n");
+		EXIT(1);
+#endif
+		}
+
+	if (bio_err == NULL)
+		if ((bio_err=BIO_new(BIO_s_file())) != NULL)
+			BIO_set_fp(bio_err,stderr,BIO_NOCLOSE|BIO_FP_TEXT);
+
+	if (getenv("OPENSSL_DEBUG_MEMORY") != NULL) /* if not defined, use compiled-in library defaults */
+		{
+		if (!(0 == strcmp(getenv("OPENSSL_DEBUG_MEMORY"), "off")))
+			{
+			CRYPTO_malloc_debug_init();
+			CRYPTO_set_mem_debug_options(V_CRYPTO_MDEBUG_ALL);
+			}
+		else
+			{
+			/* OPENSSL_DEBUG_MEMORY=off */
+			CRYPTO_set_mem_debug_functions(0, 0, 0, 0, 0);
+			}
+		}
+	CRYPTO_mem_ctrl(CRYPTO_MEM_CHECK_ON);
+
+#if 0
+	if (getenv("OPENSSL_DEBUG_LOCKING") != NULL)
+#endif
+		{
+		CRYPTO_set_locking_callback(lock_dbg_cb);
+		}
+
+	apps_startup();
+
+	/* Lets load up our environment a little */
+	p=getenv("OPENSSL_CONF");
+	if (p == NULL)
+		p=getenv("SSLEAY_CONF");
+	if (p == NULL)
+		p=to_free=make_config_name();
+
+	default_config_file=p;
+
+	config=NCONF_new(NULL);
+	i=NCONF_load(config,p,&errline);
+	if (i == 0)
+		{
+		NCONF_free(config);
+		config = NULL;
+		ERR_clear_error();
+		}
+
+	prog=prog_init();
+
+	/* first check the program name */
+	program_name(Argv[0],pname,sizeof pname);
+
+	f.name=pname;
+	fp=(FUNCTION *)lh_retrieve(prog,&f);
+	if (fp != NULL)
+		{
+		Argv[0]=pname;
+		ret=fp->func(Argc,Argv);
+		goto end;
+		}
+
+	/* ok, now check that there are not arguments, if there are,
+	 * run with them, shifting the ssleay off the front */
+	if (Argc != 1)
+		{
+		Argc--;
+		Argv++;
+		ret=do_cmd(prog,Argc,Argv);
+		if (ret < 0) ret=0;
+		goto end;
+		}
+
+	/* ok, lets enter the old 'OpenSSL>' mode */
+	
+	for (;;)
+		{
+		ret=0;
+		p=buf;
+		n=sizeof buf;
+		i=0;
+		for (;;)
+			{
+			p[0]='\0';
+			if (i++)
+				prompt=">";
+			else	prompt="OpenSSL> ";
+			fputs(prompt,stdout);
+			fflush(stdout);
+			if (!fgets(p,n,stdin))
+				goto end;
+			if (p[0] == '\0') goto end;
+			i=strlen(p);
+			if (i <= 1) break;

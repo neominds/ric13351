@@ -1,0 +1,16 @@
+
+
+-> nm_server_main("7","-accept","443","-cert","cert.crt","-key","rsa.pem","-ssl3")
+Using default temp DH parameters
+ACCEPT
+bad gethostbyaddr
+-----BEGIN SSL SESSION PARAMETERS-----
+MHICAQECAgMABAIANQQg/PH4X5J95OCvCbVPOJFXns7DXbo3NzdhJ4uGyszgE/gE
+MHRp+8E7+EQ2ft7UEs9ex8WS53+CG49bGgNqI+QR8cDu/U9ji6n9BalE8zoP7Vam
+jaEDAgEZogQCAhwgpAYEBAEAAAA=
+-----END SSL SESSION PARAMETERS-----
+Shared ciphers:AES256-SHA
+CIPHER is AES256-SHA
+ok
+ok
+

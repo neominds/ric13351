@@ -1,0 +1,80 @@
+)> application.
+Authors may also generate their own set of parameters using
+L<dhparam(1)|dhparam(1)>, but a user may not be sure how the parameters were
+generated. The generation of DH parameters during installation is therefore
+recommended.
+
+An application may either directly specify the DH parameters or
+can supply the DH parameters via a callback function. The callback approach
+has the advantage, that the callback may supply DH parameters for different
+key lengths.
+
+The B<tmp_dh_callback> is called with the B<keylength> needed and
+the B<is_export> information. The B<is_export> flag is set, when the
+ephemeral DH key exchange is performed with an export cipher.
+
+=head1 EXAMPLES
+
+Handle DH parameters for key lengths of 512 and 1024 bits. (Error handling
+partly left out.)
+
+ ...
+ /* Set up ephemeral DH stuff */
+ DH *dh_512 = NULL;
+ DH *dh_1024 = NULL;
+ FILE *paramfile;
+
+ ...
+ /* "openssl dhparam -out dh_param_512.pem -2 512" */
+ paramfile = fopen("dh_param_512.pem", "r");
+ if (paramfile) {
+   dh_512 = PEM_read_DHparams(paramfile, NULL, NULL, NULL);
+   fclose(paramfile);
+ }
+ /* "openssl dhparam -out dh_param_1024.pem -2 1024" */
+ paramfile = fopen("dh_param_1024.pem", "r");
+ if (paramfile) {
+   dh_1024 = PEM_read_DHparams(paramfile, NULL, NULL, NULL);
+   fclose(paramfile);
+ }
+ ...
+
+ /* "openssl dhparam -C -2 512" etc... */
+ DH *get_dh512() { ... }
+ DH *get_dh1024() { ... }
+
+ DH *tmp_dh_callback(SSL *s, int is_export, int keylength)
+ {
+    DH *dh_tmp=NULL;
+
+    switch (keylength) {
+    case 512:
+      if (!dh_512)
+        dh_512 = get_dh512();
+      dh_tmp = dh_512;
+      break;
+    case 1024:
+      if (!dh_1024) 
+        dh_1024 = get_dh1024();
+      dh_tmp = dh_1024;
+      break;
+    default:
+      /* Generating a key on the fly is very costly, so use what is there */
+      setup_dh_parameters_like_above();
+    }
+    return(dh_tmp);
+ }
+
+=head1 RETURN VALUES
+
+SSL_CTX_set_tmp_dh_callback() and SSL_set_tmp_dh_callback() do not return
+diagnostic output.
+
+SSL_CTX_set_tmp_dh() and SSL_set_tmp_dh() do return 1 on success and 0
+on failure. Check the error queue to find out the reason of failure.
+
+=head1 SEE ALSO
+
+L<ssl(3)|ssl(3)>, L<SSL_CTX_set_cipher_list(3)|SSL_CTX_set_cipher_list(3)>,
+L<SSL_CTX_set_tmp_rsa_callback(3)|SSL_CTX_set_tmp_rsa_callback(3)>,
+L<SSL_

@@ -1,0 +1,98 @@
+oReadData;
+	Boolean						mReadyToWriteData;
+	
+	Ptr							mReadBuffer;
+	Ptr							mWriteBuffer;
+	
+	int							mLastError;
+	char						mErrMessage[256];
+};
+
+typedef struct SocketStruct	SocketStruct;
+
+
+static SocketStruct			sSockets[kMaxNumSockets];
+static Boolean				sSocketsSetup = false;
+
+
+
+
+static OSErr MyBusyWait(SocketStruct *ioSocket,Boolean returnImmediatelyOnError,OTResult *outOTResult,Boolean *inAsyncOperationCompleteFlag);
+
+static pascal void OTNonYieldingNotifier(void *contextPtr,OTEventCode code,OTResult result,void *cookie);
+
+static Boolean	SocketIndexIsValid(const int inSocketNum);
+
+static void InitSocket(SocketStruct *ioSocket);
+
+static void PrepareForAsyncOperation(SocketStruct *ioSocket,const OTEventCode inExpectedCode);
+
+static Boolean TimeoutElapsed(const SocketStruct *inSocket);
+
+static OSStatus NegotiateIPReuseAddrOption(EndpointRef inEndpoint,const Boolean inEnableReuseIP);
+
+
+
+void MacSocket_GetSocketErrorInfo(const int inSocketNum,int *outSocketErrCode,char *outSocketErrString,const int inSocketErrStringMaxLength)
+{
+	if (outSocketErrCode != nil)
+	{
+		*outSocketErrCode = -1;
+	}
+	
+	if (outSocketErrString != nil)
+	{
+		CopyCStrToCStr("",outSocketErrString,inSocketErrStringMaxLength);
+	}
+	
+	
+	if (SocketIndexIsValid(inSocketNum))
+	{
+	SocketStruct	*theSocketStruct = &(sSockets[inSocketNum]);
+	
+		
+		if (outSocketErrCode != nil)
+		{
+			*outSocketErrCode = theSocketStruct->mLastError;
+		}
+
+		if (outSocketErrString != nil)
+		{
+			CopyCStrToCStr(theSocketStruct->mErrMessage,outSocketErrString,inSocketErrStringMaxLength);
+		}
+	}
+}
+
+
+void MacSocket_SetUserRefPtr(const int inSocketNum,void *inNewRefPtr)
+{
+	if (SocketIndexIsValid(inSocketNum))
+	{
+	SocketStruct	*theSocketStruct = &(sSockets[inSocketNum]);
+
+		theSocketStruct->mUserRefPtr = inNewRefPtr;
+	}
+}
+
+
+
+void MacSocket_GetLocalIPAndPort(const int inSocketNum,char *outIPAndPort,const int inIPAndPortLength)
+{
+	if (outIPAndPort != nil && SocketIndexIsValid(inSocketNum))
+	{
+	char			tempString[256];
+	SocketStruct	*theSocketStruct = &(sSockets[inSocketNum]);
+	
+		
+		CopyCStrToCStr("",tempString,sizeof(tempString));
+
+		if (theSocketStruct->mAssignedAddrInfo != nil)
+		{
+		InetAddress		*theInetAddress = (InetAddress *) theSocketStruct->mAssignedAddrInfo->addr.buf;
+		InetHost		theInetHost = theInetAddress->fHost;
+			
+			if (theInetHost == 0)
+			{
+			InetInterfaceInfo	theInetInterfaceInfo;
+				
+				if (::OTInetGetInterfaceInfo(&th

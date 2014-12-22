@@ -1,0 +1,46 @@
+
+	{
+	ENGINE *e = NULL;
+	char **args;
+	char *host = NULL, *port = NULL, *path = "/";
+	char *thost = NULL, *tport = NULL, *tpath = NULL;
+	char *reqin = NULL, *respin = NULL;
+	char *reqout = NULL, *respout = NULL;
+	char *signfile = NULL, *keyfile = NULL;
+	char *rsignfile = NULL, *rkeyfile = NULL;
+	char *outfile = NULL;
+	int add_nonce = 1, noverify = 0, use_ssl = -1;
+	OCSP_REQUEST *req = NULL;
+	OCSP_RESPONSE *resp = NULL;
+	OCSP_BASICRESP *bs = NULL;
+	X509 *issuer = NULL, *cert = NULL;
+	X509 *signer = NULL, *rsigner = NULL;
+	EVP_PKEY *key = NULL, *rkey = NULL;
+	BIO *acbio = NULL, *cbio = NULL;
+	BIO *derbio = NULL;
+	BIO *out = NULL;
+	int req_timeout = -1;
+	int req_text = 0, resp_text = 0;
+	long nsec = MAX_VALIDITY_PERIOD, maxage = -1;
+	char *CAfile = NULL, *CApath = NULL;
+	X509_STORE *store = NULL;
+	STACK_OF(X509) *sign_other = NULL, *verify_other = NULL, *rother = NULL;
+	char *sign_certfile = NULL, *verify_certfile = NULL, *rcertfile = NULL;
+	unsigned long sign_flags = 0, verify_flags = 0, rflags = 0;
+	int ret = 1;
+	int accept_count = -1;
+	int badarg = 0;
+	int i;
+	int ignore_err = 0;
+	STACK *reqnames = NULL;
+	STACK_OF(OCSP_CERTID) *ids = NULL;
+
+	X509 *rca_cert = NULL;
+	char *ridx_filename = NULL;
+	char *rca_filename = NULL;
+	CA_DB *rdb = NULL;
+	int nmin = 0, ndays = -1;
+
+	if (bio_err == NULL) bio_err = BIO_new_fp(stderr, BIO_NOCLOSE);
+
+	if (!l

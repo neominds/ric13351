@@ -1,0 +1,94 @@
+rintf(bio_err,"%-14s encrypt\n","-e");
+			BIO_printf(bio_err,"%-14s decrypt\n","-d");
+			BIO_printf(bio_err,"%-14s base64 encode/decode, depending on encryption flag\n","-a/-base64");
+			BIO_printf(bio_err,"%-14s passphrase is the next argument\n","-k");
+			BIO_printf(bio_err,"%-14s passphrase is the first line of the file argument\n","-kfile");
+			BIO_printf(bio_err,"%-14s the next argument is the md to use to create a key\n","-md");
+			BIO_printf(bio_err,"%-14s   from a passphrase.  One of md2, md5, sha or sha1\n","");
+			BIO_printf(bio_err,"%-14s key/iv in hex is the next argument\n","-K/-iv");
+			BIO_printf(bio_err,"%-14s print the iv/key (then exit if -P)\n","-[pP]");
+			BIO_printf(bio_err,"%-14s buffer size\n","-bufsize <n>");
+#ifndef OPENSSL_NO_ENGINE
+			BIO_printf(bio_err,"%-14s use engine e, possibly a hardware device.\n","-engine e");
+#endif
+
+			BIO_printf(bio_err,"Cipher Types\n");
+			OBJ_NAME_do_all_sorted(OBJ_NAME_TYPE_CIPHER_METH,
+					       show_ciphers,
+					       bio_err);
+			BIO_printf(bio_err,"\n");
+
+			goto end;
+			}
+		argc--;
+		argv++;
+		}
+
+#ifndef OPENSSL_NO_ENGINE
+        setup_engine(bio_err, engine, 0);
+#endif
+
+	if (md && (dgst=EVP_get_digestbyname(md)) == NULL)
+		{
+		BIO_printf(bio_err,"%s is an unsupported message digest type\n",md);
+		goto end;
+		}
+
+	if (dgst == NULL)
+		{
+		if (in_FIPS_mode)
+			dgst = EVP_sha1();
+		else
+			dgst = EVP_md5();
+		}
+
+	if (bufsize != NULL)
+		{
+		unsigned long n;
+
+		for (n=0; *bufsize; bufsize++)
+			{
+			i= *bufsize;
+			if ((i <= '9') && (i >= '0'))
+				n=n*10+i-'0';
+			else if (i == 'k')
+				{
+				n*=1024;
+				bufsize++;
+				break;
+				}
+			}
+		if (*bufsize != '\0')
+			{
+			BIO_printf(bio_err,"invalid 'bufsize' specified.\n");
+			goto end;
+			}
+
+		/* It must be large enough for a base64 encoded line */
+		if (base64 && n < 80) n=80;
+
+		bsize=(int)n;
+		if (verbose) BIO_printf(bio_err,"bufsize=%d\n",bsize);
+		}
+
+	strbuf=OPENSSL_malloc(SIZE);
+	buff=(unsigned char *)OPENSSL_malloc(EVP_ENCODE_LENGTH(bsize));
+	if ((buff == NULL) || (strbuf == NULL))
+		{
+		BIO_printf(bio_err,"OPENSSL_malloc failure %ld\n",(long)EVP_ENCODE_LENGTH(bsize));
+		goto end;
+		}
+
+	in=BIO_new(BIO_s_file());
+	out=BIO_new(BIO_s_file());
+	if ((in == NULL) || (out == NULL))
+		{
+		ERR_print_errors(bio_err);
+		goto end;
+		}
+	if (debug)
+		{
+		BIO_set_callback(in,BIO_debug_callback);
+		BIO_set_callback(out,BIO_debug_callback);
+		BIO_set_callback_arg(in,(char *)bio_err);
+		BIO_set_callba

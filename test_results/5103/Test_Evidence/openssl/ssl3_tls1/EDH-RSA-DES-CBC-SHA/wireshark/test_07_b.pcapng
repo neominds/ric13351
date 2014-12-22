@@ -1,0 +1,80 @@
+e if (!strcmp(*args, "-signer"))
+			{
+			if (args[1])
+				{
+				args++;
+				signfile = *args;
+				}
+			else badarg = 1;
+			}
+		else if (!strcmp (*args, "-VAfile"))
+			{
+			if (args[1])
+				{
+				args++;
+				verify_certfile = *args;
+				verify_flags |= OCSP_TRUSTOTHER;
+				}
+			else badarg = 1;
+			}
+		else if (!strcmp(*args, "-sign_other"))
+			{
+			if (args[1])
+				{
+				args++;
+				sign_certfile = *args;
+				}
+			else badarg = 1;
+			}
+		else if (!strcmp(*args, "-verify_other"))
+			{
+			if (args[1])
+				{
+				args++;
+				verify_certfile = *args;
+				}
+			else badarg = 1;
+			}
+		else if (!strcmp (*args, "-CAfile"))
+			{
+			if (args[1])
+				{
+				args++;
+				CAfile = *args;
+				}
+			else badarg = 1;
+			}
+		else if (!strcmp (*args, "-CApath"))
+			{
+			if (args[1])
+				{
+				args++;
+				CApath = *args;
+				}
+			else badarg = 1;
+			}
+		else if (!strcmp (*args, "-validity_period"))
+			{
+			if (args[1])
+				{
+				args++;
+				nsec = atol(*args);
+				if (nsec < 0)
+					{
+					BIO_printf(bio_err,
+						"Illegal validity period %s\n",
+						*args);
+					badarg = 1;
+					}
+				}
+			else badarg = 1;
+			}
+		else if (!strcmp (*args, "-status_age"))
+			{
+			if (args[1])
+				{
+				args++;
+				maxage = atol(*args);
+				if (maxage < 0)
+					{
+					BIO_printf(b

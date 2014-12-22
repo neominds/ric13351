@@ -1,0 +1,111 @@
+return(0);
+			}
+
+		/*
+		In theory this is no longer needed 
+		ssl=SSL_new(ctx);
+		x509=SSL_get_certificate(ssl);
+
+		if (x509 != NULL) {
+			EVP_PKEY *pktmp;
+			pktmp = X509_get_pubkey(x509);
+			EVP_PKEY_copy_parameters(pktmp,
+						SSL_get_privatekey(ssl));
+			EVP_PKEY_free(pktmp);
+		}
+		SSL_free(ssl);
+		*/
+
+		/* If we are using DSA, we can copy the parameters from
+		 * the private key */
+		
+		
+		/* Now we know that a key and cert have been set against
+		 * the SSL context */
+		if (!SSL_CTX_check_private_key(ctx))
+			{
+			BIO_printf(bio_err,"Private key does not match the certificate public key\n");
+			return(0);
+			}
+		}
+	return(1);
+	}
+
+int set_cert_key_stuff(SSL_CTX *ctx, X509 *cert, EVP_PKEY *key)
+	{
+	if (cert ==  NULL)
+		return 1;
+	if (SSL_CTX_use_certificate(ctx,cert) <= 0)
+		{
+		BIO_printf(bio_err,"error setting certificate\n");
+		ERR_print_errors(bio_err);
+		return 0;
+		}
+	if (SSL_CTX_use_PrivateKey(ctx,key) <= 0)
+		{
+		BIO_printf(bio_err,"error setting private key\n");
+		ERR_print_errors(bio_err);
+		return 0;
+		}
+
+		
+		/* Now we know that a key and cert have been set against
+		 * the SSL context */
+	if (!SSL_CTX_check_private_key(ctx))
+		{
+		BIO_printf(bio_err,"Private key does not match the certificate public key\n");
+		return 0;
+		}
+	return 1;
+	}
+
+long MS_CALLBACK bio_dump_callback(BIO *bio, int cmd, const char *argp,
+	int argi, long argl, long ret)
+	{
+	BIO *out;
+
+	out=(BIO *)BIO_get_callback_arg(bio);
+	if (out == NULL) return(ret);
+
+	if (cmd == (BIO_CB_READ|BIO_CB_RETURN))
+		{
+		BIO_printf(out,"read from %p [%p] (%d bytes => %ld (0x%lX))\n",
+ 			(void *)bio,argp,argi,ret,ret);
+		BIO_dump(out,argp,(int)ret);
+		return(ret);
+		}
+	else if (cmd == (BIO_CB_WRITE|BIO_CB_RETURN))
+		{
+		BIO_printf(out,"write to %p [%p] (%d bytes => %ld (0x%lX))\n",
+			(void *)bio,argp,argi,ret,ret);
+		BIO_dump(out,argp,(int)ret);
+		}
+	return(ret);
+	}
+
+void MS_CALLBACK apps_ssl_info_callback(const SSL *s, int where, int ret)
+	{
+	const char *str;
+	int w;
+
+	w=where& ~SSL_ST_MASK;
+
+	if (w & SSL_ST_CONNECT) str="SSL_connect";
+	else if (w & SSL_ST_ACCEPT) str="SSL_accept";
+	else str="undefined";
+
+	if (where & SSL_CB_LOOP)
+		{
+		BIO_printf(bio_err,"%s:%s\n",str,SSL_state_string_long(s));
+		}
+	else if (where & SSL_CB_ALERT)
+		{
+		str=(where & SSL_CB_READ)?"read":"write";
+		BIO_printf(bio_err,"SSL3 alert %s:%s:%s\n",
+			str,
+			SSL_alert_type_string_long(ret),
+			SSL_alert_desc_string_long(ret));
+		}
+	else if (where & SSL_CB_EXIT)
+		{
+		if (r

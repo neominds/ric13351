@@ -1,0 +1,114 @@
+to end;
+			}
+		EC_GROUP_set_asn1_flag(group, asn1_flag);
+		EC_GROUP_set_point_conversion_form(group, form);
+		}
+	else if (informat == FORMAT_ASN1)
+		{
+		group = d2i_ECPKParameters_bio(in, NULL);
+		}
+	else if (informat == FORMAT_PEM)
+		{
+		group = PEM_read_bio_ECPKParameters(in,NULL,NULL,NULL);
+		}
+	else
+		{
+		BIO_printf(bio_err, "bad input format specified\n");
+		goto end;
+		}
+
+	if (group == NULL)
+		{
+		BIO_printf(bio_err, 
+			"unable to load elliptic curve parameters\n");
+		ERR_print_errors(bio_err);
+		goto end;
+		}
+
+	if (new_form)
+		EC_GROUP_set_point_conversion_form(group, form);
+
+	if (new_asn1_flag)
+		EC_GROUP_set_asn1_flag(group, asn1_flag);
+
+	if (no_seed)
+		{
+		EC_GROUP_set_seed(group, NULL, 0);
+		}
+
+	if (text)
+		{
+		if (!ECPKParameters_print(out, group, 0))
+			goto end;
+		}
+
+	if (check)
+		{
+		if (group == NULL)
+			BIO_printf(bio_err, "no elliptic curve parameters\n");
+		BIO_printf(bio_err, "checking elliptic curve parameters: ");
+		if (!EC_GROUP_check(group, NULL))
+			{
+			BIO_printf(bio_err, "failed\n");
+			ERR_print_errors(bio_err);
+			}
+		else
+			BIO_printf(bio_err, "ok\n");
+			
+		}
+
+	if (C)
+		{
+		size_t	buf_len = 0, tmp_len = 0;
+		const EC_POINT *point;
+		int	is_prime, len = 0;
+		const EC_METHOD *meth = EC_GROUP_method_of(group);
+
+		if ((ec_p = BN_new()) == NULL || (ec_a = BN_new()) == NULL ||
+		    (ec_b = BN_new()) == NULL || (ec_gen = BN_new()) == NULL ||
+		    (ec_order = BN_new()) == NULL || 
+		    (ec_cofactor = BN_new()) == NULL )
+			{
+			perror("OPENSSL_malloc");
+			goto end;
+			}
+
+		is_prime = (EC_METHOD_get_field_type(meth) == 
+			NID_X9_62_prime_field);
+
+		if (is_prime)
+			{
+			if (!EC_GROUP_get_curve_GFp(group, ec_p, ec_a,
+				ec_b, NULL))
+				goto end;
+			}
+		else
+			{
+			/* TODO */
+			goto end;
+			}
+
+		if ((point = EC_GROUP_get0_generator(group)) == NULL)
+			goto end;
+		if (!EC_POINT_point2bn(group, point, 
+			EC_GROUP_get_point_conversion_form(group), ec_gen, 
+			NULL))
+			goto end;
+		if (!EC_GROUP_get_order(group, ec_order, NULL))
+			goto end;
+		if (!EC_GROUP_get_cofactor(group, ec_cofactor, NULL))
+			goto end;
+
+		if (!ec_p || !ec_a || !ec_b || !ec_gen || 
+			!ec_order || !ec_cofactor)
+			goto end;
+
+		len = BN_num_bits(ec_order);
+
+		if ((tmp_len = (size_t)BN_num_bytes(ec_p)) > buf_len)
+			buf_len = tmp_len;
+		if ((tmp_len = (size_t)BN_num_bytes(ec_a)) > buf_len)
+			buf_len = tmp_len;
+		if ((tmp_len = (size_t)BN_num_bytes(ec_b)) > buf_len)
+			buf_len = tmp_len;
+		if ((tmp_len = (si

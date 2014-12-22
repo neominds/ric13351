@@ -1,0 +1,8 @@
+neominds@neominds-Vostro-1200:~/openssl-0.9.8zc$ sudo ./apps/openssl s_server -accept 443 -cert dsa.crt -key dsa.pem -ssl3
+Using default temp DH parameters
+Using default temp ECDH parameters
+ACCEPT
+bad gethostbyaddr
+ERROR
+5327:error:14094410:SSL routines:SSL3_READ_BYTES:sslv3 alert handshake failure:s3_pkt.c:1143:SSL alert number 40
+shutting down SSL

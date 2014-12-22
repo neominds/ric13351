@@ -1,0 +1,8 @@
+neominds@neominds-Vostro-1200:~/openssl-0.9.8zc$ sudo ./apps/openssl s_server -accept 443 -cert dsa.crt -key dsa.pem
+Using default temp DH parameters
+Using default temp ECDH parameters
+ACCEPT
+bad gethostbyaddr
+ERROR
+5206:error:140A1175:SSL routines:SSL_BYTES_TO_CIPHER_LIST:inappropriate fallback:ssl_lib.c:1404:
+shutting down SSL

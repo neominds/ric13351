@@ -1,0 +1,93 @@
+ signal calls */
+
+#undef PROG
+#define PROG speed_main
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#include <string.h>
+#include <math.h>
+#include "apps.h"
+#ifdef OPENSSL_NO_STDIO
+#define APPS_WIN16
+#endif
+#include <openssl/crypto.h>
+#include <openssl/rand.h>
+#include <openssl/err.h>
+#include <openssl/evp.h>
+#include <openssl/objects.h>
+#if !defined(OPENSSL_SYS_MSDOS)
+#include OPENSSL_UNISTD
+#endif
+
+#ifndef OPENSSL_SYS_NETWARE
+#include <signal.h>
+#endif
+
+#if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(OPENSSL_SYS_MACOSX)
+# define USE_TOD
+#elif !defined(OPENSSL_SYS_MSDOS) && !defined(OPENSSL_SYS_VXWORKS) && (!defined(OPENSSL_SYS_VMS) || defined(__DECC))
+# define TIMES
+#endif
+#if !defined(_UNICOS) && !defined(__OpenBSD__) && !defined(sgi) && !defined(__FreeBSD__) && !(defined(__bsdi) || defined(__bsdi__)) && !defined(_AIX) && !defined(OPENSSL_SYS_MPE) && !defined(__NetBSD__) && !defined(OPENSSL_SYS_VXWORKS) /* FIXME */
+# define TIMEB
+#endif
+
+#if defined(OPENSSL_SYS_NETWARE)
+#undef TIMES
+#undef TIMEB
+#include <time.h>
+#endif
+
+#ifndef _IRIX
+# include <time.h>
+#endif
+#ifdef TIMES
+# include <sys/types.h>
+# include <sys/times.h>
+#endif
+#ifdef USE_TOD
+# include <sys/time.h>
+# include <sys/resource.h>
+#endif
+
+/* Depending on the VMS version, the tms structure is perhaps defined.
+   The __TMS macro will show if it was.  If it wasn't defined, we should
+   undefine TIMES, since that tells the rest of the program how things
+   should be handled.				-- Richard Levitte */
+#if defined(OPENSSL_SYS_VMS_DECC) && !defined(__TMS)
+#undef TIMES
+#endif
+
+#ifdef TIMEB
+#include <sys/timeb.h>
+#endif
+
+#if !defined(TIMES) && !defined(TIMEB) && !defined(USE_TOD) && !defined(OPENSSL_SYS_VXWORKS) && !defined(OPENSSL_SYS_NETWARE)
+#error "It seems neither struct tms nor struct timeb is supported in this platform!"
+#endif
+
+#if defined(sun) || defined(__ultrix)
+#define _POSIX_SOURCE
+#include <limits.h>
+#include <sys/param.h>
+#endif
+
+#include <openssl/bn.h>
+#ifndef OPENSSL_NO_DES
+#include <openssl/des.h>
+#endif
+#ifndef OPENSSL_NO_AES
+#include <openssl/aes.h>
+#endif
+#ifndef OPENSSL_NO_CAMELLIA
+#include <openssl/camellia.h>
+#endif
+#ifndef OPENSSL_NO_MD2
+#include <openssl/md2.h>
+#endif
+#ifndef OPENSSL_NO_MDC2
+#include <openssl/mdc2.h>
+#endif
+#ifndef OPENSSL_NO

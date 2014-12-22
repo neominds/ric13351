@@ -1,0 +1,128 @@
+}
+		else if (!strcmp (*args, "-CAfile"))
+			{
+			if (args[1])
+				{
+				args++;
+				CAfile = *args;
+				}
+			else
+				badarg = 1;
+			}
+		else if (!strcmp (*args, "-CApath"))
+			{
+			if (args[1])
+				{
+				args++;
+				CApath = *args;
+				}
+			else
+				badarg = 1;
+			}
+		else if (!strcmp (*args, "-in"))
+			{
+			if (args[1])
+				{
+				args++;
+				infile = *args;
+				}
+			else
+				badarg = 1;
+			}
+		else if (!strcmp (*args, "-inform"))
+			{
+			if (args[1])
+				{
+				args++;
+				informat = str2fmt(*args);
+				}
+			else
+				badarg = 1;
+			}
+		else if (!strcmp (*args, "-outform"))
+			{
+			if (args[1])
+				{
+				args++;
+				outformat = str2fmt(*args);
+				}
+			else
+				badarg = 1;
+			}
+		else if (!strcmp (*args, "-out"))
+			{
+			if (args[1])
+				{
+				args++;
+				outfile = *args;
+				}
+			else
+				badarg = 1;
+			}
+		else if (!strcmp (*args, "-content"))
+			{
+			if (args[1])
+				{
+				args++;
+				contfile = *args;
+				}
+			else
+				badarg = 1;
+			}
+		else if (args_verify(&args, NULL, &badarg, bio_err, &vpm))
+			continue;
+		else
+			badarg = 1;
+		args++;
+		}
+
+
+	if (operation == SMIME_SIGN)
+		{
+		if (!signerfile)
+			{
+			BIO_printf(bio_err, "No signer certificate specified\n");
+			badarg = 1;
+			}
+		need_rand = 1;
+		}
+	else if (operation == SMIME_DECRYPT)
+		{
+		if (!recipfile && !keyfile)
+			{
+			BIO_printf(bio_err, "No recipient certificate or key specified\n");
+			badarg = 1;
+			}
+		}
+	else if (operation == SMIME_ENCRYPT)
+		{
+		if (!*args)
+			{
+			BIO_printf(bio_err, "No recipient(s) certificate(s) specified\n");
+			badarg = 1;
+			}
+		need_rand = 1;
+		}
+	else if (!operation)
+		badarg = 1;
+
+	if (badarg)
+		{
+		BIO_printf (bio_err, "Usage smime [options] cert.pem ...\n");
+		BIO_printf (bio_err, "where options are\n");
+		BIO_printf (bio_err, "-encrypt       encrypt message\n");
+		BIO_printf (bio_err, "-decrypt       decrypt encrypted message\n");
+		BIO_printf (bio_err, "-sign          sign message\n");
+		BIO_printf (bio_err, "-verify        verify signed message\n");
+		BIO_printf (bio_err, "-pk7out        output PKCS#7 structure\n");
+#ifndef OPENSSL_NO_DES
+		BIO_printf (bio_err, "-des3          encrypt with triple DES\n");
+		BIO_printf (bio_err, "-des           encrypt with DES\n");
+#endif
+#ifndef OPENSSL_NO_SEED
+		BIO_printf (bio_err, "-seed          encrypt with SEED\n");
+#endif
+#ifndef OPENSSL_NO_RC2
+		BIO_printf (bio_err, "-rc2-40        encrypt with RC2-40 (default)\n");
+		BIO_printf (bio_err, "-rc2-64        encrypt with RC2-64\n");
+		BIO_printf (bio_err, "-rc2-128       

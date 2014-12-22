@@ -1,0 +1,92 @@
+#
+# Helper makefile to link shared libraries in a portable way.
+# This is much simpler than libtool, and hopefully not too error-prone.
+#
+# The following variables need to be set on the command line to build
+# properly
+
+# CC contains the current compiler.  This one MUST be defined
+CC=cc
+CFLAGS=$(CFLAG)
+# LDFLAGS contains flags to be used when temporary object files (when building
+# shared libraries) are created, or when an application is linked.
+# SHARED_LDFLAGS contains flags to be used when the shared library is created.
+LDFLAGS=
+SHARED_LDFLAGS=
+
+# LIBNAME contains just the name of the library, without prefix ("lib"
+# on Unix, "cyg" for certain forms under Cygwin...) or suffix (.a, .so,
+# .dll, ...).  This one MUST have a value when using this makefile to
+# build shared libraries.
+# For example, to build libfoo.so, you need to do the following:
+#LIBNAME=foo
+LIBNAME=
+
+# APPNAME contains just the name of the application, without suffix (""
+# on Unix, ".exe" on Windows, ...).  This one MUST have a value when using
+# this makefile to build applications.
+# For example, to build foo, you need to do the following:
+#APPNAME=foo
+APPNAME=
+
+# OBJECTS contains all the object files to link together into the application.
+# This must contain at least one object file.
+#OBJECTS=foo.o
+OBJECTS=
+
+# LIBEXTRAS contains extra modules to link together with the library.
+# For example, if a second library, say libbar.a needs to be linked into
+# libfoo.so, you need to do the following:
+#LIBEXTRAS=libbar.a
+# Note that this MUST be used when using the link_o targets, to hold the
+# names of all object files that go into the target library.
+LIBEXTRAS=
+
+# LIBVERSION contains the current version of the library.
+# For example, to build libfoo.so.1.2, you need to do the following:
+#LIBVERSION=1.2
+LIBVERSION=
+
+# LIBCOMPATVERSIONS contains the compatibility versions (a list) of
+# the library.  They MUST be in decreasing order.
+# For example, if libfoo.so.1.2.1 is backward compatible with libfoo.so.1.2
+# and libfoo.so.1, you need to do the following:
+#LIBCOMPATVERSIONS=1.2 1
+# Note that on systems that use sonames, the last number will appear as
+# part of it.
+# It's also possible, for systems that support it (Tru64, for example),
+# to add extra compatibility info with more precision, by adding a second
+# list of versions, separated from the first with a semicolon, like this:
+#LIBCOMPATVERSIONS=1.2 1;1.2.0 1.1.2 1.1.1 1.1.0 1.0.0
+LIBCOMPATVERSIONS=
+
+# LIBDEPS contains all the flags necessary to cover all necessary
+# dependencies to other libraries.
+LIBDEPS=
+
+#------------------------------------------------------------------------------
+# The rest is private to this makefile.
+
+SET_X=:
+#SET_X=set -x
+
+top:
+	echo "Trying to use this makefile interactively?  Don't."
+
+CALC_VERSIONS=	\
+	SHLIB_COMPAT=; SHLIB_SOVER=; \
+	if [ -n "$(LIBVERSION)$(LIBCOMPATVERSIONS)" ]; then \
+		prev=""; \
+		for v in `echo "$(LIBVERSION) $(LIBCOMPATVERSIONS)" | cut -d';' -f1`; do \
+			SHLIB_SOVER_NODOT=$$v; \
+			SHLIB_SOVER=.$$v; \
+			if [ -n "$$prev" ]; then \
+				SHLIB_COMPAT="$$SHLIB_COMPAT .$$prev"; \
+			fi; \
+			prev=$$v; \
+		done; \
+	fi
+
+LINK_APP=	\
+  ( $(SET_X);   \
+    LIBDEPS="$

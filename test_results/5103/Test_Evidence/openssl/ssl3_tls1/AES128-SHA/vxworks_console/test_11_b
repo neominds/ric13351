@@ -1,0 +1,68 @@
+=pod
+
+=head1 NAME
+
+CRYPTO_set_locking_callback, CRYPTO_set_id_callback, CRYPTO_num_locks,
+CRYPTO_set_dynlock_create_callback, CRYPTO_set_dynlock_lock_callback,
+CRYPTO_set_dynlock_destroy_callback, CRYPTO_get_new_dynlockid,
+CRYPTO_destroy_dynlockid, CRYPTO_lock - OpenSSL thread support
+
+=head1 SYNOPSIS
+
+ #include <openssl/crypto.h>
+
+ void CRYPTO_set_locking_callback(void (*locking_function)(int mode,
+        int n, const char *file, int line));
+
+ void CRYPTO_set_id_callback(unsigned long (*id_function)(void));
+
+ int CRYPTO_num_locks(void);
+
+
+ /* struct CRYPTO_dynlock_value needs to be defined by the user */
+ struct CRYPTO_dynlock_value;
+
+ void CRYPTO_set_dynlock_create_callback(struct CRYPTO_dynlock_value *
+	(*dyn_create_function)(char *file, int line));
+ void CRYPTO_set_dynlock_lock_callback(void (*dyn_lock_function)
+	(int mode, struct CRYPTO_dynlock_value *l,
+	const char *file, int line));
+ void CRYPTO_set_dynlock_destroy_callback(void (*dyn_destroy_function)
+	(struct CRYPTO_dynlock_value *l, const char *file, int line));
+
+ int CRYPTO_get_new_dynlockid(void);
+
+ void CRYPTO_destroy_dynlockid(int i);
+
+ void CRYPTO_lock(int mode, int n, const char *file, int line);
+
+ #define CRYPTO_w_lock(type)	\
+	CRYPTO_lock(CRYPTO_LOCK|CRYPTO_WRITE,type,__FILE__,__LINE__)
+ #define CRYPTO_w_unlock(type)	\
+	CRYPTO_lock(CRYPTO_UNLOCK|CRYPTO_WRITE,type,__FILE__,__LINE__)
+ #define CRYPTO_r_lock(type)	\
+	CRYPTO_lock(CRYPTO_LOCK|CRYPTO_READ,type,__FILE__,__LINE__)
+ #define CRYPTO_r_unlock(type)	\
+	CRYPTO_lock(CRYPTO_UNLOCK|CRYPTO_READ,type,__FILE__,__LINE__)
+ #define CRYPTO_add(addr,amount,type)	\
+	CRYPTO_add_lock(addr,amount,type,__FILE__,__LINE__)
+
+=head1 DESCRIPTION
+
+OpenSSL can safely be used in multi-threaded applications provided
+that at least two callback functions are set.
+
+locking_function(int mode, int n, const char *file, int line) is
+needed to perform locking on shared data structures. 
+(Note that OpenSSL uses a number of global data structures that
+will be implicitly shared whenever multiple threads use OpenSSL.)
+Multi-threaded applications will crash at random if it is not set.
+
+locking_function() must be able to handle up to CRYPTO_num_locks()
+different mutex locks. It sets the B<n>-th lock if B<mode> &
+B<CRYPTO_LOCK>, and releases it otherwise.
+
+B<file> and B<line> are the file number of the function setting the
+lock. They can be useful for debugging.
+
+id_function(void) is a function that retur

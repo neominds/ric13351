@@ -1,0 +1,74 @@
+default), PEM or DER\n");
+		BIO_printf (bio_err, "-content file  supply or override content for detached signature\n");
+		BIO_printf (bio_err, "-to addr       to address\n");
+		BIO_printf (bio_err, "-from ad       from address\n");
+		BIO_printf (bio_err, "-subject s     subject\n");
+		BIO_printf (bio_err, "-text          include or delete text MIME headers\n");
+		BIO_printf (bio_err, "-CApath dir    trusted certificates directory\n");
+		BIO_printf (bio_err, "-CAfile file   trusted certificates file\n");
+		BIO_printf (bio_err, "-crl_check     check revocation status of signer's certificate using CRLs\n");
+		BIO_printf (bio_err, "-crl_check_all check revocation status of signer's certificate chain using CRLs\n");
+#ifndef OPENSSL_NO_ENGINE
+		BIO_printf (bio_err, "-engine e      use engine e, possibly a hardware device.\n");
+#endif
+		BIO_printf (bio_err, "-passin arg    input file pass phrase source\n");
+		BIO_printf(bio_err,  "-rand file%cfile%c...\n", LIST_SEPARATOR_CHAR, LIST_SEPARATOR_CHAR);
+		BIO_printf(bio_err,  "               load the file (or the files in the directory) into\n");
+		BIO_printf(bio_err,  "               the random number generator\n");
+		BIO_printf (bio_err, "cert.pem       recipient certificate(s) for encryption\n");
+		goto end;
+		}
+
+#ifndef OPENSSL_NO_ENGINE
+        e = setup_engine(bio_err, engine, 0);
+#endif
+
+	if (!app_passwd(bio_err, passargin, NULL, &passin, NULL))
+		{
+		BIO_printf(bio_err, "Error getting password\n");
+		goto end;
+		}
+
+	if (need_rand)
+		{
+		app_RAND_load_file(NULL, bio_err, (inrand != NULL));
+		if (inrand != NULL)
+			BIO_printf(bio_err,"%ld semi-random bytes loaded\n",
+				app_RAND_load_files(inrand));
+		}
+
+	ret = 2;
+
+	if (operation != SMIME_SIGN)
+		flags &= ~PKCS7_DETACHED;
+
+	if (operation & SMIME_OP)
+		{
+		if (flags & PKCS7_BINARY)
+			inmode = "rb";
+		if (outformat == FORMAT_ASN1)
+			outmode = "wb";
+		}
+	else
+		{
+		if (flags & PKCS7_BINARY)
+			outmode = "wb";
+		if (informat == FORMAT_ASN1)
+			inmode = "rb";
+		}
+
+	if (operation == SMIME_ENCRYPT)
+		{
+		if (!cipher)
+			{
+#ifndef OPENSSL_NO_DES			
+			cipher = EVP_des_ede3_cbc();
+#else
+			BIO_printf(bio_err, "No cipher selected\n");
+			goto end;
+#endif
+			}
+		encerts = sk_X509_new_null();
+		while (*args)
+			{
+			if (!(cert = load_cert

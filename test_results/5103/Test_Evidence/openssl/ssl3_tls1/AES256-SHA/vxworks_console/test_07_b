@@ -1,0 +1,12 @@
+
+
+-> nm_server_main("7","-accept","443","-cert","cert.crt","-key","rsa.pem","-tls1")
+Using default temp DH parameters
+ACCEPT
+bad gethostbyaddr
+ERROR
+1560930272:error:1408A10B:SSL routines:SSL3_GET_CLIENT_HELLO:wrong version number:s3_srvr.c:694:
+shutting down SSL
+CONNECTION CLOSED
+ACCEPT
+

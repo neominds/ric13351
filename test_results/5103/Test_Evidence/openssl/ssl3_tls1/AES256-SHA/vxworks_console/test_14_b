@@ -1,0 +1,91 @@
+ument \"/lib/libdriver.so\".\n",
+NULL
+};
+
+static void identity(void *ptr)
+	{
+	return;
+	}
+
+static int append_buf(char **buf, const char *s, int *size, int step)
+	{
+	int l = strlen(s);
+
+	if (*buf == NULL)
+		{
+		*size = step;
+		*buf = OPENSSL_malloc(*size);
+		if (*buf == NULL)
+			return 0;
+		**buf = '\0';
+		}
+
+	if (**buf != '\0')
+		l += 2;		/* ", " */
+
+	if (strlen(*buf) + strlen(s) >= (unsigned int)*size)
+		{
+		*size += step;
+		*buf = OPENSSL_realloc(*buf, *size);
+		}
+
+	if (*buf == NULL)
+		return 0;
+
+	if (**buf != '\0')
+		BUF_strlcat(*buf, ", ", *size);
+	BUF_strlcat(*buf, s, *size);
+
+	return 1;
+	}
+
+static int util_flags(BIO *bio_out, unsigned int flags, const char *indent)
+	{
+	int started = 0, err = 0;
+	/* Indent before displaying input flags */
+	BIO_printf(bio_out, "%s%s(input flags): ", indent, indent);
+	if(flags == 0)
+		{
+		BIO_printf(bio_out, "<no flags>\n");
+		return 1;
+		}
+        /* If the object is internal, mark it in a way that shows instead of
+         * having it part of all the other flags, even if it really is. */
+	if(flags & ENGINE_CMD_FLAG_INTERNAL)
+		{
+		BIO_printf(bio_out, "[Internal] ");
+		}
+
+	if(flags & ENGINE_CMD_FLAG_NUMERIC)
+		{
+		if(started)
+			{
+			BIO_printf(bio_out, "|");
+			err = 1;
+			}
+		BIO_printf(bio_out, "NUMERIC");
+		started = 1;
+		}
+	/* Now we check that no combinations of the mutually exclusive NUMERIC,
+	 * STRING, and NO_INPUT flags have been used. Future flags that can be
+	 * OR'd together with these would need to added after these to preserve
+	 * the testing logic. */
+	if(flags & ENGINE_CMD_FLAG_STRING)
+		{
+		if(started)
+			{
+			BIO_printf(bio_out, "|");
+			err = 1;
+			}
+		BIO_printf(bio_out, "STRING");
+		started = 1;
+		}
+	if(flags & ENGINE_CMD_FLAG_NO_INPUT)
+		{
+		if(started)
+			{
+			BIO_printf(bio_out, "|");
+			err = 1;
+			}
+		BIO_printf(bio_out, "NO_INPUT");
+		started

@@ -1,0 +1,34 @@
+tes or days when fresh revocation information is available: used in the
+B<nextUpdate> field. If neither option is present then the B<nextUpdate> field is 
+omitted meaning fresh revocation information is immediately available.
+
+=back
+
+=head1 OCSP Response verification.
+
+OCSP Response follows the rules specified in RFC2560.
+
+Initially the OCSP responder certificate is located and the signature on
+the OCSP request checked using the responder certificate's public key.
+
+Then a normal certificate verify is performed on the OCSP responder certificate
+building up a certificate chain in the process. The locations of the trusted
+certificates used to build the chain can be specified by the B<CAfile>
+and B<CApath> options or they will be looked for in the standard OpenSSL
+certificates directory.
+
+If the initial verify fails then the OCSP verify process halts with an
+error.
+
+Otherwise the issuing CA certificate in the request is compared to the OCSP
+responder certificate: if there is a match then the OCSP verify succeeds.
+
+Otherwise the OCSP responder certificate's CA is checked against the issuing
+CA certificate in the request. If there is a match and the OCSPSigning
+extended key usage is present in the OCSP responder certificate then the
+OCSP verify succeeds.
+
+Otherwise the root CA of the OCSP responders CA is checked to see if it
+is trusted for OCSP signing. If it is the OCSP verify succeeds.
+
+If none 

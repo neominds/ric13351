@@ -1,0 +1,8 @@
+-> nm_client_main("6","-connect","10.10.10.102:443","-cipher","EDH-RSA-DES-CBC-SHA","-ssl3","-fallback_scsv")
+creating ssl context
+calling SSL_new
+calling init_client
+CONNECTED(00000008)
+1560930272:error:1409443E:SSL routines:SSL3_READ_BYTES:tlsv1 alert inappropriate fallback:s3_pkt.c:1053:SSL alert number 86
+1560930272:error:1409E0E5:SSL routines:SSL3_WRITE_BYTES:ssl handshake failure:s3_pkt.c:529:
+value = 0 = 0x0

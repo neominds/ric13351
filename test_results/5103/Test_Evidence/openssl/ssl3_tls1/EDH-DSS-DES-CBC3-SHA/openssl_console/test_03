@@ -1,0 +1,60 @@
+
+
+neominds@neominds-Vostro-1200:~/openssl-0.9.8zc$ ./apps/openssl s_client -connect 10.10.10.99:443 -cipher EDH-DSS-DES-CBC3-SHA -tls1 
+CONNECTED(00000003)
+depth=0 /C=in/ST=gfdg/L=fdg/O=Internet Widgits Pty Ltd/OU=gdfg/CN=gdf/emailAddress=fgd
+verify error:num=18:self signed certificate
+verify return:1
+depth=0 /C=in/ST=gfdg/L=fdg/O=Internet Widgits Pty Ltd/OU=gdfg/CN=gdf/emailAddress=fgd
+verify return:1
+---
+Certificate chain
+ 0 s:/C=in/ST=gfdg/L=fdg/O=Internet Widgits Pty Ltd/OU=gdfg/CN=gdf/emailAddress=fgd
+   i:/C=in/ST=gfdg/L=fdg/O=Internet Widgits Pty Ltd/OU=gdfg/CN=gdf/emailAddress=fgd
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIIDMTCCAvECCQDZWYdC6ox8JTAJBgcqhkjOOAQDMH4xCzAJBgNVBAYTAmluMQ0w
+CwYDVQQIDARnZmRnMQwwCgYDVQQHDANmZGcxITAfBgNVBAoMGEludGVybmV0IFdp
+ZGdpdHMgUHR5IEx0ZDENMAsGA1UECwwEZ2RmZzEMMAoGA1UEAwwDZ2RmMRIwEAYJ
+KoZIhvcNAQkBFgNmZ2QwHhcNMTQxMjE3MTE1NjIwWhcNMTUxMjE3MTE1NjIwWjB+
+MQswCQYDVQQGEwJpbjENMAsGA1UECAwEZ2ZkZzEMMAoGA1UEBwwDZmRnMSEwHwYD
+VQQKDBhJbnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQxDTALBgNVBAsMBGdkZmcxDDAK
+BgNVBAMMA2dkZjESMBAGCSqGSIb3DQEJARYDZmdkMIIBtzCCASsGByqGSM44BAEw
+ggEeAoGBAP851YTnnYD1cO1/ehGYI6cCKbSyIQt/H9tDNNndWnN3dAAtHKNd64p4
+//+nPHZibLiz7leIQ6VpfO1w/M3BJb4jh+kvRiW9ruCWbKEO/sII03baEHuJnmJu
+Qb/QrtKCL/WkylljexDtyw3PUtRsQaPGmctYxadfTtuy8IbNlYIrAhUA8tdkguH9
+s9q+zK+1cXggQ9OWyaUCgYBotR+xJCgYTlbmC9gF+LghRw8c2u1/2aq+neWeBoDN
+AVE925JeNSSrLgcI76BHhmoEReH002EizNOJ0xDqS3lqF7PCAy1KCoaRH91VGsdb
+oUBkgISgn1oyv0BeFvwHflVp5DSWct4861lsfZzgNg+j7Sy5xuKl0Hr3U8SVrptN
+vAOBhQACgYEA60B1L33WLlZXdTxf9UFopzVSx067GXoMphFGFscczuuRhsDlmkil
+EbwOyu9wawTTUp61ZiVtYFcSRwf9A9x7KqTagddxETdI8gTxT3kYL8LYThyx8r2z
+pRyklzW5rxP8CtTdvr4yy9jbnIqxiGRvDh4v1Is51woggCAIJMfvLvkwCQYHKoZI
+zjgEAwMvADAsAhQ3RSAzVI7k9U9AiEcPj918ygATtAIUNVr88vutx36R8x+cchcD
+pFFVAFk=
+-----END CERTIFICATE-----
+subject=/C=in/ST=gfdg/L=fdg/O=Internet Widgits Pty Ltd/OU=gdfg/CN=gdf/emailAddress=fgd
+issuer=/C=in/ST=gfdg/L=fdg/O=Internet Widgits Pty Ltd/OU=gdfg/CN=gdf/emailAddress=fgd
+---
+No client certificate CA names sent
+---
+SSL handshake has read 1168 bytes and written 184 bytes
+---
+New, TLSv1/SSLv3, Cipher is EDH-DSS-DES-CBC3-SHA
+Server public key is 1024 bit
+Secure Renegotiation IS NOT supported
+Compression: NONE
+Expansion: NONE
+SSL-Session:
+    Protocol  : TLSv1
+    Cipher    : EDH-DSS-DES-CBC3-SHA
+    Session-ID: B185BB05F7ACE232161F3551B890F3937EAC3A65475F90C4F2465C4F57DB6C5A
+    Session-ID-ctx: 
+    Master-Key: 6CAAB39B4CE3DEB01AD3E46E4119534561EE2C657F51746286423695AC8AAC1FFAC2BEF868AFC13EE1745CE9AF22AABF
+    Key-Arg   : None
+    Start Time: 1419224072
+    Timeout   : 7200 (sec)
+    Verify return code: 18 (self signed certificate)
+---
+ok
+ok

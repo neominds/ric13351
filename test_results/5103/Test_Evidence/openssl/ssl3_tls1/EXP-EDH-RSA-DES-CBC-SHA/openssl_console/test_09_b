@@ -1,0 +1,98 @@
+End The DECC & VAXC Compiler Check.
+$!
+$   ENDIF
+$!
+$!  End The Compiler Check.
+$!
+$ ENDIF
+$!
+$! Check To See If We Have A Option For P3.
+$!
+$ IF (P3.EQS."")
+$ THEN
+$!
+$!  Find out what socket library we have available
+$!
+$   IF F$PARSE("SOCKETSHR:") .NES. ""
+$   THEN
+$!
+$!    We have SOCKETSHR, and it is my opinion that it's the best to use.
+$!
+$     P3 = "SOCKETSHR"
+$!
+$!    Tell the user
+$!
+$     WRITE SYS$OUTPUT "Using SOCKETSHR for TCP/IP"
+$!
+$!    Else, let's look for something else
+$!
+$   ELSE
+$!
+$!    Like UCX (the reason to do this before Multinet is that the UCX
+$!    emulation is easier to use...)
+$!
+$     IF F$TRNLNM("UCX$IPC_SHR") .NES. "" -
+	 .OR. F$PARSE("SYS$SHARE:UCX$IPC_SHR.EXE") .NES. "" -
+	 .OR. F$PARSE("SYS$LIBRARY:UCX$IPC.OLB") .NES. ""
+$     THEN
+$!
+$!	Last resort: a UCX or UCX-compatible library
+$!
+$	P3 = "UCX"
+$!
+$!      Tell the user
+$!
+$       WRITE SYS$OUTPUT "Using UCX or an emulation thereof for TCP/IP"
+$!
+$!	That was all...
+$!
+$     ENDIF
+$   ENDIF
+$ ENDIF
+$!
+$! Set Up Initial CC Definitions, Possibly With User Ones
+$!
+$ CCDEFS = "TCPIP_TYPE_''P3'"
+$ IF F$TYPE(USER_CCDEFS) .NES. "" THEN CCDEFS = CCDEFS + "," + USER_CCDEFS
+$ CCEXTRAFLAGS = ""
+$ IF F$TYPE(USER_CCFLAGS) .NES. "" THEN CCEXTRAFLAGS = USER_CCFLAGS
+$ CCDISABLEWARNINGS = "LONGLONGTYPE,LONGLONGSUFX,FOUNDCR"
+$ IF F$TYPE(USER_CCDISABLEWARNINGS) .NES. "" THEN -
+	CCDISABLEWARNINGS = CCDISABLEWARNINGS + "," + USER_CCDISABLEWARNINGS
+$!
+$!  Check To See If The User Entered A Valid Paramter.
+$!
+$ IF (P2.EQS."VAXC").OR.(P2.EQS."DECC").OR.(P2.EQS."GNUC")
+$ THEN
+$!
+$!  Check To See If The User Wanted DECC.
+$!
+$   IF (P2.EQS."DECC")
+$   THEN
+$!
+$!    Looks Like DECC, Set To Use DECC.
+$!
+$     COMPILER = "DECC"
+$!
+$!    Tell The User We Are Using DECC.
+$!
+$     WRITE SYS$OUTPUT "Using DECC 'C' Compiler."
+$!
+$!    Use DECC...
+$!
+$     CC = "CC"
+$     IF ARCH.EQS."VAX" .AND. F$TRNLNM("DECC$CC_DEFAULT").NES."/DECC" -
+	 THEN CC = "CC /DECC"
+$     CC = CC + "/''CC_OPTIMIZE' /''DEBUGGER' /STANDARD=ANSI89" + -
+           "/NOLIST /PREFIX=ALL" + -
+	   "/INCLUDE=(SYS$DISK:[-],SYS$DISK:[-.CRYPTO])" + CCEXTRAFLAGS
+$!
+$!    Define The Linker Options File Name.
+$!
+$     OPT_FILE = "''EXE_DIR'VAX_DECC_OPTIONS.OPT"
+$!
+$!  End DECC Check.
+$!
+$   ENDIF
+$!
+$!  Check To See If We Are To Use V

@@ -1,0 +1,123 @@
+); $(FIPS_BUILD_CMD)
+
+$(FIPS_DESTEST)$(EXE_EXT): $(FIPS_DESTEST).o $(DLIBCRYPTO)
+	@target=$(FIPS_DESTEST); $(FIPS_BUILD_CMD)
+
+$(FIPS_HMACTEST)$(EXE_EXT): $(FIPS_HMACTEST).o $(DLIBCRYPTO)
+	@target=$(FIPS_HMACTEST); $(FIPS_BUILD_CMD)
+
+$(FIPS_RANDTEST)$(EXE_EXT): $(FIPS_RANDTEST).o $(DLIBCRYPTO)
+	@target=$(FIPS_RANDTEST); $(FIPS_BUILD_CMD)
+
+$(FIPS_RSAVTEST)$(EXE_EXT): $(FIPS_RSAVTEST).o $(DLIBCRYPTO)
+	@target=$(FIPS_RSAVTEST); $(FIPS_BUILD_CMD)
+
+$(FIPS_RSASTEST)$(EXE_EXT): $(FIPS_RSASTEST).o $(DLIBCRYPTO)
+	@target=$(FIPS_RSASTEST); $(FIPS_BUILD_CMD)
+
+$(FIPS_RSAGTEST)$(EXE_EXT): $(FIPS_RSAGTEST).o $(DLIBCRYPTO)
+	@target=$(FIPS_RSAGTEST); $(FIPS_BUILD_CMD)
+
+$(FIPS_DSATEST)$(EXE_EXT): $(FIPS_DSATEST).o $(DLIBCRYPTO)
+	@target=$(FIPS_DSATEST); $(FIPS_BUILD_CMD)
+
+$(FIPS_DSSVS)$(EXE_EXT): $(FIPS_DSSVS).o $(DLIBCRYPTO)
+	@target=$(FIPS_DSSVS); $(FIPS_BUILD_CMD)
+
+$(FIPS_RNGVS)$(EXE_EXT): $(FIPS_RNGVS).o $(DLIBCRYPTO)
+	@target=$(FIPS_RNGVS); $(FIPS_BUILD_CMD)
+
+$(FIPS_TEST_SUITE)$(EXE_EXT): $(FIPS_TEST_SUITE).o $(DLIBCRYPTO)
+	@target=$(FIPS_TEST_SUITE); $(FIPS_BUILD_CMD)
+
+$(RMDTEST)$(EXE_EXT): $(RMDTEST).o $(DLIBCRYPTO)
+	@target=$(RMDTEST); $(BUILD_CMD)
+
+$(MDC2TEST)$(EXE_EXT): $(MDC2TEST).o $(DLIBCRYPTO)
+	@target=$(MDC2TEST); $(BUILD_CMD)
+
+$(MD4TEST)$(EXE_EXT): $(MD4TEST).o $(DLIBCRYPTO)
+	@target=$(MD4TEST); $(BUILD_CMD)
+
+$(MD5TEST)$(EXE_EXT): $(MD5TEST).o $(DLIBCRYPTO)
+	@target=$(MD5TEST); $(BUILD_CMD)
+
+$(HMACTEST)$(EXE_EXT): $(HMACTEST).o $(DLIBCRYPTO)
+	@target=$(HMACTEST); $(BUILD_CMD)
+
+$(RC2TEST)$(EXE_EXT): $(RC2TEST).o $(DLIBCRYPTO)
+	@target=$(RC2TEST); $(BUILD_CMD)
+
+$(BFTEST)$(EXE_EXT): $(BFTEST).o $(DLIBCRYPTO)
+	@target=$(BFTEST); $(BUILD_CMD)
+
+$(CASTTEST)$(EXE_EXT): $(CASTTEST).o $(DLIBCRYPTO)
+	@target=$(CASTTEST); $(BUILD_CMD)
+
+$(RC4TEST)$(EXE_EXT): $(RC4TEST).o $(DLIBCRYPTO)
+	@target=$(RC4TEST); $(BUILD_CMD)
+
+$(RC5TEST)$(EXE_EXT): $(RC5TEST).o $(DLIBCRYPTO)
+	@target=$(RC5TEST); $(BUILD_CMD)
+
+$(DESTEST)$(EXE_EXT): $(DESTEST).o $(DLIBCRYPTO)
+	@target=$(DESTEST); $(BUILD_CMD)
+
+$(RANDTEST)$(EXE_EXT): $(RANDTEST).o $(DLIBCRYPTO)
+	@target=$(RANDTEST); $(BUILD_CMD)
+
+$(DHTEST)$(EXE_EXT): $(DHTEST).o $(DLIBCRYPTO)
+	@target=$(DHTEST); $(BUILD_CMD)
+
+$(DSATEST)$(EXE_EXT): $(DSATEST).o $(DLIBCRYPTO)
+	@target=$(DSATEST); $(BUILD_CMD)
+
+$(METHTEST)$(EXE_EXT): $(METHTEST).o $(DLIBCRYPTO)
+	@target=$(METHTEST); $(BUILD_CMD)
+
+$(SSLTEST)$(EXE_EXT): $(SSLTEST).o $(DLIBSSL) $(DLIBCRYPTO)
+	@target=$(SSLTEST); $(FIPS_CRYPTO_BUILD_CMD)
+
+$(ENGINETEST)$(EXE_EXT): $(ENGINETEST).o $(DLIBCRYPTO)
+	@target=$(ENGINETEST); $(BUILD_CMD)
+
+$(EVPTEST)$(EXE_EXT): $(EVPTEST).o $(DLIBCRYPTO)
+	@target=$(EVPTEST); $(BUILD_CMD)
+
+$(ECDSATEST)$(EXE_EXT): $(ECDSATEST).o $(DLIBCRYPTO)
+	@target=$(ECDSATEST); $(BUILD_CMD)
+
+$(ECDHTEST)$(EXE_EXT): $(ECDHTEST).o $(DLIBCRYPTO)
+	@target=$(ECDHTEST); $(BUILD_CMD)
+
+$(IGETEST)$(EXE_EXT): $(IGETEST).o $(DLIBCRYPTO)
+	@target=$(IGETEST); $(BUILD_CMD)
+
+jpaketest$(EXE_EXT): jpaketest.o $(DLIBCRYPTO)
+	@target=jpaketest; $(BUILD_CMD)
+
+$(CONSTTIMETEST)$(EXE_EXT): $(CONSTTIMETEST).o
+	@target=$(CONSTTIMETEST) $(BUILD_CMD)
+
+#$(AESTEST).o: $(AESTEST).c
+#	$(CC) -c $(CFLAGS) -DINTERMEDIATE_VALUE_KAT -DTRACE_KAT_MCT $(AESTEST).c
+
+#$(AESTEST)$(EXE_EXT): $(AESTEST).o $(DLIBCRYPTO)
+#	if [ "$(SHLIB_TARGET)" = "hpux-shared" -o "$(SHLIB_TARGET)" = "darwin-shared" ] ; then \
+#	  $(CC) -o $(AESTEST)$(EXE_EXT) $(CFLAGS) $(AESTEST).o $(PEX_LIBS) $(DLIBCRYPTO) $(EX_LIBS) ; \
+#	else \
+#	  $(CC) -o $(AESTEST)$(EXE_EXT) $(CFLAGS) $(AESTEST).o $(PEX_LIBS) $(LIBCRYPTO) $(EX_LIBS) ; \
+#	fi
+
+dummytest$(EXE_EXT): dummytest.o $(DLIBCRYPTO)
+	@target=dummytest; $(BUILD_CMD)
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.
+
+bftest.o: ../e_os.h ../include/openssl/blowfish.h ../include/openssl/e_os2.h
+bftest.o: ../include/openssl/opensslconf.h bftest.c
+bntest.o: ../e_os.h ../include/openssl/asn1.h ../include/openssl/bio.h
+bntest.o: ../include/openssl/bn.h ../include/openssl/buffer.h
+bntest.o: ../include/openssl/crypto.h ../include/openssl/dh.h
+bntest.o: ../include/openssl/dsa.h ../include/openssl/e_os2.h
+b

@@ -1,0 +1,57 @@
+checking the RS-232
+     connection.
+
+     This BSP assumes a clock oscillator module frequency of 25 MHz.
+
+NOTE
+     Due to the nature of the CoreLV board as a test platform which allows
+     vendors to validate silicon and provide early samples in an evaluation
+     form, Specification Updates provided with each manufacturer's device should
+     be carefully reviewed for any errata which may affect operation with this
+     BSP. Though this BSP was originally developed using the TI F731940 (4kc)
+     device, support has been (and may be again in the future) added for
+     additional processor cores. Refer to the "Known Problems" section for
+     specific instructions related to using the particular vendor's device
+     supported by this BSP.
+
+  Boot ROMs
+     The Malta board contains 4 Megabytes of in-circuit programmable Flash
+     Memory.
+
+     Bootroms can be downloaded via a parallel port connection. When the dip
+     switch S5-1 is set to ON position, the system will enter into the flash
+     programming mode. The 1284 Flash Download Format is documented in the Malta
+     User's Manual, chapter 8. See the section on "ROM Considerations" below for
+     further information.
+
+  Boot Parameters
+     This board provides non-volatile (Battery backed-up) memory in the 82371
+     PIIX4 south bridge chip that is used for storage of the boot parameters.
+
+  Switches
+     The following switches are relevant to VxWorks configuration. Consult the
+     hardware manual for switch configuration details.
+
+MIPS Technologies
+Malta/4kec
+Switch                      Function        Setting  Description
+--------------------------------------------------------------------------------
+S2-1 thru S2-8                              OFF      User defined input
+S3                          Reset                    Reset button
+S4                          NMI/Power ON             Hold > 4 seconds to shut
+                                                     down power supply
+S5-1                        Program Enable  either   ON=Flash Programming
+                                                     Enabled OFF=Run
+S5-2                        Endian Mode     ON       ON=Big Endian OFF=Little
+                                                     Endian
+
+  Jumpers
+     The following jumpers are relevant to VxWorks configuration. Consult the
+     hardware manual for jumper configuration details.
+
+MIPS Technologies Malta/4kec
+Jumper                        Function   Setting  Description
+--------------------------------------------------------------------------------
+JP1                           MFWR       OUT      Enables writing to the Monitor
+                                                  Flash Lock Bits
+JP2                           EEWR

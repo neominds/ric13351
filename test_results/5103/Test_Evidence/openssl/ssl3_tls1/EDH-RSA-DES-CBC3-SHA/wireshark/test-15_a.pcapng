@@ -1,0 +1,23 @@
+#pragma once
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void CopyPStrToCStr(const unsigned char *thePStr,char *theCStr,const int maxCStrLength);
+void CopyPStrToPStr(const unsigned char *theSrcPStr,unsigned char *theDstPStr,const int maxDstStrLength);
+void CopyCStrToCStr(const char *theSrcCStr,char *theDstCStr,const int maxDstStrLength);
+void CopyCStrToPStr(const char *theSrcCStr,unsigned char *theDstPStr,const int maxDstStrLength);
+void ConcatPStrToCStr(const unsigned char *thePStr,char *theCStr,const int maxCStrLength);
+void ConcatPStrToPStr(const unsigned char *theSrcPStr,unsigned char *theDstPStr,const int maxDstStrLength);
+void ConcatCStrToPStr(const char *theSrcCStr,unsigned char *theDstPStr,const int maxDstStrLength);
+void ConcatCStrToCStr(const char *theSrcCStr,char *theDstCStr,const int maxCStrLength);
+
+void ConcatCharToCStr(const char theChar,char *theDstCStr,const int maxCStrLength);
+void ConcatCharToPStr(const char theChar,unsigned char *theDstPStr,const int maxPStrLength);
+
+int ComparePStrs(const unsigned char *theFirstPStr,const unsigned char *theSecondPStr,const Boolean ignoreCase = true);
+int CompareCStrs(const char *theFirstCStr,const char *theSecondCStr,const Boolean ignoreCase = true);
+int CompareCStrToPStr(const char *theCStr,const unsigned char *thePStr,const Boolean ignoreCase = true);
+
+Boolean CStrsAreEqual(const char 

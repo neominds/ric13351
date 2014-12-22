@@ -1,0 +1,97 @@
+y(X509 **xret, char *infile,EVP_PKEY *pkey,X509 *x509,
+		   const EVP_MD *dgst,STACK_OF(CONF_VALUE) *policy,CA_DB *db,
+		   BIGNUM *serial, char *subj,unsigned long chtype, int multirdn, int email_dn, char *startdate,
+		   char *enddate, long days, int batch, char *ext_sect, CONF *conf,
+		   int verbose, unsigned long certopt, unsigned long nameopt,
+		   int default_op, int ext_copy, int selfsign);
+static int certify_cert(X509 **xret, char *infile,EVP_PKEY *pkey,X509 *x509,
+			const EVP_MD *dgst,STACK_OF(CONF_VALUE) *policy,
+			CA_DB *db, BIGNUM *serial, char *subj,unsigned long chtype, int multirdn, int email_dn,
+			char *startdate, char *enddate, long days, int batch,
+			char *ext_sect, CONF *conf,int verbose, unsigned long certopt,
+			unsigned long nameopt, int default_op, int ext_copy,
+			ENGINE *e);
+static int certify_spkac(X509 **xret, char *infile,EVP_PKEY *pkey,X509 *x509,
+			 const EVP_MD *dgst,STACK_OF(CONF_VALUE) *policy,
+			 CA_DB *db, BIGNUM *serial,char *subj,unsigned long chtype, int multirdn, int email_dn,
+			 char *startdate, char *enddate, long days, char *ext_sect,
+			 CONF *conf, int verbose, unsigned long certopt, 
+			 unsigned long nameopt, int default_op, int ext_copy);
+static void write_new_certificate(BIO *bp, X509 *x, int output_der, int notext);
+static int do_body(X509 **xret, EVP_PKEY *pkey, X509 *x509, const EVP_MD *dgst,
+	STACK_OF(CONF_VALUE) *policy, CA_DB *db, BIGNUM *serial,char *subj,unsigned long chtype, int multirdn,
+	int email_dn, char *startdate, char *enddate, long days, int batch,
+       	int verbose, X509_REQ *req, char *ext_sect, CONF *conf,
+	unsigned long certopt, unsigned long nameopt, int default_op,
+	int ext_copy, int selfsign);
+static int do_revoke(X509 *x509, CA_DB *db, int ext, char *extval);
+static int get_certificate_status(const char *ser_status, CA_DB *db);
+static int do_updatedb(CA_DB *db);
+static int check_time_format(const char *str);
+char *make_revocation_str(int rev_type, char *rev_arg);
+int make_revoked(X509_REVOKED *rev, const char *str);
+int old_entry_print(BIO *bp, ASN1_OBJECT *obj, ASN1_STRING *str);
+static CONF *conf=NULL;
+static CONF *extconf=NULL;
+static char *section=NULL;
+
+static int preserve=0;
+static int msie_hack=0;
+
+
+int MAIN(int, char **);
+
+int MAIN(int argc, char **argv)
+	{
+	ENGINE *e = NULL;
+	char *key=NULL,*passargin=NULL;
+	int create_ser = 0;
+	int free_key = 0;
+	int total=0;
+	int total_done=0;
+	int badops=0;
+	int ret=1;
+	int email_dn=1;
+	int req=0;
+	int verbose=0;
+	int gencrl=0;
+	int dorevoke=0;
+	int doupdatedb=0;
+	long crldays=0;
+	long crlhours=0;
+	long errorline= -1;
+	char *configfile=NULL;
+	char *md=NULL;
+	char *policy=NULL;
+	char *keyfile=NULL;
+	char *certfile=NULL;
+	int keyform=FORMAT_PEM;
+	char *infile=NULL;
+	char *spkac_file=NULL;
+	char *ss_cert_file=NULL;
+	char *ser_status=NULL;
+	EVP_PKEY *pkey=NULL;
+	int output_der = 0;
+	char *outfile=NULL;
+	char *outdir=NULL;
+	char *serialfile=NULL;
+	char *crlnumberfile=NULL;
+	char *extensions=NULL;
+	char *extfile=NULL;
+	char *subj=NULL;
+	unsigned long chtype = MBSTRING_ASC;
+	int multirdn = 0;
+	char *tmp_email_dn=NULL;
+	char *crl_ext=NULL;
+	int rev_type = REV_NONE;
+	char *rev_arg = NULL;
+	BIGNUM *serial=NULL;
+	BIGNUM *crlnumber=NULL;
+	char *startdate=NULL;
+	char *enddate=NULL;
+	long days=0;
+	int batch=0;
+	int notext=0;
+	unsigned long nameopt = 0, certopt = 0;
+	int default_op = 1;
+	int ext

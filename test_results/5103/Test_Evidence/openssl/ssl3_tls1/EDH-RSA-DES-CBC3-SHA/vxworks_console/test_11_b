@@ -1,0 +1,78 @@
+$! MKSHARED.COM -- script to created shareable images on VMS
+$!
+$! No command line parameters.  This should be run at the start of the source
+$! tree (the same directory where one finds INSTALL.VMS).
+$!
+$! Input:	[.UTIL]LIBEAY.NUM,[.xxx.EXE.CRYPTO]LIBCRYPTO.OLB
+$!		[.UTIL]SSLEAY.NUM,[.xxx.EXE.SSL]LIBSSL.OLB
+$! Output:	[.xxx.EXE.CRYPTO]LIBCRYPTO.OPT,.MAP,.EXE
+$!		[.xxx.EXE.SSL]LIBSSL.OPT,.MAP,.EXE
+$!
+$! So far, tests have only been made on VMS for Alpha.  VAX will come in time.
+$! ===========================================================================
+$
+$! ----- Prepare info for processing: version number and file info
+$ gosub read_version_info
+$ if libver .eqs. ""
+$ then
+$   write sys$error "ERROR: Couldn't find any library version info..."
+$   exit
+$ endif
+$
+$ if (f$getsyi("cpu").lt.128)
+$ then
+$     arch := VAX
+$ else
+$     arch = f$edit( f$getsyi( "ARCH_NAME"), "UPCASE")
+$     if (arch .eqs. "") then arch = "UNK"
+$ endif
+$
+$ if arch .nes. "VAX"
+$ then
+$   arch_vax = 0
+$   libid  = "Crypto"
+$   libnum = "[.UTIL]LIBEAY.NUM"
+$   libdir = "[.''ARCH'.EXE.CRYPTO]"
+$   libolb = "''libdir'LIBCRYPTO.OLB"
+$   libopt = "''libdir'LIBCRYPTO.OPT"
+$   libmap = "''libdir'LIBCRYPTO.MAP"
+$   libgoal= "''libdir'LIBCRYPTO.EXE"
+$   libref = ""
+$   gosub create_nonvax_shr
+$   libid  = "SSL"
+$   libnum = "[.UTIL]SSLEAY.NUM"
+$   libdir = "[.''ARCH'.EXE.SSL]"
+$   libolb = "''libdir'LIBSSL.OLB"
+$   libopt = "''libdir'LIBSSL.OPT"
+$   libmap = "''libdir'LIBSSL.MAP"
+$   libgoal= "''libdir'LIBSSL.EXE"
+$   libref = "[.''ARCH'.EXE.CRYPTO]LIBCRYPTO.EXE"
+$   gosub create_nonvax_shr
+$ else
+$   arch_vax = 1
+$   libtit = "CRYPTO_TRANSFER_VECTOR"
+$   libid  = "Crypto"
+$   libnum = "[.UTIL]LIBEAY.NUM"
+$   libdir = "[.''ARCH'.EXE.CRYPTO]"
+$   libmar = "''libdir'LIBCRYPTO.MAR"
+$   libolb = "''libdir'LIBCRYPTO.OLB"
+$   libopt = "''libdir'LIBCRYPTO.OPT"
+$   libobj = "''libdir'LIBCRYPTO.OBJ"
+$   libmap = "''libdir'LIBCRYPTO.MAP"
+$   libgoal= "''libdir'LIBCRYPTO.EXE"
+$   libref = ""
+$   libvec = "LIBCRYPTO"
+$   gosub create_vax_shr
+$   libtit = "SSL_TRANSFER_VECTOR"
+$   libid  = "SSL"
+$   libnum = "[.UTIL]SSLEAY.NUM"
+$   libdir = "[.''ARCH'.EXE.SSL]"
+$   libmar = "''libdir'LIBSSL.MAR"
+$   libolb = "''libdir'LIBSSL.OLB"
+$   libopt = "''libdir'LIBSSL.OPT"
+$   libobj = "''libdir'LIBSSL.OBJ"
+$   libmap = "''libdir'LIBSSL.MAP"
+$   libgoal= "''libdir'LIBSSL.EXE"
+$   libref = "[.''ARCH'.EXE.CRYPTO]LIBCRYPTO.EXE"
+$   libvec = "LIBSSL"
+$   gosub crea

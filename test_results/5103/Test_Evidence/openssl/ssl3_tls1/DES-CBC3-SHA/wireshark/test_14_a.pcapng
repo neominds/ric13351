@@ -1,0 +1,99 @@
+ENGINE *e, const STORE_METHOD *rand_meth);
+ int ENGINE_set_destroy_function(ENGINE *e, ENGINE_GEN_INT_FUNC_PTR destroy_f);
+ int ENGINE_set_init_function(ENGINE *e, ENGINE_GEN_INT_FUNC_PTR init_f);
+ int ENGINE_set_finish_function(ENGINE *e, ENGINE_GEN_INT_FUNC_PTR finish_f);
+ int ENGINE_set_ctrl_function(ENGINE *e, ENGINE_CTRL_FUNC_PTR ctrl_f);
+ int ENGINE_set_load_privkey_function(ENGINE *e, ENGINE_LOAD_KEY_PTR loadpriv_f);
+ int ENGINE_set_load_pubkey_function(ENGINE *e, ENGINE_LOAD_KEY_PTR loadpub_f);
+ int ENGINE_set_ciphers(ENGINE *e, ENGINE_CIPHERS_PTR f);
+ int ENGINE_set_digests(ENGINE *e, ENGINE_DIGESTS_PTR f);
+ int ENGINE_set_flags(ENGINE *e, int flags);
+ int ENGINE_set_cmd_defns(ENGINE *e, const ENGINE_CMD_DEFN *defns);
+
+ const char *ENGINE_get_id(const ENGINE *e);
+ const char *ENGINE_get_name(const ENGINE *e);
+ const RSA_METHOD *ENGINE_get_RSA(const ENGINE *e);
+ const DSA_METHOD *ENGINE_get_DSA(const ENGINE *e);
+ const ECDH_METHOD *ENGINE_get_ECDH(const ENGINE *e);
+ const ECDSA_METHOD *ENGINE_get_ECDSA(const ENGINE *e);
+ const DH_METHOD *ENGINE_get_DH(const ENGINE *e);
+ const RAND_METHOD *ENGINE_get_RAND(const ENGINE *e);
+ const STORE_METHOD *ENGINE_get_STORE(const ENGINE *e);
+ ENGINE_GEN_INT_FUNC_PTR ENGINE_get_destroy_function(const ENGINE *e);
+ ENGINE_GEN_INT_FUNC_PTR ENGINE_get_init_function(const ENGINE *e);
+ ENGINE_GEN_INT_FUNC_PTR ENGINE_get_finish_function(const ENGINE *e);
+ ENGINE_CTRL_FUNC_PTR ENGINE_get_ctrl_function(const ENGINE *e);
+ ENGINE_LOAD_KEY_PTR ENGINE_get_load_privkey_function(const ENGINE *e);
+ ENGINE_LOAD_KEY_PTR ENGINE_get_load_pubkey_function(const ENGINE *e);
+ ENGINE_CIPHERS_PTR ENGINE_get_ciphers(const ENGINE *e);
+ ENGINE_DIGESTS_PTR ENGINE_get_digests(const ENGINE *e);
+ const EVP_CIPHER *ENGINE_get_cipher(ENGINE *e, int nid);
+ const EVP_MD *ENGINE_get_digest(ENGINE *e, int nid);
+ int ENGINE_get_flags(const ENGINE *e);
+ const ENGINE_CMD_DEFN *ENGINE_get_cmd_defns(const ENGINE *e);
+
+ EVP_PKEY *ENGINE_load_private_key(ENGINE *e, const char *key_id,
+     UI_METHOD *ui_method, void *callback_data);
+ EVP_PKEY *ENGINE_load_public_key(ENGINE *e, const char *key_id,
+     UI_METHOD *ui_method, void *callback_data);
+
+ void ENGINE_add_conf_module(void);
+
+=head1 DESCRIPTION
+
+These functions create, manipulate, and use cryptographic modules in the
+form of B<ENGINE> objects. These objects act as containers for
+implementations of cryptographic algorithms, and support a
+reference-counted mechanism to allow them to be dynamically loaded in and
+out of the running application.
+
+The cryptographic functionality that can be provided by an B<ENGINE>
+implementation includes the following abstractions;
+
+ RSA_METHOD - for providing alternative RSA implementations
+ DSA_METHOD, DH_METHOD, RAND_METHOD, ECDH_METHOD, ECDSA_METHOD,
+       STORE_METHOD - similarly for other OpenSSL APIs
+ EVP_CIPHER - potentially multiple cipher algorithms (indexed by 'nid')
+ EVP_DIGEST - potentially multiple hash algorithms (indexed by 'nid')
+ key-loading - loading public and/or private EVP_PKEY keys
+
+=head2 Reference counting and handles
+
+Due to the modular nature of the ENGINE API, pointers to ENGINEs need to be
+treated as handles - ie. not only as pointers, but also as references to
+the underlying ENGINE object. Ie. one should obtain a new reference when
+making copies of an ENGINE pointer if the copies will be used (and
+released) independently.
+
+ENGINE objects have two levels of reference-counting to match the way in
+which the objects are used. At the most basic level, each ENGINE pointer is
+inherently a B<structural> reference - a structural reference is required
+to use the pointer value at all, as this kind of reference is a guarantee
+that the structure can not be deallocated until the reference is released.
+
+However, a structural reference provides no guarantee that the ENGINE is
+initiliased and able to use any of its cryptographic
+implementations. Indeed it's quite possible that most ENGINEs will not
+initialise at all in typical environments, as ENGINEs are typically used to
+support specialised hardware. To use an ENGINE's functionality, you need a
+B<functional> reference. This kind of reference can be considered a
+specialised form of structural reference, because each functional reference
+implicitly contains a structural reference as well - however to avoid
+difficult-to-find programming bugs, it is recommended to treat the two
+kinds of reference independently. If you have a functional reference to an
+ENGINE, you have a guarantee that the ENGINE has been initialised ready to
+perform cryptographic operations and will remain uninitialised
+until after you have released your reference.
+
+I<Structural references>
+
+This basic type of reference is used for instantiating new ENGINEs,
+iterating across OpenSSL's internal linked-list of loaded
+ENGINEs, reading information about an ENGINE, etc. Essentially a structural
+reference is sufficient if you only need to query or manipulate the data of
+an ENGINE implementation rather than use its functionality.
+
+The ENGINE_new() function returns a structural reference to a new (empty)
+ENGINE object. There are other ENGINE API functions that return structural
+references such as; ENGINE_by_id(), ENGINE_get_first(), ENGINE_get_last(),
+ENGINE_g

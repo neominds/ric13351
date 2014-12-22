@@ -1,0 +1,115 @@
+rbose=0;
+	int ret=1,inl;
+	int nopad = 0;
+	unsigned char key[EVP_MAX_KEY_LENGTH],iv[EVP_MAX_IV_LENGTH];
+	unsigned char salt[PKCS5_SALT_LEN];
+	char *str=NULL, *passarg = NULL, *pass = NULL;
+	char *hkey=NULL,*hiv=NULL,*hsalt = NULL;
+	char *md=NULL;
+	int enc=1,printkey=0,i,base64=0;
+	int debug=0,olb64=0,nosalt=0;
+	const EVP_CIPHER *cipher=NULL,*c;
+	EVP_CIPHER_CTX *ctx = NULL;
+	char *inf=NULL,*outf=NULL;
+	BIO *in=NULL,*out=NULL,*b64=NULL,*benc=NULL,*rbio=NULL,*wbio=NULL;
+#define PROG_NAME_SIZE  39
+	char pname[PROG_NAME_SIZE+1];
+#ifndef OPENSSL_NO_ENGINE
+	char *engine = NULL;
+#endif
+	const EVP_MD *dgst=NULL;
+	int non_fips_allow = 0;
+
+	apps_startup();
+
+	if (bio_err == NULL)
+		if ((bio_err=BIO_new(BIO_s_file())) != NULL)
+			BIO_set_fp(bio_err,stderr,BIO_NOCLOSE|BIO_FP_TEXT);
+
+	if (!load_config(bio_err, NULL))
+		goto end;
+
+	/* first check the program name */
+	program_name(argv[0],pname,sizeof pname);
+	if (strcmp(pname,"base64") == 0)
+		base64=1;
+
+	cipher=EVP_get_cipherbyname(pname);
+	if (!base64 && (cipher == NULL) && (strcmp(pname,"enc") != 0))
+		{
+		BIO_printf(bio_err,"%s is an unknown cipher\n",pname);
+		goto bad;
+		}
+
+	argc--;
+	argv++;
+	while (argc >= 1)
+		{
+		if	(strcmp(*argv,"-e") == 0)
+			enc=1;
+		else if (strcmp(*argv,"-in") == 0)
+			{
+			if (--argc < 1) goto bad;
+			inf= *(++argv);
+			}
+		else if (strcmp(*argv,"-out") == 0)
+			{
+			if (--argc < 1) goto bad;
+			outf= *(++argv);
+			}
+		else if (strcmp(*argv,"-pass") == 0)
+			{
+			if (--argc < 1) goto bad;
+			passarg= *(++argv);
+			}
+#ifndef OPENSSL_NO_ENGINE
+		else if (strcmp(*argv,"-engine") == 0)
+			{
+			if (--argc < 1) goto bad;
+			engine= *(++argv);
+			}
+#endif
+		else if	(strcmp(*argv,"-d") == 0)
+			enc=0;
+		else if	(strcmp(*argv,"-p") == 0)
+			printkey=1;
+		else if	(strcmp(*argv,"-v") == 0)
+			verbose=1;
+		else if	(strcmp(*argv,"-nopad") == 0)
+			nopad=1;
+		else if	(strcmp(*argv,"-salt") == 0)
+			nosalt=0;
+		else if	(strcmp(*argv,"-nosalt") == 0)
+			nosalt=1;
+		else if	(strcmp(*argv,"-debug") == 0)
+			debug=1;
+		else if	(strcmp(*argv,"-P") == 0)
+			printkey=2;
+		else if	(strcmp(*argv,"-A") == 0)
+			olb64=1;
+		else if	(strcmp(*argv,"-a") == 0)
+			base64=1;
+		else if	(strcmp(*argv,"-base64") == 0)
+			base64=1;
+		else if (strcmp(*argv,"-bufsize") == 0)
+			{
+			if (--argc < 1) goto bad;
+			bufsize=(unsigned char *)*(++argv);
+			}
+		else if (strcmp(*argv,"-k") == 0)
+			{
+			if (--argc < 1) goto bad;
+			str= *(++argv);
+			}
+		else if (strcmp(*argv,"-kfile") == 0)
+			{
+			static char buf[128];
+			FILE *infile;
+			char *file;
+
+			if (--argc < 1) goto bad;
+			file= *(++argv);
+			infile=fopen(file,"r");
+			if (infile == NULL)
+				{
+				BIO_prin

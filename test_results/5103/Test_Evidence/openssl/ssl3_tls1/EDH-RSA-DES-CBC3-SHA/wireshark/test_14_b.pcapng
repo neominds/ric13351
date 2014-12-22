@@ -1,0 +1,113 @@
+L BIOs are exceptional in that if the underlying transport
+is non blocking they can still request a retry in exceptional
+circumstances. Specifically this will happen if a session
+renegotiation takes place during a BIO_read() operation, one
+case where this happens is when SGC or step up occurs.
+
+In OpenSSL 0.9.6 and later the SSL flag SSL_AUTO_RETRY can be
+set to disable this behaviour. That is when this flag is set
+an SSL BIO using a blocking transport will never request a
+retry.
+
+Since unknown BIO_ctrl() operations are sent through filter
+BIOs the servers name and port can be set using BIO_set_host()
+on the BIO returned by BIO_new_ssl_connect() without having
+to locate the connect BIO first.
+
+Applications do not have to call BIO_do_handshake() but may wish
+to do so to separate the handshake process from other I/O
+processing.
+
+=head1 RETURN VALUES
+
+TBA
+
+=head1 EXAMPLE
+
+This SSL/TLS client example, attempts to retrieve a page from an
+SSL/TLS web server. The I/O routines are identical to those of the
+unencrypted example in L<BIO_s_connect(3)|BIO_s_connect(3)>.
+
+ BIO *sbio, *out;
+ int len;
+ char tmpbuf[1024];
+ SSL_CTX *ctx;
+ SSL *ssl;
+
+ ERR_load_crypto_strings();
+ ERR_load_SSL_strings();
+ OpenSSL_add_all_algorithms();
+
+ /* We would seed the PRNG here if the platform didn't
+  * do it automatically
+  */
+
+ ctx = SSL_CTX_new(SSLv23_client_method());
+
+ /* We'd normally set some stuff like the verify paths and
+  * mode here because as things stand this will connect to
+  * any server whose certificate is signed by any CA.
+  */
+
+ sbio = BIO_new_ssl_connect(ctx);
+
+ BIO_get_ssl(sbio, &ssl);
+
+ if(!ssl) {
+   fprintf(stderr, "Can't locate SSL pointer\n");
+   /* whatever ... */
+ }
+
+ /* Don't want any retries */
+ SSL_set_mode(ssl, SSL_MODE_AUTO_RETRY);
+
+ /* We might want to do other things with ssl here */
+
+ BIO_set_conn_hostname(sbio, "localhost:https");
+
+ out = BIO_new_fp(stdout, BIO_NOCLOSE);
+ if(BIO_do_connect(sbio) <= 0) {
+	fprintf(stderr, "Error connecting to server\n");
+	ERR_print_errors_fp(stderr);
+	/* whatever ... */
+ }
+
+ if(BIO_do_handshake(sbio) <= 0) {
+	fprintf(stderr, "Error establishing SSL connection\n");
+	ERR_print_errors_fp(stderr);
+	/* whatever ... */
+ }
+
+ /* Could examine ssl here to get connection info */
+
+ BIO_puts(sbio, "GET / HTTP/1.0\n\n");
+ for(;;) {	
+	len = BIO_read(sbio, tmpbuf, 1024);
+	if(len <= 0) break;
+	BIO_write(out, tmpbuf, len);
+ }
+ BIO_free_all(sbio);
+ BIO_free(out);
+
+Here is a simple server example. It makes use of a buffering
+BIO to allow lines to be read from the SSL BIO using BIO_gets.
+It creates a pseudo web page containing the actual request from
+a client and also echoes the request to standard output.
+
+ BIO *sbio, *bbio, *acpt, *out;
+ int len;
+ char tmpbuf[1024];
+ SSL_CTX *ctx;
+ SSL *ssl;
+
+ ERR_load_crypto_strings();
+ ERR_load_SSL_strings();
+ OpenSSL_add_all_algorithms();
+
+ /* Might seed PRNG here */
+
+ ctx = SSL_CTX_new(SSLv23_server_method());
+
+ if (!SSL_CTX_use_certificate_file(ctx,"server.pem",SSL_FILETYPE_PEM)
+	|| !SSL_CTX_use_PrivateKey_file(ctx,"server.pem",SSL_FILETYPE_PEM)
+	|| 

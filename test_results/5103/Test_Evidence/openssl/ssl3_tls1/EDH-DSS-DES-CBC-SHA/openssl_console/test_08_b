@@ -1,0 +1,3 @@
+neominds@neominds-Vostro-1200:~/openssl-0.9.8zc$ ./apps/openssl s_client -connect 10.10.10.99:443 -cipher EDH-DSS-DES-CBC-SHA -tls1
+CONNECTED(00000003)
+4549:error:1408F10B:SSL routines:SSL3_GET_RECORD:wrong version number:s3_pkt.c:298:

@@ -1,0 +1,126 @@
+put a public key\n");
+#ifndef OPENSSL_NO_ENGINE
+		BIO_printf(bio_err," -engine e       use engine e, possibly a hardware device.\n");
+#endif
+		goto end;
+		}
+
+	ERR_load_crypto_strings();
+
+#ifndef OPENSSL_NO_ENGINE
+        e = setup_engine(bio_err, engine, 0);
+#endif
+
+	if(!app_passwd(bio_err, passargin, passargout, &passin, &passout)) {
+		BIO_printf(bio_err, "Error getting passwords\n");
+		goto end;
+	}
+
+	if(check && pubin) {
+		BIO_printf(bio_err, "Only private keys can be checked\n");
+		goto end;
+	}
+
+	out=BIO_new(BIO_s_file());
+
+	{
+		EVP_PKEY	*pkey;
+
+		if (pubin)
+			pkey = load_pubkey(bio_err, infile,
+				(informat == FORMAT_NETSCAPE && sgckey ?
+					FORMAT_IISSGC : informat), 1,
+				passin, e, "Public Key");
+		else
+			pkey = load_key(bio_err, infile,
+				(informat == FORMAT_NETSCAPE && sgckey ?
+					FORMAT_IISSGC : informat), 1,
+				passin, e, "Private Key");
+
+		if (pkey != NULL)
+		rsa = pkey == NULL ? NULL : EVP_PKEY_get1_RSA(pkey);
+		EVP_PKEY_free(pkey);
+	}
+
+	if (rsa == NULL)
+		{
+		ERR_print_errors(bio_err);
+		goto end;
+		}
+
+	if (outfile == NULL)
+		{
+		BIO_set_fp(out,stdout,BIO_NOCLOSE);
+#ifdef OPENSSL_SYS_VMS
+		{
+		BIO *tmpbio = BIO_new(BIO_f_linebuffer());
+		out = BIO_push(tmpbio, out);
+		}
+#endif
+		}
+	else
+		{
+		if (BIO_write_filename(out,outfile) <= 0)
+			{
+			perror(outfile);
+			goto end;
+			}
+		}
+
+	if (text) 
+		if (!RSA_print(out,rsa,0))
+			{
+			perror(outfile);
+			ERR_print_errors(bio_err);
+			goto end;
+			}
+
+	if (modulus)
+		{
+		BIO_printf(out,"Modulus=");
+		BN_print(out,rsa->n);
+		BIO_printf(out,"\n");
+		}
+
+	if (check)
+		{
+		int r = RSA_check_key(rsa);
+
+		if (r == 1)
+			BIO_printf(out,"RSA key ok\n");
+		else if (r == 0)
+			{
+			unsigned long err;
+
+			while ((err = ERR_peek_error()) != 0 &&
+				ERR_GET_LIB(err) == ERR_LIB_RSA &&
+				ERR_GET_FUNC(err) == RSA_F_RSA_CHECK_KEY &&
+				ERR_GET_REASON(err) != ERR_R_MALLOC_FAILURE)
+				{
+				BIO_printf(out, "RSA key error: %s\n", ERR_reason_error_string(err));
+				ERR_get_error(); /* remove e from error stack */
+				}
+			}
+		
+		if (r == -1 || ERR_peek_error() != 0) /* should happen only if r == -1 */
+			{
+			ERR_print_errors(bio_err);
+			goto end;
+			}
+		}
+		
+	if (noout)
+		{
+		ret = 0;
+		goto end;
+		}
+	BIO_printf(bio_err,"writing RSA key\n");
+	if 	(outformat == FORMAT_ASN1) {
+		if(pubout || pubin) i=i2d_RSA_PUBKEY_bio(out,rsa);
+		else i=i2d_RSAPrivateKey_bio(out,rsa);
+	}
+#ifndef OPENSSL_NO_RC4
+	else if (outformat == FORMAT_NETSCAPE)
+		{
+		unsigned char *p,*pp;
+		int s

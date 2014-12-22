@@ -1,0 +1,87 @@
+ey       create hashed MAC with key\n");
+#ifndef OPENSSL_NO_ENGINE
+		BIO_printf(bio_err,"-engine e       use engine e, possibly a hardware device.\n");
+#endif
+
+		BIO_printf(bio_err,"-%-14s to use the %s message digest algorithm (default)\n",
+			LN_md5,LN_md5);
+		BIO_printf(bio_err,"-%-14s to use the %s message digest algorithm\n",
+			LN_md4,LN_md4);
+		BIO_printf(bio_err,"-%-14s to use the %s message digest algorithm\n",
+			LN_md2,LN_md2);
+#ifndef OPENSSL_NO_SHA
+		BIO_printf(bio_err,"-%-14s to use the %s message digest algorithm\n",
+			LN_sha1,LN_sha1);
+		BIO_printf(bio_err,"-%-14s to use the %s message digest algorithm\n",
+			LN_sha,LN_sha);
+#ifndef OPENSSL_NO_SHA256
+		BIO_printf(bio_err,"-%-14s to use the %s message digest algorithm\n",
+			LN_sha224,LN_sha224);
+		BIO_printf(bio_err,"-%-14s to use the %s message digest algorithm\n",
+			LN_sha256,LN_sha256);
+#endif
+#ifndef OPENSSL_NO_SHA512
+		BIO_printf(bio_err,"-%-14s to use the %s message digest algorithm\n",
+			LN_sha384,LN_sha384);
+		BIO_printf(bio_err,"-%-14s to use the %s message digest algorithm\n",
+			LN_sha512,LN_sha512);
+#endif
+#endif
+		BIO_printf(bio_err,"-%-14s to use the %s message digest algorithm\n",
+			LN_mdc2,LN_mdc2);
+		BIO_printf(bio_err,"-%-14s to use the %s message digest algorithm\n",
+			LN_ripemd160,LN_ripemd160);
+		err=1;
+		goto end;
+		}
+
+#ifndef OPENSSL_NO_ENGINE
+        e = setup_engine(bio_err, engine, 0);
+#endif
+
+	in=BIO_new(BIO_s_file());
+	bmd=BIO_new(BIO_f_md());
+	if (debug)
+		{
+		BIO_set_callback(in,BIO_debug_callback);
+		/* needed for windows 3.1 */
+		BIO_set_callback_arg(in,(char *)bio_err);
+		}
+
+	if(!app_passwd(bio_err, passargin, NULL, &passin, NULL))
+		{
+		BIO_printf(bio_err, "Error getting password\n");
+		goto end;
+		}
+
+	if ((in == NULL) || (bmd == NULL))
+		{
+		ERR_print_errors(bio_err);
+		goto end;
+		}
+
+	if(out_bin == -1) {
+		if(keyfile) out_bin = 1;
+		else out_bin = 0;
+	}
+
+	if(randfile)
+		app_RAND_load_file(randfile, bio_err, 0);
+
+	if(outfile) {
+		if(out_bin)
+			out = BIO_new_file(outfile, "wb");
+		else    out = BIO_new_file(outfile, "w");
+	} else {
+		out = BIO_new_fp(stdout, BIO_NOCLOSE);
+#ifdef OPENSSL_SYS_VMS
+		{
+		BIO *tmpbio = BIO_new(BIO_f_linebuffer());
+		out = BIO_push(tmpbio, out);
+		}
+#endif
+	}
+
+	if(!out) {
+		BIO_printf(bio_err, "Error opening output file %s\n", 
+					outfile ? outf

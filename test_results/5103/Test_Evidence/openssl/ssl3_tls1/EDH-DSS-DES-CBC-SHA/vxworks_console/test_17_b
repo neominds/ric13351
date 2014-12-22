@@ -1,0 +1,120 @@
+out = 0, dump = 0;
+	char *infile=NULL,*str=NULL,*prog,*oidfile=NULL, *derfile=NULL;
+	char *genstr=NULL, *genconf=NULL;
+	unsigned char *tmpbuf;
+	const unsigned char *ctmpbuf;
+	BUF_MEM *buf=NULL;
+	STACK *osk=NULL;
+	ASN1_TYPE *at=NULL;
+
+	informat=FORMAT_PEM;
+
+	apps_startup();
+
+	if (bio_err == NULL)
+		if ((bio_err=BIO_new(BIO_s_file())) != NULL)
+			BIO_set_fp(bio_err,stderr,BIO_NOCLOSE|BIO_FP_TEXT);
+
+	if (!load_config(bio_err, NULL))
+		goto end;
+
+	prog=argv[0];
+	argc--;
+	argv++;
+	if ((osk=sk_new_null()) == NULL)
+		{
+		BIO_printf(bio_err,"Memory allocation failure\n");
+		goto end;
+		}
+	while (argc >= 1)
+		{
+		if 	(strcmp(*argv,"-inform") == 0)
+			{
+			if (--argc < 1) goto bad;
+			informat=str2fmt(*(++argv));
+			}
+		else if (strcmp(*argv,"-in") == 0)
+			{
+			if (--argc < 1) goto bad;
+			infile= *(++argv);
+			}
+		else if (strcmp(*argv,"-out") == 0)
+			{
+			if (--argc < 1) goto bad;
+			derfile= *(++argv);
+			}
+		else if (strcmp(*argv,"-i") == 0)
+			{
+			indent=1;
+			}
+		else if (strcmp(*argv,"-noout") == 0) noout = 1;
+		else if (strcmp(*argv,"-oid") == 0)
+			{
+			if (--argc < 1) goto bad;
+			oidfile= *(++argv);
+			}
+		else if (strcmp(*argv,"-offset") == 0)
+			{
+			if (--argc < 1) goto bad;
+			offset= atoi(*(++argv));
+			}
+		else if (strcmp(*argv,"-length") == 0)
+			{
+			if (--argc < 1) goto bad;
+			length= atoi(*(++argv));
+			if (length == 0) goto bad;
+			}
+		else if (strcmp(*argv,"-dump") == 0)
+			{
+			dump= -1;
+			}
+		else if (strcmp(*argv,"-dlimit") == 0)
+			{
+			if (--argc < 1) goto bad;
+			dump= atoi(*(++argv));
+			if (dump <= 0) goto bad;
+			}
+		else if (strcmp(*argv,"-strparse") == 0)
+			{
+			if (--argc < 1) goto bad;
+			sk_push(osk,*(++argv));
+			}
+		else if (strcmp(*argv,"-genstr") == 0)
+			{
+			if (--argc < 1) goto bad;
+			genstr= *(++argv);
+			}
+		else if (strcmp(*argv,"-genconf") == 0)
+			{
+			if (--argc < 1) goto bad;
+			genconf= *(++argv);
+			}
+		else
+			{
+			BIO_printf(bio_err,"unknown option %s\n",*argv);
+			badops=1;
+			break;
+			}
+		argc--;
+		argv++;
+		}
+
+	if (badops)
+		{
+bad:
+		BIO_printf(bio_err,"%s [options] <infile\n",prog);
+		BIO_printf(bio_err,"where options are\n");
+		BIO_printf(bio_err," -inform arg   input format - one of DER PEM\n");
+		BIO_printf(bio_err," -in arg       input file\n");
+		BIO_printf(bio_err," -out arg      output file (output format is always DER\n");
+		BIO_printf(bio_err," -noout arg    don't produce any output\n");
+		BIO_printf(bio_err," -offset arg   offset into file\n");
+		BIO_printf(bio_err," -length arg   length of section in file\n");
+		BIO_printf(bio_err," -i            indent entries\n");
+		BIO_printf(bio_err," -dump         dump unknown data in hex form\n");
+		BIO_printf(bio_err," -dlimit arg   dump the first arg bytes of unknown data in hex form\n");
+		BIO_printf(bio_err," -oid file     file of extra oid definitions\n");
+		BIO_printf(bio_err," -strparse offset\n");
+		BIO_printf(bio_err,"               a series of these can be used to 'dig' into multiple\n");
+		BIO_printf(bio_err,"               ASN1 blob wrappings\n");
+		BIO_printf(bio_err," -genstr str   string to generate ASN1 st

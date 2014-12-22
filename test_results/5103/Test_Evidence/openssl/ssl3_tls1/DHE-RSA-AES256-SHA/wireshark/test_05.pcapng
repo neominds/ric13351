@@ -1,0 +1,122 @@
+T_SMIME;
+        int keyform = FORMAT_PEM;
+#ifndef OPENSSL_NO_ENGINE
+	char *engine=NULL;
+#endif
+
+	X509_VERIFY_PARAM *vpm = NULL;
+
+	args = argv + 1;
+	ret = 1;
+
+	apps_startup();
+
+	if (bio_err == NULL)
+		{
+		if ((bio_err = BIO_new(BIO_s_file())) != NULL)
+			BIO_set_fp(bio_err, stderr, BIO_NOCLOSE|BIO_FP_TEXT);
+		}
+
+	if (!load_config(bio_err, NULL))
+		goto end;
+
+	while (!badarg && *args && *args[0] == '-')
+		{
+		if (!strcmp (*args, "-encrypt"))
+			operation = SMIME_ENCRYPT;
+		else if (!strcmp (*args, "-decrypt"))
+			operation = SMIME_DECRYPT;
+		else if (!strcmp (*args, "-sign"))
+			operation = SMIME_SIGN;
+		else if (!strcmp (*args, "-verify"))
+			operation = SMIME_VERIFY;
+		else if (!strcmp (*args, "-pk7out"))
+			operation = SMIME_PK7OUT;
+#ifndef OPENSSL_NO_DES
+		else if (!strcmp (*args, "-des3")) 
+				cipher = EVP_des_ede3_cbc();
+		else if (!strcmp (*args, "-des")) 
+				cipher = EVP_des_cbc();
+#endif
+#ifndef OPENSSL_NO_SEED
+		else if (!strcmp (*args, "-seed")) 
+				cipher = EVP_seed_cbc();
+#endif
+#ifndef OPENSSL_NO_RC2
+		else if (!strcmp (*args, "-rc2-40")) 
+				cipher = EVP_rc2_40_cbc();
+		else if (!strcmp (*args, "-rc2-128")) 
+				cipher = EVP_rc2_cbc();
+		else if (!strcmp (*args, "-rc2-64")) 
+				cipher = EVP_rc2_64_cbc();
+#endif
+#ifndef OPENSSL_NO_AES
+		else if (!strcmp(*args,"-aes128"))
+				cipher = EVP_aes_128_cbc();
+		else if (!strcmp(*args,"-aes192"))
+				cipher = EVP_aes_192_cbc();
+		else if (!strcmp(*args,"-aes256"))
+				cipher = EVP_aes_256_cbc();
+#endif
+#ifndef OPENSSL_NO_CAMELLIA
+		else if (!strcmp(*args,"-camellia128"))
+				cipher = EVP_camellia_128_cbc();
+		else if (!strcmp(*args,"-camellia192"))
+				cipher = EVP_camellia_192_cbc();
+		else if (!strcmp(*args,"-camellia256"))
+				cipher = EVP_camellia_256_cbc();
+#endif
+		else if (!strcmp (*args, "-text")) 
+				flags |= PKCS7_TEXT;
+		else if (!strcmp (*args, "-nointern")) 
+				flags |= PKCS7_NOINTERN;
+		else if (!strcmp (*args, "-noverify")) 
+				flags |= PKCS7_NOVERIFY;
+		else if (!strcmp (*args, "-nochain")) 
+				flags |= PKCS7_NOCHAIN;
+		else if (!strcmp (*args, "-nocerts")) 
+				flags |= PKCS7_NOCERTS;
+		else if (!strcmp (*args, "-noattr")) 
+				flags |= PKCS7_NOATTR;
+		else if (!strcmp (*args, "-nodetach")) 
+				flags &= ~PKCS7_DETACHED;
+		else if (!strcmp (*args, "-nosmimecap"))
+				flags |= PKCS7_NOSMIMECAP;
+		else if (!strcmp (*args, "-binary"))
+				flags |= PKCS7_BINARY;
+		else if (!strcmp (*args, "-nosigs"))
+				flags |= PKCS7_NOSIGS;
+		else if (!strcmp (*args, "-nooldmime"))
+				flags |= PKCS7_NOOLDMIMETYPE;
+		else if (!strcmp (*args, "-crlfeol"))
+				flags |= PKCS7_CRLFEOL;
+		else if (!strcmp(*args,"-rand"))
+			{
+			if (args[1])
+				{
+				args++;
+				inrand = *args;
+				}
+			else
+				badarg = 1;
+			need_rand = 1;
+			}
+#ifndef OPENSSL_NO_ENGINE
+		else if (!strcmp(*args,"-engine"))
+			{
+			if (args[1])
+				{
+				args++;
+				engine = *args;
+				}
+			else badarg = 1;
+			}
+#endif
+		else if (!strcmp(*args,"-passin"))
+			{
+			if (args[1])
+				{
+				args++;
+				passargin = *args;
+				}
+	

@@ -1,0 +1,159 @@
+eak;
+			}
+			
+			else
+			{
+				theDstCStr[i] = theSrcCStr[i];
+			}
+		}
+	}
+}
+
+
+
+void CopyCSubstrToCStr(const char *theSrcCStr,const int maxCharsToCopy,char *theDstCStr,const int maxDstStrLength)
+{
+int		i;
+
+
+	if (theDstCStr != nil && theSrcCStr != nil && maxDstStrLength > 0)
+	{
+		for (i = 0;;i++)
+		{
+			if (theSrcCStr[i] == 0 || i >= maxDstStrLength - 1 || i >= maxCharsToCopy)
+			{
+				theDstCStr[i] = 0;
+				
+				break;
+			}
+			
+			else
+			{
+				theDstCStr[i] = theSrcCStr[i];
+			}
+		}
+	}
+}
+
+
+
+void CopyCSubstrToPStr(const char *theSrcCStr,const int maxCharsToCopy,unsigned char *theDstPStr,const int maxDstStrLength)
+{
+int		i;
+int		theMaxDstStrLength;
+
+	
+	theMaxDstStrLength = maxDstStrLength;
+
+	if (theDstPStr != nil && theSrcCStr != nil && theMaxDstStrLength > 0)
+	{
+		if (theMaxDstStrLength > 255)
+		{
+			theMaxDstStrLength = 255;
+		}
+		
+		
+		for (i = 0;;i++)
+		{
+			if (theSrcCStr[i] == 0 || i >= theMaxDstStrLength - 1 || i >= maxCharsToCopy)
+			{
+				theDstPStr[0] = i;
+				
+				break;
+			}
+			
+			else
+			{
+				theDstPStr[i + 1] = theSrcCStr[i];
+			}
+		}
+	}
+}
+
+
+
+void CopyCStrToPStr(const char *theSrcCStr,unsigned char *theDstPStr,const int maxDstStrLength)
+{
+int		i;
+int		theMaxDstStrLength;
+
+	
+	theMaxDstStrLength = maxDstStrLength;
+
+	if (theDstPStr != nil && theSrcCStr != nil && theMaxDstStrLength > 0)
+	{
+		if (theMaxDstStrLength > 255)
+		{
+			theMaxDstStrLength = 255;
+		}
+		
+		
+		for (i = 0;;i++)
+		{
+			if (i >= theMaxDstStrLength - 1 || theSrcCStr[i] == 0)
+			{
+				theDstPStr[0] = i;
+				
+				break;
+			}
+			
+			else
+			{
+				theDstPStr[i + 1] = theSrcCStr[i];
+			}
+		}
+	}
+}
+
+
+void ConcatPStrToCStr(const unsigned char *thePStr,char *theCStr,const int maxCStrLength)
+{
+int		i,numPChars,cStrLength;
+
+
+	if (thePStr != nil && theCStr != nil && maxCStrLength > 0)
+	{
+		for (cStrLength = 0;theCStr[cStrLength] != 0;cStrLength++)
+		{
+		
+		}
+		
+
+		numPChars = thePStr[0];
+		
+		
+		for (i = 0;;i++)
+		{
+			if (i >= numPChars || cStrLength >= maxCStrLength - 1)
+			{
+				theCStr[cStrLength++] = 0;
+				
+				break;
+			}
+			
+			else
+			{
+				theCStr[cStrLength++] = thePStr[i + 1];
+			}
+		}
+	}
+}
+
+
+
+void ConcatPStrToPStr(const unsigned char *theSrcPStr,unsigned char *theDstPStr,const int maxDstStrLength)
+{
+int		theMaxDstStrLength;
+
+	
+	theMaxDstStrLength = maxDstStrLength;
+	
+	if (theSrcPStr != nil && theDstPStr != nil && theMaxDstStrLength > 0)
+	{
+		if (theMaxDstStrLength > 255)
+		{
+			theMaxDstStrLength = 255;
+		}
+		
+		
+		i

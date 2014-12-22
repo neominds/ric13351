@@ -1,0 +1,84 @@
+                        goto err;
+                                }
+                        /* Now decide on the output */
+                        if(xpos == 0)
+                                /* Do an indent */
+                                xpos = BIO_puts(bio_out, indent);
+                        else
+                                /* Otherwise prepend a ", " */
+                                xpos += BIO_printf(bio_out, ", ");
+                        if(verbose == 1)
+                                {
+                                /* We're just listing names, comma-delimited */
+                                if((xpos > (int)strlen(indent)) &&
+					(xpos + (int)strlen(name) > line_wrap))
+                                        {
+                                        BIO_printf(bio_out, "\n");
+                                        xpos = BIO_puts(bio_out, indent);
+                                        }
+                                xpos += BIO_printf(bio_out, "%s", name);
+                                }
+                        else
+                                {
+                                /* We're listing names plus descriptions */
+                                BIO_printf(bio_out, "%s: %s\n", name,
+                                        (desc == NULL) ? "<no description>" : desc);
+                                /* ... and sometimes input flags */
+                                if((verbose >= 3) && !util_flags(bio_out, flags,
+                                        indent))
+                                        goto err;
+                                xpos = 0;
+                                }
+                        }
+		OPENSSL_free(name); name = NULL;
+		if(desc) { OPENSSL_free(desc); desc = NULL; }
+		/* Move to the next command */
+		num = ENGINE_ctrl(e, ENGINE_CTRL_GET_NEXT_CMD_TYPE,
+					num, NULL, NULL);
+		} while(num > 0);
+	if(xpos > 0)
+		BIO_printf(bio_out, "\n");
+	ret = 1;
+err:
+	if(cmds) sk_pop_free(cmds, identity);
+	if(name) OPENSSL_free(name);
+	if(desc) OPENSSL_free(desc);
+	return ret;
+	}
+
+static void util_do_cmds(ENGINE *e, STACK *cmds, BIO *bio_out, const char *indent)
+	{
+	int loop, res, num = sk_num(cmds);
+	if(num < 0)
+		{
+		BIO_printf(bio_out, "[Error]: internal stack error\n");
+		return;
+		}
+	for(loop = 0; loop < num; loop++)
+		{
+		char buf[256];
+		const char *cmd, *arg;
+		cmd = sk_value(cmds, loop);
+		res = 1; /* assume success */
+		/* Check if this command has no ":arg" */
+		if((arg = strstr(cmd, ":")) == NULL)
+			{
+			if(!ENGINE_ctrl_cmd_string(e, cmd, NULL, 0))
+				res = 0;
+			}
+		else
+			{
+			if((int)(arg - cmd) > 254)
+				{
+				BIO_printf(bio_out,"[Error]: command name too long\n");
+				return;
+				}
+			memcpy(buf, cmd, (int)(arg - cmd));
+			buf[arg-cmd] = '\0';
+			arg++; /* Move past the ":" */
+			/* Call the command with the argument */
+			if(!ENGINE_ctrl_cmd_string(e, buf, arg, 0))
+				res = 0;
+			}
+		if(res)
+			BIO_prin

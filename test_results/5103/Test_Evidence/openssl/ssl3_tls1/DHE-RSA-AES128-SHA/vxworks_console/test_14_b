@@ -1,0 +1,136 @@
+io_err, "Error getting passwords\n");
+		goto end;
+		}
+
+	in = BIO_new(BIO_s_file());
+	out = BIO_new(BIO_s_file());
+	if ((in == NULL) || (out == NULL))
+		{
+		ERR_print_errors(bio_err);
+		goto end;
+		}
+
+	if (infile == NULL)
+		BIO_set_fp(in, stdin, BIO_NOCLOSE);
+	else
+		{
+		if (BIO_read_filename(in, infile) <= 0)
+			{
+			perror(infile);
+			goto end;
+			}
+		}
+
+	BIO_printf(bio_err, "read EC key\n");
+	if (informat == FORMAT_ASN1) 
+		{
+		if (pubin) 
+			eckey = d2i_EC_PUBKEY_bio(in, NULL);
+		else 
+			eckey = d2i_ECPrivateKey_bio(in, NULL);
+		} 
+	else if (informat == FORMAT_PEM) 
+		{
+		if (pubin) 
+			eckey = PEM_read_bio_EC_PUBKEY(in, NULL, NULL, 
+				NULL);
+		else 
+			eckey = PEM_read_bio_ECPrivateKey(in, NULL, NULL,
+				passin);
+		} 
+	else
+		{
+		BIO_printf(bio_err, "bad input format specified for key\n");
+		goto end;
+		}
+	if (eckey == NULL)
+		{
+		BIO_printf(bio_err,"unable to load Key\n");
+		ERR_print_errors(bio_err);
+		goto end;
+		}
+
+	if (outfile == NULL)
+		{
+		BIO_set_fp(out, stdout, BIO_NOCLOSE);
+#ifdef OPENSSL_SYS_VMS
+			{
+			BIO *tmpbio = BIO_new(BIO_f_linebuffer());
+			out = BIO_push(tmpbio, out);
+			}
+#endif
+		}
+	else
+		{
+		if (BIO_write_filename(out, outfile) <= 0)
+			{
+			perror(outfile);
+			goto end;
+			}
+		}
+
+	group = EC_KEY_get0_group(eckey);
+
+	if (new_form)
+		EC_KEY_set_conv_form(eckey, form);
+
+	if (new_asn1_flag)
+		EC_KEY_set_asn1_flag(eckey, asn1_flag);
+
+	if (text) 
+		if (!EC_KEY_print(out, eckey, 0))
+			{
+			perror(outfile);
+			ERR_print_errors(bio_err);
+			goto end;
+			}
+
+	if (noout) 
+		{
+		ret = 0;
+		goto end;
+		}
+
+	BIO_printf(bio_err, "writing EC key\n");
+	if (outformat == FORMAT_ASN1) 
+		{
+		if (param_out)
+			i = i2d_ECPKParameters_bio(out, group);
+		else if (pubin || pubout) 
+			i = i2d_EC_PUBKEY_bio(out, eckey);
+		else 
+			i = i2d_ECPrivateKey_bio(out, eckey);
+		} 
+	else if (outformat == FORMAT_PEM) 
+		{
+		if (param_out)
+			i = PEM_write_bio_ECPKParameters(out, group);
+		else if (pubin || pubout)
+			i = PEM_write_bio_EC_PUBKEY(out, eckey);
+		else 
+			i = PEM_write_bio_ECPrivateKey(out, eckey, enc,
+						NULL, 0, NULL, passout);
+		} 
+	else 
+		{
+		BIO_printf(bio_err, "bad output format specified for "
+			"outfile\n");
+		goto end;
+		}
+
+	if (!i)
+		{
+		BIO_printf(bio_err, "unable to write private key\n");
+		ERR_print_errors(bio_err);
+		}
+	else
+		ret=0;
+end:
+	if (in)
+		BIO_free(in);
+	if (out)
+		BIO_free_all(out);
+	if (eckey)
+		EC_KEY_free(eckey);
+	if (passin)
+		OPENSSL_free(passin

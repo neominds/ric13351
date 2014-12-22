@@ -1,0 +1,61 @@
+:
+eval 'exec perl -S $0 ${1+"$@"}'
+    if $running_under_some_shell;
+##
+##  Configure -- OpenSSL source tree configuration script
+##
+
+require 5.000;
+eval 'use strict;';
+
+print STDERR "Warning: perl module strict not found.\n" if ($@);
+
+# see INSTALL for instructions.
+
+my $usage="Usage: Configure [no-<cipher> ...] [enable-<cipher> ...] [experimental-<cipher> ...] [-Dxxx] [-lxxx] [-Lxxx] [-fxxx] [-Kxxx] [no-hw-xxx|no-hw] [[no-]threads] [[no-]shared] [[no-]zlib|zlib-dynamic] [enable-montasm] [no-asm] [no-dso] [no-krb5] [386] [--prefix=DIR] [--openssldir=OPENSSLDIR] [--with-xxx[=vvv]] [--test-sanity] os/compiler[:flags]\n";
+
+# Options:
+#
+# --openssldir  install OpenSSL in OPENSSLDIR (Default: DIR/ssl if the
+#               --prefix option is given; /usr/local/ssl otherwise)
+# --prefix      prefix for the OpenSSL include, lib and bin directories
+#               (Default: the OPENSSLDIR directory)
+#
+# --install_prefix  Additional prefix for package builders (empty by
+#               default).  This needn't be set in advance, you can
+#               just as well use "make INSTALL_PREFIX=/whatever install".
+#
+# --with-krb5-dir  Declare where Kerberos 5 lives.  The libraries are expected
+#		to live in the subdirectory lib/ and the header files in
+#		include/.  A value is required.
+# --with-krb5-lib  Declare where the Kerberos 5 libraries live.  A value is
+#		required.
+#		(Default: KRB5_DIR/lib)
+# --with-krb5-include  Declare where the Kerberos 5 header files live.  A
+#		value is required.
+#		(Default: KRB5_DIR/include)
+# --with-krb5-flavor  Declare what flavor of Kerberos 5 is used.  Currently
+#		supported values are "MIT" and "Heimdal".  A value is required.
+#
+# --test-sanity Make a number of sanity checks on the data in this file.
+#               This is a debugging tool for OpenSSL developers.
+#
+# no-hw-xxx     do not compile support for specific crypto hardware.
+#               Generic OpenSSL-style methods relating to this support
+#               are always compiled but return NULL if the hardware
+#               support isn't compiled.
+# no-hw         do not compile support for any crypto hardware.
+# [no-]threads  [don't] try to create a library that is suitable for
+#               multithreaded applications (default is "threads" if we
+#               know how to do it)
+# [no-]shared	[don't] try to create shared libraries when supported.
+# no-asm        do not use assembler
+# no-dso        do not compile in any native shared-library methods. This
+#               will ensure that all methods just return NULL.
+# no-krb5       do not compile in any KRB5 library or code.
+# [no-]zlib     [don't] compile support for zlib compression.
+# zlib-dynamic	Like "zlib", but the zlib library is expected to be a shared
+#		library and will be loaded in run-time by the OpenSSL library.
+# enable-montasm 0.9.8 branch only: enable Montgomery x86 assembler backport
+#               from 0.9.9
+# 386

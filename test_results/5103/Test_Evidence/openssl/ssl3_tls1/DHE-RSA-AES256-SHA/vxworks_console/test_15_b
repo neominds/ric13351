@@ -1,0 +1,10 @@
+ 
+-> nm_client_main("5","-connect","10.10.10.102:443","-cipher","DHE-RSA-AES256-SHA","-ssl3")
+creating ssl context
+calling SSL_new
+calling init_client
+CONNECTED(00000008)
+1560930272:error:14094410:SSL routines:SSL3_READ_BYTES:sslv3 alert handshake failure:s3_pkt.c:1053:SSL alert number 40
+1560930272:error:1409E0E5:SSL routines:SSL3_WRITE_BYTES:ssl handshake failure:s3_pkt.c:529:
+value = 0 = 0x0
+->

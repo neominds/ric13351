@@ -1,0 +1,65 @@
+    LOCAL_MEM_SIZE. The memory map will accomodate up to 128MB of SDRAM.
+
+     CoreLV Module
+          With MIPS 4kec Core and GT-64120 bridge chip
+
+     USB controller (PIIX4-resident)
+          Supported with the Wind River USB protocol stack.
+
+     Bootrom
+          A VxWorks bootrom prepared with make bootrom.hex is supported, which
+          will load a vxWorks or vxWorks.st image across the ethernet device.
+
+  Unsupported Features
+     The following features of the Malta board are not supported:
+
+     The PIIX4 RTC is not supported. However, the non-volatile storage in the
+     RTC is used to store the boot line. Changes made to the boot line will be
+     written to this non-volatile memory and read at boot time.
+
+     LOCAL_MEM_AUTOSIZE is untested in this BSP.
+
+     Rom-resident VxWorks images are not supported.
+
+     The SMsC FDC73M81X device is used for the two UART devices contained
+     therein. the Parallel Port, Mouse and Keyboard functions are not supported.
+     Future versions of the BSP will support these functions.
+
+     The third RS-232 serial device is not supported.
+
+     The EEPROM device is not supported.
+
+HARDWARE DETAILS
+     This section documents the details of the device drivers and board hardware
+     elements.
+
+  Devices
+     The MALTA 4kec board has three serial ports; The first two ports are
+     implemented in the SMsC FDC73M81X Super I/O device. Both ports are
+     supported via the vxWorks standard ns16550 driver. The third serial port is
+     not supported.
+
+     A cache library compatible with the MIPS 4kec processor is supplied:
+
+         cache4kcLib.c - high-level MIPS 4kc cache support library
+         cache4kcALib.s - low-level MIPS 4kc cache support library
+
+     The following are not included in this BSP, but are referenced by it, and
+     are included with the VxWorks standard driver libraries:
+
+         ns16550Sio.o - 16550-compatible serial port driver
+         mipsR4kTimer.o - MIPS R4000-style timer driver
+
+  Memory Maps
+     The MIPS 4kec CPU Core includes a 512 Mbyte physical address space with
+     on-board RAM, ROM, and PCI Bus areas. The memory regions of interest in
+     this address space are listed in the table below.
+
+Physical Memory Map
+Start                End         Size  Use
+--------------------------------------------------------------------------------
+0x00000000           0x07ffffff  128M  System RAM (32M used)
+0x08000000           0x0fffffff  128M  Unused
+0x10000000           0x13ffffff  64M   PCI I/O region
+0x14000000           0x14000fff  4K    System Controller Internal Regs
+0x14001000           0x1effffff

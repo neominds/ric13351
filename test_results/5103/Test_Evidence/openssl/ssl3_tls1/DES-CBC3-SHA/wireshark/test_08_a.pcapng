@@ -1,0 +1,130 @@
+	|
+#		+---------------+
+#	80	|	f20	|
+#		+---------------+
+#		.               .
+#	   	.		.
+#		.---------------+
+#	168	|	f31	|
+#		+---------------+
+#
+# for 32 bit
+#		+---------------+
+#	0	|	r16	|
+#		|---------------|
+#	4	|	r17	|
+#		|---------------|
+#	8	|	r18	|
+#		|---------------|
+#	12	|	r19	|
+#		|---------------|
+#	16	|	r20	|
+#		|---------------|
+#	20	|	r21	|
+#		|---------------|
+#	24	|	r22	|
+#		|---------------|
+#	28	|	r23	|
+#		|---------------|
+#	32	|	r29	|
+#		+---------------+
+#	36	|	r30	|
+#		+---------------+
+#	40	|	f20	|
+#		+---------------+
+#		.               .
+#	   	.		.
+#		.---------------+
+#	84	|	f31	|
+#		+---------------+
+#
+#endif
+
+#ifdef __MIPS64BIT__
+#define _STINS	sd
+#define _LDINS	ld
+#ifdef __SO_PICABIRTP__
+#define _STACKSIZE	56
+#define _DOFF1	48
+#define _DOFF2	36
+#define _DOFF3	40
+#define _DOFF4	28
+#else
+#define _STACKSIZE	48
+#define _DOFF1	40
+#define _DOFF2	36
+#endif
+#else
+#define _STINS	sw
+#define _LDINS	lw
+#ifdef __SO_PICABIRTP__
+#define _STACKSIZE	32
+#define _DOFF1	24
+#define _DOFF2	20
+#define _DOFF3	28
+#define _DOFF4	16
+#else
+#define _STACKSIZE	24
+#define _DOFF1	20
+#define _DOFF2	16
+#endif
+#endif
+
+#ifdef __RTP__
+        .text
+	.globl  sigsetjmp
+sigsetjmp:
+	addiu		$29,$29,-_STACKSIZE
+	_STINS		$30,_DOFF1($29)
+	sw		$31,_DOFF2($29)
+#ifdef __SO_PICABIRTP__
+	_STINS		$28,_DOFF3($29)
+	sw		$25,_DOFF4($29)
+	lui		$28,%hi(__GOTT_BASE__)
+	lw		$28,%lo(__GOTT_BASE__)($28)
+	lw		$28,%half(__GOTT_INDEX__)($28)
+	nop
+	lw		$25,%plt(_sigsetjmpSetup)($28)
+	nop
+	jalr		$25
+	move		$30,$4
+	lw		$25,_DOFF4($29)
+	_LDINS		$28,_DOFF3($29)		
+#else
+	jbaln		_sigsetjmpSetup
+	move		$30,$4
+#endif
+	move		$4,$30
+	lw		$31,_DOFF2($29)
+	_LDINS		$30,_DOFF1($29)
+	b		setjmp
+	addiu		$29,$29,_STACKSIZE
+#endif
+
+#ifdef	__RTP__
+#ifdef __MIPS64BIT__
+#define	GPT9SZ	16
+#else
+#define	GPT9SZ	8
+#endif
+#else
+#define	GPT9SZ	0
+#endif
+
+	.text
+	.globl	setjmp
+setjmp:
+#ifdef __MIPS64BIT__
+	sd	$16,0($4)
+	sd	$17,8($4)
+	sd	$18,16($4)
+	sd	$19,24($4)
+	sd	$20,32($4)
+	sd	$21,40($4)
+	sd	$22,48($4)
+	sd	$23,56($4)
+ #ifdef __RTP__
+	sd	$25,64($4)
+	sd	$28,72($4)
+ #endif
+	sd	$29,GPT9SZ

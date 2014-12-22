@@ -1,0 +1,4 @@
+-> nm_client_main("5","-connect","10.10.10.102:443","-cipher","EDH-RSA-DES-CBC-SHA","-ssl3")
+CONNECTED(00000008)
+value = 0 = 0x0
+->

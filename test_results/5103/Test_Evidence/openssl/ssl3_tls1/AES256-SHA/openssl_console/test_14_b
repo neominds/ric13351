@@ -1,0 +1,16 @@
+neominds@neominds-Vostro-1200:~/openssl-0.9.8zc$ sudo ./apps/openssl s_server -accept 443 -cert cert.crt -key rsa.pem -tls1
+Using default temp DH parameters
+Using default temp ECDH parameters
+ACCEPT
+bad gethostbyaddr
+-----BEGIN SSL SESSION PARAMETERS-----
+MHUCAQECAgMBBAIANQQgMrHtY4qeutv/4olYNTXQX1Lzt+sJdWYpU1ejyxoWaEAE
+MFLE77EvMe9aK+6u16MXMtlE/SM/qz1+9t/k9n3sQVWznanaDt3CxryuOo9boCDl
+maEGAgRUlU1togQCAhwgpAYEBAEAAAA=
+-----END SSL SESSION PARAMETERS-----
+Shared ciphers:AES256-SHA
+CIPHER is AES256-SHA
+Secure Renegotiation IS NOT supported
+ok
+ghfhg
+dgfd

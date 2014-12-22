@@ -1,0 +1,72 @@
+=pod
+
+=head1 NAME
+
+EVP_MD_CTX_init, EVP_MD_CTX_create, EVP_DigestInit_ex, EVP_DigestUpdate,
+EVP_DigestFinal_ex, EVP_MD_CTX_cleanup, EVP_MD_CTX_destroy, EVP_MAX_MD_SIZE,
+EVP_MD_CTX_copy_ex, EVP_MD_CTX_copy, EVP_MD_type, EVP_MD_pkey_type, EVP_MD_size,
+EVP_MD_block_size, EVP_MD_CTX_md, EVP_MD_CTX_size, EVP_MD_CTX_block_size, EVP_MD_CTX_type,
+EVP_md_null, EVP_md2, EVP_md5, EVP_sha, EVP_sha1, EVP_dss, EVP_dss1, EVP_mdc2,
+EVP_ripemd160, EVP_get_digestbyname, EVP_get_digestbynid, EVP_get_digestbyobj -
+EVP digest routines
+
+=head1 SYNOPSIS
+
+ #include <openssl/evp.h>
+
+ void EVP_MD_CTX_init(EVP_MD_CTX *ctx);
+ EVP_MD_CTX *EVP_MD_CTX_create(void);
+
+ int EVP_DigestInit_ex(EVP_MD_CTX *ctx, const EVP_MD *type, ENGINE *impl);
+ int EVP_DigestUpdate(EVP_MD_CTX *ctx, const void *d, size_t cnt);
+ int EVP_DigestFinal_ex(EVP_MD_CTX *ctx, unsigned char *md,
+        unsigned int *s);
+
+ int EVP_MD_CTX_cleanup(EVP_MD_CTX *ctx);
+ void EVP_MD_CTX_destroy(EVP_MD_CTX *ctx);
+
+ int EVP_MD_CTX_copy_ex(EVP_MD_CTX *out,const EVP_MD_CTX *in);  
+
+ int EVP_DigestInit(EVP_MD_CTX *ctx, const EVP_MD *type);
+ int EVP_DigestFinal(EVP_MD_CTX *ctx, unsigned char *md,
+        unsigned int *s);
+
+ int EVP_MD_CTX_copy(EVP_MD_CTX *out,EVP_MD_CTX *in);  
+
+ #define EVP_MAX_MD_SIZE (16+20) /* The SSLv3 md5+sha1 type */
+
+
+ #define EVP_MD_type(e)			((e)->type)
+ #define EVP_MD_pkey_type(e)		((e)->pkey_type)
+ #define EVP_MD_size(e)			((e)->md_size)
+ #define EVP_MD_block_size(e)		((e)->block_size)
+
+ #define EVP_MD_CTX_md(e)		(e)->digest)
+ #define EVP_MD_CTX_size(e)		EVP_MD_size((e)->digest)
+ #define EVP_MD_CTX_block_size(e)	EVP_MD_block_size((e)->digest)
+ #define EVP_MD_CTX_type(e)		EVP_MD_type((e)->digest)
+
+ const EVP_MD *EVP_md_null(void);
+ const EVP_MD *EVP_md2(void);
+ const EVP_MD *EVP_md5(void);
+ const EVP_MD *EVP_sha(void);
+ const EVP_MD *EVP_sha1(void);
+ const EVP_MD *EVP_dss(void);
+ const EVP_MD *EVP_dss1(void);
+ const EVP_MD *EVP_mdc2(void);
+ const EVP_MD *EVP_ripemd160(void);
+
+ const EVP_MD *EVP_get_digestbyname(const char *name);
+ #define EVP_get_digestbynid(a) EVP_get_digestbyname(OBJ_nid2sn(a))
+ #define EVP_get_digestbyobj(a) EVP_get_digestbynid(OBJ_obj2nid(a))
+
+=head1 DESCRIPTION
+
+The EVP digest routines are a high level interface to message digests.
+
+EVP_MD_CTX_init() initializes digest context B<ctx>.
+
+EVP_MD_CTX_create() allocates, initializes and returns a digest context.
+
+EVP_DigestInit_ex() sets up digest context B<ctx> to use a digest
+B<ty

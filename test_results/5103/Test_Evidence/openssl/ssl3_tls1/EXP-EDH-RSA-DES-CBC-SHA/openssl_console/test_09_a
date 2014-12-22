@@ -1,0 +1,104 @@
+ta );
+
+my @cleanup = ( "cms.out", "cms.err", "tmp.der", "tmp.txt" );
+
+$data = "";
+
+open( IN, $exfile ) || die "Can't Open RFC examples file $exfile";
+
+while (<IN>) {
+    next unless (/^\|/);
+    s/^\|//;
+    next if (/^\*/);
+    if (/^>(.*)$/) {
+        $filename = $1;
+        next;
+    }
+    if (/^</) {
+        $filename = "$exdir/$filename";
+        if ( $filename =~ /\.bin$/ || $filename =~ /\.eml$/ ) {
+            $data = decode_base64($data);
+            open OUT, ">$filename";
+            binmode OUT;
+            print OUT $data;
+            close OUT;
+            push @cleanup, $filename;
+        }
+        elsif ( $filename =~ /\.cer$/ ) {
+            write_pem( $filename, "CERTIFICATE", $data );
+        }
+        elsif ( $filename =~ /\.pri$/ ) {
+            write_pem( $filename, "PRIVATE KEY", $data );
+        }
+        $data     = "";
+        $filename = "";
+    }
+    else {
+        $data .= $_;
+    }
+
+}
+
+my $secretkey =
+  "73:7c:79:1f:25:ea:d0:e0:46:29:25:43:52:f7:dc:62:91:e5:cb:26:91:7a:da:32";
+
+foreach (@test_list) {
+    my ( $file, $tlist ) = @$_;
+    print "Example file $file:\n";
+    if ( $tlist =~ /encode/ ) {
+        run_reencode_test( $exdir, $file );
+    }
+    if ( $tlist =~ /certsout/ ) {
+        run_certsout_test( $exdir, $file );
+    }
+    if ( $tlist =~ /dataout/ ) {
+        run_dataout_test( $exdir, $file );
+    }
+    if ( $tlist =~ /verify/ ) {
+        run_verify_test( $exdir, $tlist, $file );
+    }
+    if ( $tlist =~ /digest/ ) {
+        run_digest_test( $exdir, $tlist, $file );
+    }
+    if ( $tlist =~ /encrypted/ ) {
+        run_encrypted_test( $exdir, $tlist, $file, $secretkey );
+    }
+    if ( $tlist =~ /envelope/ ) {
+        run_envelope_test( $exdir, $tlist, $file );
+    }
+
+}
+
+foreach (@cleanup) {
+    unlink $_;
+}
+
+if ($badtest) {
+    print "\n$badtest TESTS FAILED!!\n";
+}
+else {
+    print "\n***All tests successful***\n";
+}
+
+sub write_pem {
+    my ( $filename, $str, $data ) = @_;
+
+    $filename =~ s/\.[^.]*$/.pem/;
+
+    push @cleanup, $filename;
+
+    open OUT, ">$filename";
+
+    print OUT "-----BEGIN $str-----\n";
+    print OUT $data;
+    print OUT "-----END $str-----\n";
+
+    close OUT;
+}
+
+sub run_reencode_test {
+    my ( $cmsdir, $tfile ) = @_;
+    unlink "tmp.der";
+
+    system( "$cmscmd -cmsout -inform DER -outform DER"
+      

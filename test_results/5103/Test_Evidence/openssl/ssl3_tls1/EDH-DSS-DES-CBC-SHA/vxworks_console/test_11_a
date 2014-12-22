@@ -1,0 +1,96 @@
+ine V3_EXTENSIONS	"x509_extensions"
+#define REQ_EXTENSIONS	"req_extensions"
+#define STRING_MASK	"string_mask"
+#define UTF8_IN		"utf8"
+
+#define DEFAULT_KEY_LENGTH	512
+#define MIN_KEY_LENGTH		384
+
+#undef PROG
+#define PROG	req_main
+
+/* -inform arg	- input format - default PEM (DER or PEM)
+ * -outform arg - output format - default PEM
+ * -in arg	- input file - default stdin
+ * -out arg	- output file - default stdout
+ * -verify	- check request signature
+ * -noout	- don't print stuff out.
+ * -text	- print out human readable text.
+ * -nodes	- no des encryption
+ * -config file	- Load configuration file.
+ * -key file	- make a request using key in file (or use it for verification).
+ * -keyform arg	- key file format.
+ * -rand file(s) - load the file(s) into the PRNG.
+ * -newkey	- make a key and a request.
+ * -modulus	- print RSA modulus.
+ * -pubkey	- output Public Key.
+ * -x509	- output a self signed X509 structure instead.
+ * -asn1-kludge	- output new certificate request in a format that some CA's
+ *		  require.  This format is wrong
+ */
+
+static int make_REQ(X509_REQ *req,EVP_PKEY *pkey,char *dn,int mutlirdn,
+		int attribs,unsigned long chtype);
+static int build_subject(X509_REQ *req, char *subj, unsigned long chtype,
+		int multirdn);
+static int prompt_info(X509_REQ *req,
+		STACK_OF(CONF_VALUE) *dn_sk, char *dn_sect,
+		STACK_OF(CONF_VALUE) *attr_sk, char *attr_sect, int attribs,
+		unsigned long chtype);
+static int auto_info(X509_REQ *req, STACK_OF(CONF_VALUE) *sk,
+				STACK_OF(CONF_VALUE) *attr, int attribs,
+				unsigned long chtype);
+static int add_attribute_object(X509_REQ *req, char *text, const char *def,
+				char *value, int nid, int n_min,
+				int n_max, unsigned long chtype);
+static int add_DN_object(X509_NAME *n, char *text, const char *def, char *value,
+	int nid,int n_min,int n_max, unsigned long chtype, int mval);
+#ifndef OPENSSL_NO_RSA
+static int MS_CALLBACK req_cb(int p, int n, BN_GENCB *cb);
+#endif
+static int req_check_len(int len,int n_min,int n_max);
+static int check_end(const char *str, const char *end);
+#ifndef MONOLITH
+static char *default_config_file=NULL;
+#endif
+static CONF *req_conf=NULL;
+static int batch=0;
+
+#define TYPE_RSA	1
+#define TYPE_DSA	2
+#define TYPE_DH		3
+#define TYPE_EC		4
+
+int MAIN(int, char **);
+
+int MAIN(int argc, char **argv)
+	{
+	ENGINE *e = NULL;
+#ifndef OPENSSL_NO_DSA
+	DSA *dsa_params=NULL;
+#endif
+#ifndef OPENSSL_NO_ECDSA
+	EC_KEY *ec_params = NULL;
+#endif
+	unsigned long nmflag = 0, reqflag = 0;
+	int ex=1,x509=0,days=30;
+	X509 *x509ss=NULL;
+	X509_REQ *req=NULL;
+	EVP_PKEY *pkey=NULL;
+	int i=0,badops=0,newreq=0,verbose=0,pkey_type=TYPE_RSA;
+	long newkey = -1;
+	BIO *in=NULL,*out=NULL;
+	int informat,outformat,verify=0,noout=0,text=0,keyform=FORMAT_PEM;
+	int nodes=0,kludge=0,newhdr=0,subject=0,pubkey=0;
+	char *infile,*outfile,*prog,*keyfile=NULL,*template=NULL,*keyout=NULL;
+#ifndef OPENSSL_NO_ENGINE
+	char *engine=NULL;
+#endif
+	char *extensions = NULL;
+	char *req_exts = NULL;
+	const EVP_CIPHER *cipher=NULL;
+	ASN1_INTEGER *serial = NULL;
+	int modulus=0;
+	char *inrand=NULL;
+	char *passargin = NULL, *passargout = NULL;
+	char *pa

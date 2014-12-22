@@ -1,0 +1,103 @@
+strncat(out_buf, "$", 1);
+	strncat(out_buf, salt, 8);
+	assert(strlen(out_buf) <= 6 + 8); /* "$apr1$..salt.." */
+	salt_out = out_buf + 2 + strlen(magic);
+	salt_len = strlen(salt_out);
+	assert(salt_len <= 8);
+	
+	EVP_MD_CTX_init(&md);
+	EVP_DigestInit_ex(&md,EVP_md5(), NULL);
+	EVP_DigestUpdate(&md, passwd, passwd_len);
+	EVP_DigestUpdate(&md, "$", 1);
+	EVP_DigestUpdate(&md, magic, strlen(magic));
+	EVP_DigestUpdate(&md, "$", 1);
+	EVP_DigestUpdate(&md, salt_out, salt_len);
+	
+	EVP_MD_CTX_init(&md2);
+	EVP_DigestInit_ex(&md2,EVP_md5(), NULL);
+	EVP_DigestUpdate(&md2, passwd, passwd_len);
+	EVP_DigestUpdate(&md2, salt_out, salt_len);
+	EVP_DigestUpdate(&md2, passwd, passwd_len);
+	EVP_DigestFinal_ex(&md2, buf, NULL);
+
+	for (i = passwd_len; i > sizeof buf; i -= sizeof buf)
+		EVP_DigestUpdate(&md, buf, sizeof buf);
+	EVP_DigestUpdate(&md, buf, i);
+	
+	n = passwd_len;
+	while (n)
+		{
+		EVP_DigestUpdate(&md, (n & 1) ? "\0" : passwd, 1);
+		n >>= 1;
+		}
+	EVP_DigestFinal_ex(&md, buf, NULL);
+
+	for (i = 0; i < 1000; i++)
+		{
+		EVP_DigestInit_ex(&md2,EVP_md5(), NULL);
+		EVP_DigestUpdate(&md2, (i & 1) ? (unsigned const char *) passwd : buf,
+		                       (i & 1) ? passwd_len : sizeof buf);
+		if (i % 3)
+			EVP_DigestUpdate(&md2, salt_out, salt_len);
+		if (i % 7)
+			EVP_DigestUpdate(&md2, passwd, passwd_len);
+		EVP_DigestUpdate(&md2, (i & 1) ? buf : (unsigned const char *) passwd,
+		                       (i & 1) ? sizeof buf : passwd_len);
+		EVP_DigestFinal_ex(&md2, buf, NULL);
+		}
+	EVP_MD_CTX_cleanup(&md2);
+	
+	 {
+		/* transform buf into output string */
+	
+		unsigned char buf_perm[sizeof buf];
+		int dest, source;
+		char *output;
+
+		/* silly output permutation */
+		for (dest = 0, source = 0; dest < 14; dest++, source = (source + 6) % 17)
+			buf_perm[dest] = buf[source];
+		buf_perm[14] = buf[5];
+		buf_perm[15] = buf[11];
+#ifndef PEDANTIC /* Unfortunately, this generates a "no effect" warning */
+		assert(16 == sizeof buf_perm);
+#endif
+		
+		output = salt_out + salt_len;
+		assert(output == out_buf + strlen(out_buf));
+		
+		*output++ = '$';
+
+		for (i = 0; i < 15; i += 3)
+			{
+			*output++ = cov_2char[buf_perm[i+2] & 0x3f];
+			*output++ = cov_2char[((buf_perm[i+1] & 0xf) << 2) |
+				                  (buf_perm[i+2] >> 6)];
+			*output++ = cov_2char[((buf_perm[i] & 3) << 4) |
+				                  (buf_perm[i+1] >> 4)];
+			*output++ = cov_2char[buf_perm[i] >> 2];
+			}
+		assert(i == 15);
+		*output++ = cov_2char[buf_perm[i] & 0x3f];
+		*output++ = cov_2char[buf_perm[i] >> 6];
+		*output = 0;
+		assert(strlen(out_buf) < sizeof(out_buf));
+	 }
+	EVP_MD_CTX_cleanup(&md);
+
+	return out_buf;
+	}
+#endif
+
+
+static int do_passwd(int passed_salt, char **salt_p, char **salt_malloc_p,
+	char *passwd, BIO *out,	int quiet, int table, int reverse,
+	size_t pw_maxlen, int usecrypt, int use1, int useapr1)
+	{
+	char *hash = NULL;
+
+	assert(salt_p != NULL);
+	assert(salt_malloc_p != NULL);
+
+	/* first make sure we have a salt */
+	if (!pa

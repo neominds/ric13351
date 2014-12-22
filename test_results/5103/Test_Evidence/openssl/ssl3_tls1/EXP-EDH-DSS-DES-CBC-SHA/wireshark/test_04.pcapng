@@ -1,0 +1,74 @@
+(SSLv23_method()) 
+              SSL_CTX_new(SSLv2_method()) 
+              SSL_CTX_new(SSLv3_method()) 
+
+          OR to only have the server or the client code
+              SSL_CTX_new(SSLv23_server_method()) 
+              SSL_CTX_new(SSLv2_server_method()) 
+              SSL_CTX_new(SSLv3_server_method()) 
+          or  
+              SSL_CTX_new(SSLv23_client_method()) 
+              SSL_CTX_new(SSLv2_client_method()) 
+              SSL_CTX_new(SSLv3_client_method()) 
+
+SSL_set_default_verify_paths() ... renamed to the more appropriate
+SSL_CTX_set_default_verify_paths()
+
+If you want to use client certificates then you have to add in a bit
+of extra stuff in that a SSLv3 server sends a list of those CAs that
+it will accept certificates from ... so you have to provide a list to
+SSLeay otherwise certain browsers will not send client certs.
+
+SSL_CTX_set_client_CA_list(ctx,SSL_load_client_CA_file(s_cert_file));
+
+
+X509_NAME_oneline(X)    -> X509_NAME_oneline(X,NULL,0)  
+               or provide a buffer and size to copy the
+               result into
+
+X509_add_cert ->  X509_STORE_add_cert (and you might want to read the
+          notes on X509_NAME structure changes too)
+
+
+VERIFICATION CODE
+=================
+
+The codes have all be renamed from VERIFY_ERR_* to X509_V_ERR_* to
+more accurately reflect things.
+
+The verification callback args are now packaged differently so that
+extra fields for verification can be added easily in future without
+having to break things by adding extra parameters each release :-)
+
+X509_cert_verify_error_string -> X509_verify_cert_error_string
+
+
+BIO INTERNALS
+=============
+
+Eric has fixed things so that extra flags can be introduced in
+the BIO layer in future without having to play with all the BIO
+modules by adding in some macros.
+
+The ugly stuff using 
+    b->flags ~= (BIO_FLAGS_RW|BIO_FLAGS_SHOULD_RETRY)
+becomes
+    BIO_clear_retry_flags(b)
+
+    b->flags |= (BIO_FLAGS_READ|BIO_FLAGS_SHOULD_RETRY)
+becomes
+    BIO_set_retry_read(b)
+
+Also ... BIO_get_retry_flags(b), BIO_set_flags(b)
+
+
+
+OTHER THINGS
+============
+
+X509_NAME has been altered so that it isn't just a STACK ... the STACK
+is now in the "entries" field ... and there are a pile of nice functions
+for getting at the details in a much cleaner manner.
+
+SSL_CTX has been altered ... "cert" is no longer a direct member of this
+structure ... things are now down under "cert_store" (see x5

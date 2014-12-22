@@ -1,0 +1,87 @@
+ is automatically cleaned up.
+
+EVP_MD_CTX_copy() is similar to EVP_MD_CTX_copy_ex() except the destination
+B<out> does not have to be initialized.
+
+EVP_MD_size() and EVP_MD_CTX_size() return the size of the message digest
+when passed an B<EVP_MD> or an B<EVP_MD_CTX> structure, i.e. the size of the
+hash.
+
+EVP_MD_block_size() and EVP_MD_CTX_block_size() return the block size of the
+message digest when passed an B<EVP_MD> or an B<EVP_MD_CTX> structure.
+
+EVP_MD_type() and EVP_MD_CTX_type() return the NID of the OBJECT IDENTIFIER
+representing the given message digest when passed an B<EVP_MD> structure.
+For example EVP_MD_type(EVP_sha1()) returns B<NID_sha1>. This function is
+normally used when setting ASN1 OIDs.
+
+EVP_MD_CTX_md() returns the B<EVP_MD> structure corresponding to the passed
+B<EVP_MD_CTX>.
+
+EVP_MD_pkey_type() returns the NID of the public key signing algorithm associated
+with this digest. For example EVP_sha1() is associated with RSA so this will
+return B<NID_sha1WithRSAEncryption>. This "link" between digests and signature
+algorithms may not be retained in future versions of OpenSSL.
+
+EVP_md2(), EVP_md5(), EVP_sha(), EVP_sha1(), EVP_mdc2() and EVP_ripemd160()
+return B<EVP_MD> structures for the MD2, MD5, SHA, SHA1, MDC2 and RIPEMD160 digest
+algorithms respectively. The associated signature algorithm is RSA in each case.
+
+EVP_dss() and EVP_dss1() return B<EVP_MD> structures for SHA and SHA1 digest
+algorithms but using DSS (DSA) for the signature algorithm.
+
+EVP_md_null() is a "null" message digest that does nothing: i.e. the hash it
+returns is of zero length.
+
+EVP_get_digestbyname(), EVP_get_digestbynid() and EVP_get_digestbyobj()
+return an B<EVP_MD> structure when passed a digest name, a digest NID or
+an ASN1_OBJECT structure respectively. The digest table must be initialized
+using, for example, OpenSSL_add_all_digests() for these functions to work.
+
+=head1 RETURN VALUES
+
+EVP_DigestInit_ex(), EVP_DigestUpdate() and EVP_DigestFinal_ex() return 1 for
+success and 0 for failure.
+
+EVP_MD_CTX_copy_ex() returns 1 if successful or 0 for failure.
+
+EVP_MD_type(), EVP_MD_pkey_type() and EVP_MD_type() return the NID of the
+corresponding OBJECT IDENTIFIER or NID_undef if none exists.
+
+EVP_MD_size(), EVP_MD_block_size(), EVP_MD_CTX_size(e), EVP_MD_size(),
+EVP_MD_CTX_block_size()	and EVP_MD_block_size() return the digest or block
+size in bytes.
+
+EVP_md_null(), EVP_md2(), EVP_md5(), EVP_sha(), EVP_sha1(), EVP_dss(),
+EVP_dss1(), EVP_mdc2() and EVP_ripemd160() return pointers to the
+corresponding EVP_MD structures.
+
+EVP_get_digestbyname(), EVP_get_digestbynid() and EVP_get_digestbyobj()
+return either an B<EVP_MD> structure or NULL if an error occurs.
+
+=head1 NOTES
+
+The B<EVP> interface to message digests should almost always be used in
+preference to the low level interfaces. This is because the code then becomes
+transparent to the digest used and much more flexible.
+
+SHA1 is the digest of choice for new applications. The other digest algorithms
+are still in common use.
+
+For most applications the B<impl> parameter to EVP_DigestInit_ex() will be
+set to NULL to use the default digest implementation.
+
+The functions EVP_DigestInit(), EVP_DigestFinal() and EVP_MD_CTX_copy() are 
+obsolete but are retained to maintain compatibility with existing code. New
+applications should use EVP_DigestInit_ex(), EVP_DigestFinal_ex() and 
+EVP_MD_CTX_copy_ex() because they can efficiently reuse a digest context
+instead of initializing and cleaning it up on each call and allow non default
+implementations of digests to be specified.
+
+In OpenSSL 0.9.7 and later if digest contexts are not cleaned up after use
+memory leaks will occur. 
+
+=head1 EXAMPLE
+
+This example digests the data "Test Message\n" and "Hello World\n", using the
+digest name passed on the command 

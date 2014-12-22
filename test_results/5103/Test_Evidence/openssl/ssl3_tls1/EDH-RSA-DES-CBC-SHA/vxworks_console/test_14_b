@@ -1,0 +1,80 @@
+);
+
+	if (bio_err == NULL)
+		if ((bio_err=BIO_new(BIO_s_file())) != NULL)
+			BIO_set_fp(bio_err,stderr,BIO_NOCLOSE|BIO_FP_TEXT);
+
+	if (!load_config(bio_err, NULL))
+		goto end;
+
+#ifndef OPENSSL_NO_ENGINE
+	engine=NULL;
+#endif
+	infile=NULL;
+	outfile=NULL;
+	informat=FORMAT_PEM;
+	outformat=FORMAT_PEM;
+
+	prog=argv[0];
+	argc--;
+	argv++;
+	while (argc >= 1)
+		{
+		if 	(strcmp(*argv,"-inform") == 0)
+			{
+			if (--argc < 1) goto bad;
+			informat=str2fmt(*(++argv));
+			}
+		else if (strcmp(*argv,"-outform") == 0)
+			{
+			if (--argc < 1) goto bad;
+			outformat=str2fmt(*(++argv));
+			}
+		else if (strcmp(*argv,"-in") == 0)
+			{
+			if (--argc < 1) goto bad;
+			infile= *(++argv);
+			}
+		else if (strcmp(*argv,"-out") == 0)
+			{
+			if (--argc < 1) goto bad;
+			outfile= *(++argv);
+			}
+#ifndef OPENSSL_NO_ENGINE
+		else if (strcmp(*argv,"-engine") == 0)
+			{
+			if (--argc < 1) goto bad;
+			engine= *(++argv);
+			}
+#endif
+		else if (strcmp(*argv,"-check") == 0)
+			check=1;
+		else if (strcmp(*argv,"-text") == 0)
+			text=1;
+		else if (strcmp(*argv,"-C") == 0)
+			C=1;
+		else if (strcmp(*argv,"-noout") == 0)
+			noout=1;
+		else
+			{
+			BIO_printf(bio_err,"unknown option %s\n",*argv);
+			badops=1;
+			break;
+			}
+		argc--;
+		argv++;
+		}
+
+	if (badops)
+		{
+bad:
+		BIO_printf(bio_err,"%s [options] <infile >outfile\n",prog);
+		BIO_printf(bio_err,"where options are\n");
+		BIO_printf(bio_err," -inform arg   input format - one of DER PEM\n");
+		BIO_printf(bio_err," -outform arg  output format - one of DER PEM\n");
+		BIO_printf(bio_err," -in arg       input file\n");
+		BIO_printf(bio_err," -out arg      output file\n");
+		BIO_printf(bio_err," -check        check the DH parameters\n");
+		BIO_printf(bio_err," -text         print a text form of the DH parameters\n");
+		BIO_printf(bio_err," -C            Output C code\n");
+		BIO_printf(bio_err," -noout        no output\n

@@ -1,0 +1,1 @@
+nmap -sV --version-light --script ssl-poodle -p 443 <host>

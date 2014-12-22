@@ -1,0 +1,13 @@
+
+-> nm_server_main("7","-accept","443","-cert","dsa.crt","-key","dsa.pem","-ssl3
+")
+Using default temp DH parameters
+ACCEPT
+bad gethostbyaddr
+ERROR
+1560930272:error:14094410:SSL routines:SSL3_READ_BYTES:sslv3 alert handshake fai
+lure:s3_pkt.c:1053:SSL alert number 40
+shutting down SSL
+CONNECTION CLOSED
+ACCEPT
+

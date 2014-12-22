@@ -1,0 +1,12 @@
+
+->-> nm_client_main("5","-connect","10.10.10.102:443","-cipher","DES-CBC-SHA","-tls1")
+creating ssl context
+calling SSL_new
+calling init_client
+CONNECTED(00000008)
+1560930272:error:1408F10B:SSL routines:SSL3_GET_RECORD:wrong version number:s3_pkt.c:286:
+value = 0 = 0x0
+->
+
+
+

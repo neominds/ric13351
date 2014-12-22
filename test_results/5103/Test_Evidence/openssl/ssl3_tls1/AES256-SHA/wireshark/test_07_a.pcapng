@@ -1,0 +1,71 @@
+May
+     2000. (Format: TXT=27598 bytes) (Updates RFC2616) (Status: PROPOSED
+     STANDARD)
+
+2818 HTTP Over TLS. E. Rescorla. May 2000. (Format: TXT=15170 bytes)
+     (Status: INFORMATIONAL)
+
+2876 Use of the KEA and SKIPJACK Algorithms in CMS. J. Pawling. July
+     2000. (Format: TXT=29265 bytes) (Status: INFORMATIONAL)
+
+2984 Use of the CAST-128 Encryption Algorithm in CMS. C. Adams.
+     October 2000. (Format: TXT=11591 bytes) (Status: PROPOSED STANDARD)
+
+2985 PKCS #9: Selected Object Classes and Attribute Types Version 2.0.
+     M. Nystrom, B. Kaliski. November 2000. (Format: TXT=70703 bytes)
+     (Status: INFORMATIONAL)
+
+3029 Internet X.509 Public Key Infrastructure Data Validation and
+     Certification Server Protocols. C. Adams, P. Sylvester, M. Zolotarev,
+     R. Zuccherato. February 2001. (Format: TXT=107347 bytes) (Status:
+     EXPERIMENTAL)
+
+3039 Internet X.509 Public Key Infrastructure Qualified Certificates
+     Profile. S. Santesson, W. Polk, P. Barzin, M. Nystrom. January 2001.
+     (Format: TXT=67619 bytes) (Status: PROPOSED STANDARD)
+
+3058 Use of the IDEA Encryption Algorithm in CMS. S. Teiwes, P.
+     Hartmann, D. Kuenzi. February 2001. (Format: TXT=17257 bytes)
+     (Status: INFORMATIONAL)
+
+3161 Internet X.509 Public Key Infrastructure Time-Stamp Protocol
+     (TSP). C. Adams, P. Cain, D. Pinkas, R. Zuccherato. August 2001.
+     (Format: TXT=54585 bytes) (Status: PROPOSED STANDARD)
+
+3185 Reuse of CMS Content Encryption Keys. S. Farrell, S. Turner.
+     October 2001. (Format: TXT=20404 bytes) (Status: PROPOSED STANDARD)
+
+3207 SMTP Service Extension for Secure SMTP over Transport Layer
+     Security. P. Hoffman. February 2002. (Format: TXT=18679 bytes)
+     (Obsoletes RFC2487) (Status: PROPOSED STANDARD)
+
+3217 Triple-DES and RC2 Key Wrapping. R. Housley. December 2001.
+     (Format: TXT=19855 bytes) (Status: INFORMATIONAL)
+
+3274 Compressed Data Content Type for Cryptographic Message Syntax
+     (CMS). P. Gutmann. June 2002. (Format: TXT=11276 bytes) (Status:
+     PROPOSED STANDARD)
+
+3278 Use of Elliptic Curve Cryptography (ECC) Algorithms in
+     Cryptographic Message Syntax (CMS). S. Blake-Wilson, D. Brown, P.
+     Lambert. April 2002. (Format: TXT=33779 bytes) (Status:
+     INFORMATIONAL)
+
+3281 An Internet Attribute Certificate Profile for Authorization. S.
+     Farrell, R. Housley. April 2002. (Format: TXT=90580 bytes) (Status:
+     PROPOSED STANDARD)
+
+3369 Cryptographic Message Syntax (CMS). R. Housley. August 2002.
+     (Format: TXT=113975 bytes) (Obsoletes RFC2630, RFC3211) (Status:
+     PROPOSED STANDARD)
+
+3370 Cryptographic Message Syntax (CMS) Algorithms. R. Housley. August
+     2002. (Format: TXT=51001 bytes) (Obsoletes RFC2630, RFC3211) (Status:
+     PROPOSED STANDARD)
+
+3377 Lightweight Directory Access Protocol (v3): Technical
+     Specification. J. Hodges, R. Morgan. September 2002. (Format:
+     TXT=9981 bytes) (Updates RFC2251, RFC2252, RFC2253, RFC2254, RFC2255,
+     RFC2256, RFC2829, RFC2830) (Status: PROPOSED STANDARD)
+
+3394 Advanced Encryption Standard (AES) Key Wrap Algorithm. J. Schaa

@@ -1,0 +1,4 @@
+neominds@neominds-Vostro-1200:~/openssl-0.9.8zc$ ./apps/openssl s_client -connect 10.10.10.99:443  -cipher EDH-RSA-DES-CBC3-SHA  -ssl3  -fallback_scsv
+CONNECTED(00000003)
+8991:error:1409443E:SSL routines:SSL3_READ_BYTES:tlsv1 alert inappropriate fallback:s3_pkt.c:1143:SSL alert number 86
+8991:error:1409E0E5:SSL routines:SSL3_WRITE_BYTES:ssl handshake failure:s3_pkt.c:564:

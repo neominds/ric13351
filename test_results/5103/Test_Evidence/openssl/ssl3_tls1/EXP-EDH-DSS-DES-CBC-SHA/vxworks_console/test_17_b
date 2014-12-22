@@ -1,0 +1,54 @@
+actually use the same build specs, so, technically speaking, you could lump these two project types together under one container and save yourself a couple of steps. However, the orderly separation of project types appears a little cleaner and is therefore adopted here.</td></tr></table>
+
+<table class="steptable"><tr><td class="S_step_text"><a name="wp184964"> </a>The naming convention used for these containers indicates the project type that will be stored within (actually only reference) these containers, plus a suffix that indicates the software system they belong to and the board they will be built for (_<b class="cBold">playpen_sim</b>).</td></tr></table>
+
+<table class="steptable"><tr><td class="S_step_text"><a name="wp183729"> </a>To create the empty container project types, proceed as follows:</td></tr></table>
+
+<a name="wp205501"> </a><p class="pAN_anchor">
+</p>
+<div align="left">
+<table class="N1_note" border="0" cellpadding="0" cellspacing="6" id="wp205523table205519">
+  <caption></caption>
+  <tr align="left" valign="top"><td></td><td class="N1_note_content">
+<a name="wp205523"> </a><p class="pzzBodyNote">
+  <b>NOTE:  </b>You can ignore the <b class="cBold">Next</b> button and click <b class="cBold">Finish</b> on the first page in each of the wizards because the defaults are fine for the moment.
+</p>
+</td></tr>
+  <tr align="left" valign="top">    <td>&#160;</td>
+    <td>&#160;</td>
+</tr>
+</table>
+</div>
+<p class="pAN_anchor">
+
+
+</p>
+
+<a name="wp231977"> </a><p class="pAN_anchor">
+</p>
+<div align="left">
+<table class="N1_note" border="0" cellpadding="0" cellspacing="6" id="wp232231table232227">
+  <caption></caption>
+  <tr align="left" valign="top"><td></td><td class="N1_note_content">
+<a name="wp232231"> </a><p class="pzzBodyNote">
+  <b>NOTE:  </b>Project references can only be created if the projects are based on the same Platform. <em class="cEmphasis">Platform</em> here refers to the settings in <b class="cBold">Window &gt; Preferences &gt; General &gt; Target Operating Systems</b>. 
+</p>
+</td></tr>
+  <tr align="left" valign="top">    <td>&#160;</td>
+    <td>&#160;</td>
+</tr>
+</table>
+</div>
+<p class="pAN_anchor">
+
+
+</p>
+
+<table class="steptable" cellpadding="0" id="SummaryNotReq183735"><tr><td class="S_step_num"><em class="bullet">&#149;</em></td>
+<td class="S_step_text"><a name="wp183735"> </a>To create a new container Downloadable Kernel Module project, in the Project Navigator, right-click <b class="cBold">New&#160;&gt;&#160;Downloadable&#160;Kernel&#160;Module&#160;Project</b>.</td></tr></table>
+
+<table class="steptable"><tr><td class="S_step_num">&nbsp;</td>
+<td class="S_step_text"><a name="wp183730"> </a>In the wizard that appears, in the <b class="cBold">Project&#160;name</b> field, enter: <b class="cBold">DKMs_playpen_sim </b>and click <b class="cBold">Finish</b>.</td></tr></table>
+
+<table class="steptable" cellpadding="0" id="SummaryNotReq183777"><tr><td class="S_step_num"><em class="bullet">&#149;</em></td>
+<td class="S_step_text"><a name="wp183777"> </a>To create 

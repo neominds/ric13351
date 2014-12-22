@@ -1,0 +1,32 @@
+StrIntoCStr(const char *theSrcCStr,const char *theInsertCStr,char *theDstCStr,const int maxDstStrLength);
+
+void CopyCStrAndInsertCStrsLongIntsIntoCStr(const char *theSrcCStr,const char **theInsertCStrs,const long *theLongInts,char *theDstCStr,const int maxDstStrLength);
+
+void CopyCStrAndInsert1LongIntIntoCStr(const char *theSrcCStr,const long theNum,char *theDstCStr,const int maxDstStrLength);
+void CopyCStrAndInsert2LongIntsIntoCStr(const char *theSrcCStr,const long long1,const long long2,char *theDstCStr,const int maxDstStrLength);
+void CopyCStrAndInsert3LongIntsIntoCStr(const char *theSrcCStr,const long long1,const long long2,const long long3,char *theDstCStr,const int maxDstStrLength);
+
+void CopyCStrAndInsertCStrLongIntIntoCStr(const char *theSrcCStr,const char *theInsertCStr,const long theNum,char *theDstCStr,const int maxDstStrLength);
+OSErr CopyCStrAndInsertCStrLongIntIntoHandle(const char *theSrcCStr,const char *theInsertCStr,const long theNum,Handle *theHandle);
+
+
+OSErr CopyIndexedWordToCStr(char *theSrcCStr,int whichWord,char *theDstCStr,int maxDstCStrLength);
+OSErr CopyIndexedWordToNewHandle(char *theSrcCStr,int whichWord,Handle *outTheHandle);
+
+OSErr CopyIndexedLineToCStr(const char *theSrcCStr,int inWhichLine,int *lineEndIndex,Boolean *gotLastLine,char *theDstCStr,const int maxDstCStrLength);
+OSErr CopyIndexedLineToNewHandle(const char *theSrcCStr,int inWhichLine,Handle *outNewHandle);
+
+OSErr ExtractIntFromCStr(const char *theSrcCStr,int *outInt,Boolean skipLeadingSpaces = true);
+OSErr ExtractIntFromPStr(const unsigned char *theSrcPStr,int *outInt,Boolean skipLeadingSpaces = true);
+
+
+void ConvertCStrToUpperCase(char *theSrcCStr);
+
+
+int CountOccurencesOfCharInCStr(const char inChar,const char *inSrcCStr);
+int CountWordsInCStr(const char *inSrcCStr);
+
+OSErr CountDigits(const char *inCStr,int *outNumIntegerDigits,int *outNumFractDigits);
+
+void ExtractCStrItemFromCStr(const char *inSrcCStr,const char inItemDelimiter,const int inItemNumber,Boolean *foundItem,char *outDstCharPtr,const int inDstCharPtrMaxLength,const Boolean inTreatMultipleDelimsAsSingleDelim = false);
+OSErr ExtractCStrItemFromCStrIntoNewHandle(const char *inSrcCStr,const char inItemDelimiter,const int inItemNumber,Boolean *foundItem,Hand

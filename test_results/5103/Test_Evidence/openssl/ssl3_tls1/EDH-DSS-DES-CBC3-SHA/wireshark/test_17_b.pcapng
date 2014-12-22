@@ -1,0 +1,108 @@
+
+		hexdump(stdout, "Checktext", checktext, TEST_SIZE);
+		++err;
+		}
+
+	/* And check decrypt chaining */
+	AES_set_encrypt_key(rkey, 8*sizeof rkey, &key);
+	memcpy(iv, saved_iv, sizeof iv);
+	AES_ige_encrypt(plaintext, ciphertext, TEST_SIZE/2, &key, iv,
+					AES_ENCRYPT);
+	AES_ige_encrypt(plaintext+TEST_SIZE/2,
+					ciphertext+TEST_SIZE/2, TEST_SIZE/2,
+					&key, iv, AES_ENCRYPT);
+
+	AES_set_decrypt_key(rkey, 8*sizeof rkey, &key);
+	memcpy(iv, saved_iv, sizeof iv);
+	AES_ige_encrypt(ciphertext, checktext, TEST_SIZE/2, &key, iv,
+					AES_DECRYPT);
+	AES_ige_encrypt(ciphertext+TEST_SIZE/2,
+					checktext+TEST_SIZE/2, TEST_SIZE/2, &key, iv,
+					AES_DECRYPT);
+
+	if(memcmp(checktext, plaintext, TEST_SIZE))
+		{
+		printf("Chained encrypt+chained decrypt doesn't match\n");
+		hexdump(stdout, "Plaintext", plaintext, TEST_SIZE);
+		hexdump(stdout, "Checktext", checktext, TEST_SIZE);
+		++err;
+		}
+
+	/* make sure garble extends forwards only */
+	AES_set_encrypt_key(rkey, 8*sizeof rkey, &key);
+	memcpy(iv, saved_iv, sizeof iv);
+	AES_ige_encrypt(plaintext, ciphertext, sizeof plaintext, &key, iv,
+					AES_ENCRYPT);
+
+	/* corrupt halfway through */
+	++ciphertext[sizeof ciphertext/2];
+	AES_set_decrypt_key(rkey, 8*sizeof rkey, &key);
+	memcpy(iv, saved_iv, sizeof iv);
+	AES_ige_encrypt(ciphertext, checktext, sizeof checktext, &key, iv,
+					AES_DECRYPT);
+
+	matches=0;
+	for(n=0 ; n < sizeof checktext ; ++n)
+		if(checktext[n] == plaintext[n])
+			++matches;
+
+	if(matches > sizeof checktext/2+sizeof checktext/100)
+		{
+		printf("More than 51%% matches after garbling\n");
+		++err;
+		}
+
+	if(matches < sizeof checktext/2)
+		{
+		printf("Garble extends backwards!\n");
+		++err;
+		}
+
+	/* Bi-directional IGE */
+
+	/* Note that we don't have to recover the IV, because chaining isn't */
+	/* possible with biIGE, so the IV is not updated. */
+
+	RAND_pseudo_bytes(rkey2, sizeof rkey2);
+
+	/* Straight encrypt/decrypt */
+	AES_set_encrypt_key(rkey, 8*sizeof rkey, &key);
+	AES_set_encrypt_key(rkey2, 8*sizeof rkey2, &key2);
+	AES_bi_ige_encrypt(plaintext, ciphertext, TEST_SIZE, &key, &key2, iv,
+					   AES_ENCRYPT);
+
+	AES_set_decrypt_key(rkey, 8*sizeof rkey, &key);
+	AES_set_decrypt_key(rkey2, 8*sizeof rkey2, &key2);
+	AES_bi_ige_encrypt(ciphertext, checktext, TEST_SIZE, &key, &key2, iv,
+					   AES_DECRYPT);
+
+	if(memcmp(checktext, plaintext, TEST_SIZE))
+		{
+		printf("Encrypt+decrypt doesn't match\n");
+		hexdump(stdout, "Plaintext", plaintext, TEST_SIZE);
+		hexdump(stdout, "Checktext", checktext, TEST_SIZE);
+		++err;
+		}
+
+	/* make sure garble extends both ways */
+	AES_set_encrypt_key(rkey, 8*sizeof rkey, &key);
+	AES_set_encrypt_key(rkey2, 8*sizeof rkey2, &key2);
+	AES_ige_encrypt(plaintext, ciphertext, sizeof plaintext, &key, iv,
+					AES_ENCRYPT);
+
+	/* corrupt halfway through */
+	++ciphertext[sizeof ciphertext/2];
+	AES_set_decrypt_key(rkey, 8*sizeof rkey, &key);
+	AES_set_decrypt_key(rkey2, 8*sizeof rkey2, &key2);
+	AES_ige_encrypt(ciphertext, checktext, sizeof checktext, &key, iv,
+					AES_DECRYPT);
+
+	matches=0;
+	for(n=0 ; n < sizeof checktext ; ++n)
+		if(checktext[n] == plaintext[n])
+			++matches;
+
+	if(matches > sizeof checktext/100)
+		{
+		printf("More than 1%% matches after bidirectional garbling\n");
+		+
