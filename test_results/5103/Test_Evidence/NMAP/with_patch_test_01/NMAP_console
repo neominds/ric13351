@@ -1,34 +1,31 @@
-tes or days when fresh revocation information is available: used in the
-B<nextUpdate> field. If neither option is present then the B<nextUpdate> field is 
-omitted meaning fresh revocation information is immediately available.
+root@neominds-desktop:/home/neominds/abiram/wr_poodle# nmap -sV --version-light --script ssl-poodle -p 443 10.10.10.99
 
-=back
+Starting Nmap 6.40 ( http://nmap.org ) at 2014-12-19 10:32 IST
+mass_dns: warning: Unable to determine any DNS servers. Reverse DNS is disabled. Try using --system-dns or specify valid servers with --dns-servers
+Nmap scan report for 10.10.10.99
+Host is up (0.00011s latency).
+PORT    STATE SERVICE    VERSION
+443/tcp open  ssl/https?
+| ssl-poodle: 
+|   VULNERABLE:
+|   SSL POODLE information leak
+|     State: VULNERABLE
+|     IDs:  CVE:CVE-2014-3566  OSVDB:113251
+|     Description:
+|           The SSL protocol 3.0, as used in OpenSSL through 1.0.1i and
+|           other products, uses nondeterministic CBC padding, which makes it easier
+|           for man-in-the-middle attackers to obtain cleartext data via a
+|           padding-oracle attack, aka the "POODLE" issue.
+|     Disclosure date: 2014-10-14
+|     Check results:
+|       TLS_RSA_WITH_AES_128_CBC_SHA
+|     References:
+|       http://osvdb.org/113251
+|       https://www.imperialviolet.org/2014/10/14/poodle.html
+|       https://www.openssl.org/~bodo/ssl-poodle.pdf
+|_      http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-3566
+MAC Address: 00:07:E9:0A:F7:62 (Intel)
 
-=head1 OCSP Response verification.
+Service detection performed. Please report any incorrect results at http://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 28.04 seconds
 
-OCSP Response follows the rules specified in RFC2560.
-
-Initially the OCSP responder certificate is located and the signature on
-the OCSP request checked using the responder certificate's public key.
-
-Then a normal certificate verify is performed on the OCSP responder certificate
-building up a certificate chain in the process. The locations of the trusted
-certificates used to build the chain can be specified by the B<CAfile>
-and B<CApath> options or they will be looked for in the standard OpenSSL
-certificates directory.
-
-If the initial verify fails then the OCSP verify process halts with an
-error.
-
-Otherwise the issuing CA certificate in the request is compared to the OCSP
-responder certificate: if there is a match then the OCSP verify succeeds.
-
-Otherwise the OCSP responder certificate's CA is checked against the issuing
-CA certificate in the request. If there is a match and the OCSPSigning
-extended key usage is present in the OCSP responder certificate then the
-OCSP verify succeeds.
-
-Otherwise the root CA of the OCSP responders CA is checked to see if it
-is trusted for OCSP signing. If it is the OCSP verify succeeds.
-
-If none 

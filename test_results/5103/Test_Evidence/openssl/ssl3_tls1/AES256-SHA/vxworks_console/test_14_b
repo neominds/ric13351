@@ -1,91 +1,47 @@
-ument \"/lib/libdriver.so\".\n",
-NULL
-};
+-> nm_client_main("5","-connect","10.10.10.102:443","-cipher","AES256-SHA","-tls1")
+CONNECTED(00000008)
+---
+Certificate chain
+ 0 s:/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+   i:/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIICRTCCAa4CCQD3HDO9S3AeDTANBgkqhkiG9w0BAQsFADBnMQswCQYDVQQGEwJJ
+TjELMAkGA1UECAwCS0ExDDAKBgNVBAcMA0JMUjENMAsGA1UECgwEZnNkZjENMAsG
+A1UECwwEZnNkZjEMMAoGA1UEAwwDZGZzMREwDwYJKoZIhvcNAQkBFgJmczAeFw0x
+NDExMjYxMTEzMTBaFw0xNTExMjYxMTEzMTBaMGcxCzAJBgNVBAYTAklOMQswCQYD
+VQQIDAJLQTEMMAoGA1UEBwwDQkxSMQ0wCwYDVQQKDARmc2RmMQ0wCwYDVQQLDARm
+c2RmMQwwCgYDVQQDDANkZnMxETAPBgkqhkiG9w0BCQEWAmZzMIGfMA0GCSqGSIb3
+DQEBAQUAA4GNADCBiQKBgQDRJHyfgWNE2IXoH7n/7i30YsoM0sAX7hje94l3HsD1
+SL3hNEX3yneGxCNqOpzl44zZRuZC2mXLwpDd6D3ZbIBoRtiXFYnbXazGRGgTKHFU
+27DQCTkD5aHHjZcEVs7RYHYoNWf8mMnLVNUZF+yGzDd2yLqRphg7NCHPY01mL6FV
+eQIDAQABMA0GCSqGSIb3DQEBCwUAA4GBAD3TIHzv6ShxxQ0zcoVQ7BBXXGUrVuZO
+l7O/5KzEzk4RW56QGGfuAzGEQvXROhYcEgAgbN1tvOAo6QU9sjS8+OTrwkzJhOBg
+T7MGlRq4XfgEyCHcmhWv3SzGRaLwkLAiEWzFsuxk+VB6kOAeu8EdqcxfwXGtwAtx
+hluhT2GQwqFl
+-----END CERTIFICATE-----
+subject=/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+issuer=/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+---
+No client certificate CA names sent
+---
+SSL handshake has read 747 bytes and written 248 bytes
+---
+New, TLSv1/SSLv3, Cipher is AES256-SHA
+Server public key is 1024 bit
+SSL-Session:
+    Protocol  : TLSv1
+    Cipher    : AES256-SHA
+    Session-ID: 32B1ED638A9EBADBFFE289583535D05F52F3B7EB097566295357A3CB1A166840
+    Session-ID-ctx:
+    Master-Key: 52C4EFB12F31EF5A2BEEAED7A31732D944FD233FAB3D7EF6DFE4F67DEC4155B39DA9DA0EDDC2C6BCAE3A8F5BA020E599
+    Key-Arg   : None
+    Start Time: 381
+    Timeout   : 7200 (sec)
+    Verify return code: 9 (certificate is not yet valid)
+---
+ok
 
-static void identity(void *ptr)
-	{
-	return;
-	}
+ghfhgdgfd
 
-static int append_buf(char **buf, const char *s, int *size, int step)
-	{
-	int l = strlen(s);
-
-	if (*buf == NULL)
-		{
-		*size = step;
-		*buf = OPENSSL_malloc(*size);
-		if (*buf == NULL)
-			return 0;
-		**buf = '\0';
-		}
-
-	if (**buf != '\0')
-		l += 2;		/* ", " */
-
-	if (strlen(*buf) + strlen(s) >= (unsigned int)*size)
-		{
-		*size += step;
-		*buf = OPENSSL_realloc(*buf, *size);
-		}
-
-	if (*buf == NULL)
-		return 0;
-
-	if (**buf != '\0')
-		BUF_strlcat(*buf, ", ", *size);
-	BUF_strlcat(*buf, s, *size);
-
-	return 1;
-	}
-
-static int util_flags(BIO *bio_out, unsigned int flags, const char *indent)
-	{
-	int started = 0, err = 0;
-	/* Indent before displaying input flags */
-	BIO_printf(bio_out, "%s%s(input flags): ", indent, indent);
-	if(flags == 0)
-		{
-		BIO_printf(bio_out, "<no flags>\n");
-		return 1;
-		}
-        /* If the object is internal, mark it in a way that shows instead of
-         * having it part of all the other flags, even if it really is. */
-	if(flags & ENGINE_CMD_FLAG_INTERNAL)
-		{
-		BIO_printf(bio_out, "[Internal] ");
-		}
-
-	if(flags & ENGINE_CMD_FLAG_NUMERIC)
-		{
-		if(started)
-			{
-			BIO_printf(bio_out, "|");
-			err = 1;
-			}
-		BIO_printf(bio_out, "NUMERIC");
-		started = 1;
-		}
-	/* Now we check that no combinations of the mutually exclusive NUMERIC,
-	 * STRING, and NO_INPUT flags have been used. Future flags that can be
-	 * OR'd together with these would need to added after these to preserve
-	 * the testing logic. */
-	if(flags & ENGINE_CMD_FLAG_STRING)
-		{
-		if(started)
-			{
-			BIO_printf(bio_out, "|");
-			err = 1;
-			}
-		BIO_printf(bio_out, "STRING");
-		started = 1;
-		}
-	if(flags & ENGINE_CMD_FLAG_NO_INPUT)
-		{
-		if(started)
-			{
-			BIO_printf(bio_out, "|");
-			err = 1;
-			}
-		BIO_printf(bio_out, "NO_INPUT");
-		started

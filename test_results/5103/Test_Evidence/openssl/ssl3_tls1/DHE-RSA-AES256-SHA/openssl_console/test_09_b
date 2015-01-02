@@ -1,105 +1,54 @@
-=BIO_new(BIO_s_file())) != NULL)
-			BIO_set_fp(bio_err, stderr, BIO_NOCLOSE|BIO_FP_TEXT);
+neominds@neominds-Vostro-1200:~/openssl-0.9.8zc$ ./apps/openssl s_client -connect 10.10.10.99:443  -cipher DHE-RSA-AES256-SHA  -ssl3  
+CONNECTED(00000003)
+depth=0 /C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+verify error:num=18:self signed certificate
+verify return:1
+depth=0 /C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+verify return:1
+---
+Certificate chain
+ 0 s:/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+   i:/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIICWzCCAcQCCQCdwITsGkNMLTANBgkqhkiG9w0BAQUFADByMQswCQYDVQQGEwJJ
+TjEMMAoGA1UECAwDZHNkMQwwCgYDVQQHDANkc2QxDDAKBgNVBAoMA2RzZDEQMA4G
+A1UECwwHamdqaGpnaDESMBAGA1UEAwwJZGZnZGdkZmdkMRMwEQYJKoZIhvcNAQkB
+FgRlcWVxMB4XDTE0MTIxMDEyNDc0NFoXDTE1MTIxMDEyNDc0NFowcjELMAkGA1UE
+BhMCSU4xDDAKBgNVBAgMA2RzZDEMMAoGA1UEBwwDZHNkMQwwCgYDVQQKDANkc2Qx
+EDAOBgNVBAsMB2pnamhqZ2gxEjAQBgNVBAMMCWRmZ2RnZGZnZDETMBEGCSqGSIb3
+DQEJARYEZXFlcTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAry5KtsSAqj92
+4LZHRK6JJyULgXm0iCfAjWMyUVZO/BYUaPaQK0UAgL+s11fkZmgAp5B5I3jsKdlV
+0DsGr4NiRyYLGxiBH96ma0r3wae3Qd+kJ1YRuvjfYb4gT9I4nJ7TLRNrjeq7zwQj
+CKcFqCKyDbOnqkOE8bx8oEBcAD4aHv0CAwEAATANBgkqhkiG9w0BAQUFAAOBgQBS
+lsUnKSE+5s438X1ui8tC6CgENne6SAXDzDRYCh0BP/OlDYQGI/DLs3RqsogHgy9e
+Y4zq0GdKHzCaaa5mxqlLT8yzIwEPHJcS2RXOc+e10BdT7NQsX6487T+bf7S55ET5
+2uMKQEvgoolvPZQW96Oaqg2xWWhW9QekF0bGNfGc8w==
+-----END CERTIFICATE-----
+subject=/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+issuer=/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+---
+No client certificate CA names sent
+---
+SSL handshake has read 1059 bytes and written 202 bytes
+---
+New, TLSv1/SSLv3, Cipher is DHE-RSA-AES256-SHA
+Server public key is 1024 bit
+Secure Renegotiation IS NOT supported
+Compression: NONE
+Expansion: NONE
+SSL-Session:
+    Protocol  : SSLv3
+    Cipher    : DHE-RSA-AES256-SHA
+    Session-ID: 265878F32B0EB4787C651F26986C068150CEE9B14D230E645E665616D42785A6
+    Session-ID-ctx: 
+    Master-Key: 81476C480B09386141768F09F4C085868ECE3026076768BE83DFBC605E139821DE0136C2FBC19CDA5D2B0CF5766D04F0
+    Key-Arg   : None
+    Start Time: 1419080327
+    Timeout   : 7200 (sec)
+    Verify return code: 18 (self signed certificate)
+---
+ok
+ok
 
-	if (!load_config(bio_err, NULL))
-		goto end;
-
-	engine = NULL;
-	infile = NULL;
-	outfile = NULL;
-	informat = FORMAT_PEM;
-	outformat = FORMAT_PEM;
-
-	prog = argv[0];
-	argc--;
-	argv++;
-	while (argc >= 1)
-		{
-		if (strcmp(*argv,"-inform") == 0)
-			{
-			if (--argc < 1) goto bad;
-			informat=str2fmt(*(++argv));
-			}
-		else if (strcmp(*argv,"-outform") == 0)
-			{
-			if (--argc < 1) goto bad;
-			outformat=str2fmt(*(++argv));
-			}
-		else if (strcmp(*argv,"-in") == 0)
-			{
-			if (--argc < 1) goto bad;
-			infile= *(++argv);
-			}
-		else if (strcmp(*argv,"-out") == 0)
-			{
-			if (--argc < 1) goto bad;
-			outfile= *(++argv);
-			}
-		else if (strcmp(*argv,"-passin") == 0)
-			{
-			if (--argc < 1) goto bad;
-			passargin= *(++argv);
-			}
-		else if (strcmp(*argv,"-passout") == 0)
-			{
-			if (--argc < 1) goto bad;
-			passargout= *(++argv);
-			}
-		else if (strcmp(*argv, "-engine") == 0)
-			{
-			if (--argc < 1) goto bad;
-			engine= *(++argv);
-			}
-		else if (strcmp(*argv, "-noout") == 0)
-			noout = 1;
-		else if (strcmp(*argv, "-text") == 0)
-			text = 1;
-		else if (strcmp(*argv, "-conv_form") == 0)
-			{
-			if (--argc < 1)
-				goto bad;
-			++argv;
-			new_form = 1;
-			if (strcmp(*argv, "compressed") == 0)
-				form = POINT_CONVERSION_COMPRESSED;
-			else if (strcmp(*argv, "uncompressed") == 0)
-				form = POINT_CONVERSION_UNCOMPRESSED;
-			else if (strcmp(*argv, "hybrid") == 0)
-				form = POINT_CONVERSION_HYBRID;
-			else
-				goto bad;
-			}
-		else if (strcmp(*argv, "-param_enc") == 0)
-			{
-			if (--argc < 1)
-				goto bad;
-			++argv;
-			new_asn1_flag = 1;
-			if (strcmp(*argv, "named_curve") == 0)
-				asn1_flag = OPENSSL_EC_NAMED_CURVE;
-			else if (strcmp(*argv, "explicit") == 0)
-				asn1_flag = 0;
-			else
-				goto bad;
-			}
-		else if (strcmp(*argv, "-param_out") == 0)
-			param_out = 1;
-		else if (strcmp(*argv, "-pubin") == 0)
-			pubin=1;
-		else if (strcmp(*argv, "-pubout") == 0)
-			pubout=1;
-		else if ((enc=EVP_get_cipherbyname(&(argv[0][1]))) == NULL)
-			{
-			BIO_printf(bio_err, "unknown option %s\n", *argv);
-			badops=1;
-			break;
-			}
-		argc--;
-		argv++;
-		}
-
-	if (badops)
-		{
-bad:
-		BIO_printf(bio_err, "%s [options] <infile >outfile\n", prog);
-		BIO_printf(bio_err, "where opt

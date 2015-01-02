@@ -1,98 +1,54 @@
-End The DECC & VAXC Compiler Check.
-$!
-$   ENDIF
-$!
-$!  End The Compiler Check.
-$!
-$ ENDIF
-$!
-$! Check To See If We Have A Option For P3.
-$!
-$ IF (P3.EQS."")
-$ THEN
-$!
-$!  Find out what socket library we have available
-$!
-$   IF F$PARSE("SOCKETSHR:") .NES. ""
-$   THEN
-$!
-$!    We have SOCKETSHR, and it is my opinion that it's the best to use.
-$!
-$     P3 = "SOCKETSHR"
-$!
-$!    Tell the user
-$!
-$     WRITE SYS$OUTPUT "Using SOCKETSHR for TCP/IP"
-$!
-$!    Else, let's look for something else
-$!
-$   ELSE
-$!
-$!    Like UCX (the reason to do this before Multinet is that the UCX
-$!    emulation is easier to use...)
-$!
-$     IF F$TRNLNM("UCX$IPC_SHR") .NES. "" -
-	 .OR. F$PARSE("SYS$SHARE:UCX$IPC_SHR.EXE") .NES. "" -
-	 .OR. F$PARSE("SYS$LIBRARY:UCX$IPC.OLB") .NES. ""
-$     THEN
-$!
-$!	Last resort: a UCX or UCX-compatible library
-$!
-$	P3 = "UCX"
-$!
-$!      Tell the user
-$!
-$       WRITE SYS$OUTPUT "Using UCX or an emulation thereof for TCP/IP"
-$!
-$!	That was all...
-$!
-$     ENDIF
-$   ENDIF
-$ ENDIF
-$!
-$! Set Up Initial CC Definitions, Possibly With User Ones
-$!
-$ CCDEFS = "TCPIP_TYPE_''P3'"
-$ IF F$TYPE(USER_CCDEFS) .NES. "" THEN CCDEFS = CCDEFS + "," + USER_CCDEFS
-$ CCEXTRAFLAGS = ""
-$ IF F$TYPE(USER_CCFLAGS) .NES. "" THEN CCEXTRAFLAGS = USER_CCFLAGS
-$ CCDISABLEWARNINGS = "LONGLONGTYPE,LONGLONGSUFX,FOUNDCR"
-$ IF F$TYPE(USER_CCDISABLEWARNINGS) .NES. "" THEN -
-	CCDISABLEWARNINGS = CCDISABLEWARNINGS + "," + USER_CCDISABLEWARNINGS
-$!
-$!  Check To See If The User Entered A Valid Paramter.
-$!
-$ IF (P2.EQS."VAXC").OR.(P2.EQS."DECC").OR.(P2.EQS."GNUC")
-$ THEN
-$!
-$!  Check To See If The User Wanted DECC.
-$!
-$   IF (P2.EQS."DECC")
-$   THEN
-$!
-$!    Looks Like DECC, Set To Use DECC.
-$!
-$     COMPILER = "DECC"
-$!
-$!    Tell The User We Are Using DECC.
-$!
-$     WRITE SYS$OUTPUT "Using DECC 'C' Compiler."
-$!
-$!    Use DECC...
-$!
-$     CC = "CC"
-$     IF ARCH.EQS."VAX" .AND. F$TRNLNM("DECC$CC_DEFAULT").NES."/DECC" -
-	 THEN CC = "CC /DECC"
-$     CC = CC + "/''CC_OPTIMIZE' /''DEBUGGER' /STANDARD=ANSI89" + -
-           "/NOLIST /PREFIX=ALL" + -
-	   "/INCLUDE=(SYS$DISK:[-],SYS$DISK:[-.CRYPTO])" + CCEXTRAFLAGS
-$!
-$!    Define The Linker Options File Name.
-$!
-$     OPT_FILE = "''EXE_DIR'VAX_DECC_OPTIONS.OPT"
-$!
-$!  End DECC Check.
-$!
-$   ENDIF
-$!
-$!  Check To See If We Are To Use V
+neominds@neominds-Vostro-1200:~/openssl-0.9.8zc$ ./apps/openssl s_client -connect 10.10.10.99:443  -cipher EXP-EDH-RSA-DES-CBC-SHA  -ssl3 
+CONNECTED(00000003)
+depth=0 /C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+verify error:num=18:self signed certificate
+verify return:1
+depth=0 /C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+verify return:1
+---
+Certificate chain
+ 0 s:/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+   i:/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIICWzCCAcQCCQCdwITsGkNMLTANBgkqhkiG9w0BAQUFADByMQswCQYDVQQGEwJJ
+TjEMMAoGA1UECAwDZHNkMQwwCgYDVQQHDANkc2QxDDAKBgNVBAoMA2RzZDEQMA4G
+A1UECwwHamdqaGpnaDESMBAGA1UEAwwJZGZnZGdkZmdkMRMwEQYJKoZIhvcNAQkB
+FgRlcWVxMB4XDTE0MTIxMDEyNDc0NFoXDTE1MTIxMDEyNDc0NFowcjELMAkGA1UE
+BhMCSU4xDDAKBgNVBAgMA2RzZDEMMAoGA1UEBwwDZHNkMQwwCgYDVQQKDANkc2Qx
+EDAOBgNVBAsMB2pnamhqZ2gxEjAQBgNVBAMMCWRmZ2RnZGZnZDETMBEGCSqGSIb3
+DQEJARYEZXFlcTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAry5KtsSAqj92
+4LZHRK6JJyULgXm0iCfAjWMyUVZO/BYUaPaQK0UAgL+s11fkZmgAp5B5I3jsKdlV
+0DsGr4NiRyYLGxiBH96ma0r3wae3Qd+kJ1YRuvjfYb4gT9I4nJ7TLRNrjeq7zwQj
+CKcFqCKyDbOnqkOE8bx8oEBcAD4aHv0CAwEAATANBgkqhkiG9w0BAQUFAAOBgQBS
+lsUnKSE+5s438X1ui8tC6CgENne6SAXDzDRYCh0BP/OlDYQGI/DLs3RqsogHgy9e
+Y4zq0GdKHzCaaa5mxqlLT8yzIwEPHJcS2RXOc+e10BdT7NQsX6487T+bf7S55ET5
+2uMKQEvgoolvPZQW96Oaqg2xWWhW9QekF0bGNfGc8w==
+-----END CERTIFICATE-----
+subject=/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+issuer=/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+---
+No client certificate CA names sent
+---
+SSL handshake has read 1059 bytes and written 202 bytes
+---
+New, TLSv1/SSLv3, Cipher is EXP-EDH-RSA-DES-CBC-SHA
+Server public key is 1024 bit
+Secure Renegotiation IS NOT supported
+Compression: NONE
+Expansion: NONE
+SSL-Session:
+    Protocol  : SSLv3
+    Cipher    : EXP-EDH-RSA-DES-CBC-SHA
+    Session-ID: 15293FA0ADC80F622E44024B29A72D2AD32A36C4802B2F4597C49EF60F2B7ABC
+    Session-ID-ctx: 
+    Master-Key: EE615A97A60D80D21C4F727F0793438B2E35D32BE7CCB29975C3EA125B56C38A5DC875DADDC80765BFE58903491FF4AE
+    Key-Arg   : None
+    Start Time: 1419088250
+    Timeout   : 7200 (sec)
+    Verify return code: 18 (self signed certificate)
+---
+ok
+ok
+

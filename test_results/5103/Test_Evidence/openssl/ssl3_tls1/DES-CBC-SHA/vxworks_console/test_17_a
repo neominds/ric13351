@@ -1,159 +1,63 @@
-eak;
-			}
-			
-			else
-			{
-				theDstCStr[i] = theSrcCStr[i];
-			}
-		}
-	}
-}
 
+-> nm_client_main("6","-connect","10.10.10.102:443","-cipher","DES-CBC-SHA","-ssl3","-fallback_scsv")
+creating ssl context
+calling SSL_new
+calling init_client
+CONNECTED(00000008)
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+verify error:num=18:self signed certificate
+verify return:1
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+verify error:num=7:certificate signature failure
+verify return:1
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+verify error:num=9:certificate is not yet valid
+notBefore=Nov 26 11:13:10 2014 GMT
+verify return:1
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+notBefore=Nov 26 11:13:10 2014 GMT
+verify return:1
+---
+Certificate chain
+ 0 s:/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+   i:/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIICRTCCAa4CCQD3HDO9S3AeDTANBgkqhkiG9w0BAQsFADBnMQswCQYDVQQGEwJJ
+TjELMAkGA1UECAwCS0ExDDAKBgNVBAcMA0JMUjENMAsGA1UECgwEZnNkZjENMAsG
+A1UECwwEZnNkZjEMMAoGA1UEAwwDZGZzMREwDwYJKoZIhvcNAQkBFgJmczAeFw0x
+NDExMjYxMTEzMTBaFw0xNTExMjYxMTEzMTBaMGcxCzAJBgNVBAYTAklOMQswCQYD
+VQQIDAJLQTEMMAoGA1UEBwwDQkxSMQ0wCwYDVQQKDARmc2RmMQ0wCwYDVQQLDARm
+c2RmMQwwCgYDVQQDDANkZnMxETAPBgkqhkiG9w0BCQEWAmZzMIGfMA0GCSqGSIb3
+DQEBAQUAA4GNADCBiQKBgQDRJHyfgWNE2IXoH7n/7i30YsoM0sAX7hje94l3HsD1
+SL3hNEX3yneGxCNqOpzl44zZRuZC2mXLwpDd6D3ZbIBoRtiXFYnbXazGRGgTKHFU
+27DQCTkD5aHHjZcEVs7RYHYoNWf8mMnLVNUZF+yGzDd2yLqRphg7NCHPY01mL6FV
+eQIDAQABMA0GCSqGSIb3DQEBCwUAA4GBAD3TIHzv6ShxxQ0zcoVQ7BBXXGUrVuZO
+l7O/5KzEzk4RW56QGGfuAzGEQvXROhYcEgAgbN1tvOAo6QU9sjS8+OTrwkzJhOBg
+T7MGlRq4XfgEyCHcmhWv3SzGRaLwkLAiEWzFsuxk+VB6kOAeu8EdqcxfwXGtwAtx
+hluhT2GQwqFl
+-----END CERTIFICATE-----
+subject=/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+issuer=/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+---
+No client certificate CA names sent
+---
+SSL handshake has read 763 bytes and written 264 bytes
+---
+New, TLSv1/SSLv3, Cipher is DES-CBC-SHA
+Server public key is 1024 bit
+SSL-Session:
+    Protocol  : SSLv3
+    Cipher    : DES-CBC-SHA
+    Session-ID: 090A0D2F1B5CB5F2DED1BB4516400C2DF95B67F46A83D890FD24A7CC479DB643
+    Session-ID-ctx:
+    Master-Key: B56B8E9E1FA6DA901D0174600557A6F146DA40626ECABA22977C91DD8019AE2AC93A6525B27B6D89BAD5BB8636ADEA65
+    Key-Arg   : None
+    Start Time: 719
+    Timeout   : 7200 (sec)
+    Verify return code: 9 (certificate is not yet valid)
+---
+ok
+ok
 
-
-void CopyCSubstrToCStr(const char *theSrcCStr,const int maxCharsToCopy,char *theDstCStr,const int maxDstStrLength)
-{
-int		i;
-
-
-	if (theDstCStr != nil && theSrcCStr != nil && maxDstStrLength > 0)
-	{
-		for (i = 0;;i++)
-		{
-			if (theSrcCStr[i] == 0 || i >= maxDstStrLength - 1 || i >= maxCharsToCopy)
-			{
-				theDstCStr[i] = 0;
-				
-				break;
-			}
-			
-			else
-			{
-				theDstCStr[i] = theSrcCStr[i];
-			}
-		}
-	}
-}
-
-
-
-void CopyCSubstrToPStr(const char *theSrcCStr,const int maxCharsToCopy,unsigned char *theDstPStr,const int maxDstStrLength)
-{
-int		i;
-int		theMaxDstStrLength;
-
-	
-	theMaxDstStrLength = maxDstStrLength;
-
-	if (theDstPStr != nil && theSrcCStr != nil && theMaxDstStrLength > 0)
-	{
-		if (theMaxDstStrLength > 255)
-		{
-			theMaxDstStrLength = 255;
-		}
-		
-		
-		for (i = 0;;i++)
-		{
-			if (theSrcCStr[i] == 0 || i >= theMaxDstStrLength - 1 || i >= maxCharsToCopy)
-			{
-				theDstPStr[0] = i;
-				
-				break;
-			}
-			
-			else
-			{
-				theDstPStr[i + 1] = theSrcCStr[i];
-			}
-		}
-	}
-}
-
-
-
-void CopyCStrToPStr(const char *theSrcCStr,unsigned char *theDstPStr,const int maxDstStrLength)
-{
-int		i;
-int		theMaxDstStrLength;
-
-	
-	theMaxDstStrLength = maxDstStrLength;
-
-	if (theDstPStr != nil && theSrcCStr != nil && theMaxDstStrLength > 0)
-	{
-		if (theMaxDstStrLength > 255)
-		{
-			theMaxDstStrLength = 255;
-		}
-		
-		
-		for (i = 0;;i++)
-		{
-			if (i >= theMaxDstStrLength - 1 || theSrcCStr[i] == 0)
-			{
-				theDstPStr[0] = i;
-				
-				break;
-			}
-			
-			else
-			{
-				theDstPStr[i + 1] = theSrcCStr[i];
-			}
-		}
-	}
-}
-
-
-void ConcatPStrToCStr(const unsigned char *thePStr,char *theCStr,const int maxCStrLength)
-{
-int		i,numPChars,cStrLength;
-
-
-	if (thePStr != nil && theCStr != nil && maxCStrLength > 0)
-	{
-		for (cStrLength = 0;theCStr[cStrLength] != 0;cStrLength++)
-		{
-		
-		}
-		
-
-		numPChars = thePStr[0];
-		
-		
-		for (i = 0;;i++)
-		{
-			if (i >= numPChars || cStrLength >= maxCStrLength - 1)
-			{
-				theCStr[cStrLength++] = 0;
-				
-				break;
-			}
-			
-			else
-			{
-				theCStr[cStrLength++] = thePStr[i + 1];
-			}
-		}
-	}
-}
-
-
-
-void ConcatPStrToPStr(const unsigned char *theSrcPStr,unsigned char *theDstPStr,const int maxDstStrLength)
-{
-int		theMaxDstStrLength;
-
-	
-	theMaxDstStrLength = maxDstStrLength;
-	
-	if (theSrcPStr != nil && theDstPStr != nil && theMaxDstStrLength > 0)
-	{
-		if (theMaxDstStrLength > 255)
-		{
-			theMaxDstStrLength = 255;
-		}
-		
-		
-		i

@@ -1,47 +1,59 @@
-/* apps/speed.c -*- mode:C; c-file-style: "eay" -*- */
-/* Copyright (C) 1995-1998 Eric Young (eay@cryptsoft.com)
- * All rights reserved.
- *
- * This package is an SSL implementation written
- * by Eric Young (eay@cryptsoft.com).
- * The implementation was written so as to conform with Netscapes SSL.
- * 
- * This library is free for commercial and non-commercial use as long as
- * the following conditions are aheared to.  The following conditions
- * apply to all code found in this distribution, be it the RC4, RSA,
- * lhash, DES, etc., code; not just the SSL code.  The SSL documentation
- * included with this distribution is covered by the same copyright terms
- * except that the holder is Tim Hudson (tjh@cryptsoft.com).
- * 
- * Copyright remains Eric Young's, and as such any Copyright notices in
- * the code are not to be removed.
- * If this package is used in a product, Eric Young should be given attribution
- * as the author of the parts of the library used.
- * This can be in the form of a textual message at program startup or
- * in documentation (online or textual) provided with the package.
- * 
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *    "This product includes cryptographic software written by
- *     Eric Young (eay@cryptsoft.com)"
- *    The word 'cryptographic' can be left out if the rouines from the library
- *    being used are not cryptographic related :-).
- * 4. If you include any Windows specific code (or a derivative thereof) from 
- *    the apps directory (application code) you must include an acknowledgement:
- *    "This product includes software written by Tim Hudson (tjh@cryptsoft.com)"
- * 
- * THIS SOFTWARE IS PROVIDED BY ERIC YOUNG ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE,
+verify error:num=7:certificate signature failure
+verify return:1
+depth=0 /C=IN/ST=fdsgf/L=fsdf/O=Internet Widgits Pty Ltd/OU=fsdf/CN=fs/emailAddress=fsd
+verify error:num=9:certificate is not yet valid
+notBefore=Nov 28 11:24:09 2014 GMT
+verify return:1
+depth=0 /C=IN/ST=fdsgf/L=fsdf/O=Internet Widgits Pty Ltd/OU=fsdf/CN=fs/emailAddress=fsd
+notBefore=Nov 28 11:24:09 2014 GMT
+verify return:1
+---
+Certificate chain
+ 0 s:/C=IN/ST=fdsgf/L=fsdf/O=Internet Widgits Pty Ltd/OU=fsdf/CN=fs/emailAddress=fsd
+   i:/C=IN/ST=fdsgf/L=fsdf/O=Internet Widgits Pty Ltd/OU=fsdf/CN=fs/emailAddress=fsd
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIIDjjCCA0ygAwIBAgIJAO5zVKZEn61wMAsGCWCGSAFlAwQDAjB/MQswCQYDVQQG
+EwJJTjEOMAwGA1UECAwFZmRzZ2YxDTALBgNVBAcMBGZzZGYxITAfBgNVBAoMGElu
+dGVybmV0IFdpZGdpdHMgUHR5IEx0ZDENMAsGA1UECwwEZnNkZjELMAkGA1UEAwwC
+ZnMxEjAQBgkqhkiG9w0BCQEWA2ZzZDAeFw0xNDExMjgxMTI0MDlaFw0xNDEyMjgx
+MTI0MDlaMH8xCzAJBgNVBAYTAklOMQ4wDAYDVQQIDAVmZHNnZjENMAsGA1UEBwwE
+ZnNkZjEhMB8GA1UECgwYSW50ZXJuZXQgV2lkZ2l0cyBQdHkgTHRkMQ0wCwYDVQQL
+DARmc2RmMQswCQYDVQQDDAJmczESMBAGCSqGSIb3DQEJARYDZnNkMIIBtzCCASsG
+ByqGSM44BAEwggEeAoGBAOEPdyKbDjDDx+EXS5ugEsjmAAp6N0VTsbSqMbYXvybM
+LUx3AGDOSj5aDkTZP5VF42yKQIIvUmYYRRxAK6P4NdjmhORZU4sOQ6x4oGO+h7IO
+LQerlqVaWTsL6+lgWM7Wow0sIeq6rs/nmdAohH9y7Pc0dQfS4AZi/8IFiZ/wnoyx
+AhUA2ktDAnmfHf6/8dJq+55QeD8zgT8CgYBrw8fU1ZEZCX17IKdUSoFRqZSQ9qEF
+BaplwiLI8o/mlRMojY0IxNFKvKzDnBnyo/TahVhNhNB66ae4psz67ytD9bCgS15E
+UTvomqfRS24q0cNNPSjQGfd1gIk3CM6ZyTmM1qItkV4I1ABlbADwwI3vdmRkOBSX
+zwqpzbpjwmeOqgOBhQACgYEAjckcbgPFO6oYtjEfiR8RwNYQatE6/AbksbG55WSO
+Ita02xcEwb3+39l9q8ug5+V+9pla50J4vQmRVylGK7mlG1mxfPv29Fnm+qG7audC
+3ufK6s/XOsDI7GMohZTFj5QJUStpRDHl7xAMpu3cSL3zAlGJOe/ewOjniL9yYYKA
+QUSjUDBOMB0GA1UdDgQWBBTPQP8KYiz97PpsrFrLLhPiuHWwwDAfBgNVHSMEGDAW
+gBTPQP8KYiz97PpsrFrLLhPiuHWwwDAMBgNVHRMEBTADAQH/MAsGCWCGSAFlAwQD
+AgMvADAsAhQ0XM+sCpY+cu3SxbQxQumLSjQEIAIUBDTtJMfB8+LGepFyi5S12/E3
+eRY=
+-----END CERTIFICATE-----
+subject=/C=IN/ST=fdsgf/L=fsdf/O=Internet Widgits Pty Ltd/OU=fsdf/CN=fs/emailAddress=fsd
+issuer=/C=IN/ST=fdsgf/L=fsdf/O=Internet Widgits Pty Ltd/OU=fsdf/CN=fs/emailAddress=fsd
+---
+No client certificate CA names sent
+---
+SSL handshake has read 1261 bytes and written 177 bytes
+---
+New, TLSv1/SSLv3, Cipher is EDH-DSS-DES-CBC-SHA
+Server public key is 1024 bit
+SSL-Session:
+    Protocol  : TLSv1
+    Cipher    : EDH-DSS-DES-CBC-SHA
+    Session-ID: BA66FF5D715A1CC6535D6A40BECEEB14D73F38F7182CD7B86B3906830CB7C79D
+    Session-ID-ctx:
+    Master-Key: 4462AE4801AB0FDDB06D6170512708DAED826BE326335BFC33CBA603E4F90C809E879998E0D0D69396851E3B0A6A8B5B
+    Key-Arg   : None
+    Start Time: 149
+    Timeout   : 7200 (sec)
+    Verify return code: 9 (certificate is not yet valid)
+---
+ok
+ok

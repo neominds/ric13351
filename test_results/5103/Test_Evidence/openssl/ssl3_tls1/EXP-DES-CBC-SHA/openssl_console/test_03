@@ -1,74 +1,53 @@
-default), PEM or DER\n");
-		BIO_printf (bio_err, "-content file  supply or override content for detached signature\n");
-		BIO_printf (bio_err, "-to addr       to address\n");
-		BIO_printf (bio_err, "-from ad       from address\n");
-		BIO_printf (bio_err, "-subject s     subject\n");
-		BIO_printf (bio_err, "-text          include or delete text MIME headers\n");
-		BIO_printf (bio_err, "-CApath dir    trusted certificates directory\n");
-		BIO_printf (bio_err, "-CAfile file   trusted certificates file\n");
-		BIO_printf (bio_err, "-crl_check     check revocation status of signer's certificate using CRLs\n");
-		BIO_printf (bio_err, "-crl_check_all check revocation status of signer's certificate chain using CRLs\n");
-#ifndef OPENSSL_NO_ENGINE
-		BIO_printf (bio_err, "-engine e      use engine e, possibly a hardware device.\n");
-#endif
-		BIO_printf (bio_err, "-passin arg    input file pass phrase source\n");
-		BIO_printf(bio_err,  "-rand file%cfile%c...\n", LIST_SEPARATOR_CHAR, LIST_SEPARATOR_CHAR);
-		BIO_printf(bio_err,  "               load the file (or the files in the directory) into\n");
-		BIO_printf(bio_err,  "               the random number generator\n");
-		BIO_printf (bio_err, "cert.pem       recipient certificate(s) for encryption\n");
-		goto end;
-		}
-
-#ifndef OPENSSL_NO_ENGINE
-        e = setup_engine(bio_err, engine, 0);
-#endif
-
-	if (!app_passwd(bio_err, passargin, NULL, &passin, NULL))
-		{
-		BIO_printf(bio_err, "Error getting password\n");
-		goto end;
-		}
-
-	if (need_rand)
-		{
-		app_RAND_load_file(NULL, bio_err, (inrand != NULL));
-		if (inrand != NULL)
-			BIO_printf(bio_err,"%ld semi-random bytes loaded\n",
-				app_RAND_load_files(inrand));
-		}
-
-	ret = 2;
-
-	if (operation != SMIME_SIGN)
-		flags &= ~PKCS7_DETACHED;
-
-	if (operation & SMIME_OP)
-		{
-		if (flags & PKCS7_BINARY)
-			inmode = "rb";
-		if (outformat == FORMAT_ASN1)
-			outmode = "wb";
-		}
-	else
-		{
-		if (flags & PKCS7_BINARY)
-			outmode = "wb";
-		if (informat == FORMAT_ASN1)
-			inmode = "rb";
-		}
-
-	if (operation == SMIME_ENCRYPT)
-		{
-		if (!cipher)
-			{
-#ifndef OPENSSL_NO_DES			
-			cipher = EVP_des_ede3_cbc();
-#else
-			BIO_printf(bio_err, "No cipher selected\n");
-			goto end;
-#endif
-			}
-		encerts = sk_X509_new_null();
-		while (*args)
-			{
-			if (!(cert = load_cert
+neominds@neominds-Vostro-1200:~/openssl-0.9.8zc$ ./apps/openssl s_client -connect 10.10.10.99:443  -cipher EXP-DES-CBC-SHA  -tls1 
+CONNECTED(00000003)
+depth=0 /C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+verify error:num=18:self signed certificate
+verify return:1
+depth=0 /C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+verify return:1
+---
+Certificate chain
+ 0 s:/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+   i:/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIICWzCCAcQCCQCdwITsGkNMLTANBgkqhkiG9w0BAQUFADByMQswCQYDVQQGEwJJ
+TjEMMAoGA1UECAwDZHNkMQwwCgYDVQQHDANkc2QxDDAKBgNVBAoMA2RzZDEQMA4G
+A1UECwwHamdqaGpnaDESMBAGA1UEAwwJZGZnZGdkZmdkMRMwEQYJKoZIhvcNAQkB
+FgRlcWVxMB4XDTE0MTIxMDEyNDc0NFoXDTE1MTIxMDEyNDc0NFowcjELMAkGA1UE
+BhMCSU4xDDAKBgNVBAgMA2RzZDEMMAoGA1UEBwwDZHNkMQwwCgYDVQQKDANkc2Qx
+EDAOBgNVBAsMB2pnamhqZ2gxEjAQBgNVBAMMCWRmZ2RnZGZnZDETMBEGCSqGSIb3
+DQEJARYEZXFlcTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAry5KtsSAqj92
+4LZHRK6JJyULgXm0iCfAjWMyUVZO/BYUaPaQK0UAgL+s11fkZmgAp5B5I3jsKdlV
+0DsGr4NiRyYLGxiBH96ma0r3wae3Qd+kJ1YRuvjfYb4gT9I4nJ7TLRNrjeq7zwQj
+CKcFqCKyDbOnqkOE8bx8oEBcAD4aHv0CAwEAATANBgkqhkiG9w0BAQUFAAOBgQBS
+lsUnKSE+5s438X1ui8tC6CgENne6SAXDzDRYCh0BP/OlDYQGI/DLs3RqsogHgy9e
+Y4zq0GdKHzCaaa5mxqlLT8yzIwEPHJcS2RXOc+e10BdT7NQsX6487T+bf7S55ET5
+2uMKQEvgoolvPZQW96Oaqg2xWWhW9QekF0bGNfGc8w==
+-----END CERTIFICATE-----
+subject=/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+issuer=/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+---
+No client certificate CA names sent
+---
+SSL handshake has read 969 bytes and written 184 bytes
+---
+New, TLSv1/SSLv3, Cipher is EXP-DES-CBC-SHA
+Server public key is 1024 bit
+Secure Renegotiation IS NOT supported
+Compression: NONE
+Expansion: NONE
+SSL-Session:
+    Protocol  : TLSv1
+    Cipher    : EXP-DES-CBC-SHA
+    Session-ID: 162922B32304D8EAFDDE52E1BC63D45A078EAC92802B560B416F6466F3E8EFA7
+    Session-ID-ctx: 
+    Master-Key: 70D236DDAD2B57726D08E03BB4C88712E9B1B32539DB600DC70B1C435CE0C38C4EAA999495F9FC3CEC0D2B46DB11C87C
+    Key-Arg   : None
+    Start Time: 1419086571
+    Timeout   : 7200 (sec)
+    Verify return code: 18 (self signed certificate)
+---
+ok
+ok

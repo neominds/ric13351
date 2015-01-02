@@ -1,114 +1,63 @@
-to end;
-			}
-		EC_GROUP_set_asn1_flag(group, asn1_flag);
-		EC_GROUP_set_point_conversion_form(group, form);
-		}
-	else if (informat == FORMAT_ASN1)
-		{
-		group = d2i_ECPKParameters_bio(in, NULL);
-		}
-	else if (informat == FORMAT_PEM)
-		{
-		group = PEM_read_bio_ECPKParameters(in,NULL,NULL,NULL);
-		}
-	else
-		{
-		BIO_printf(bio_err, "bad input format specified\n");
-		goto end;
-		}
 
-	if (group == NULL)
-		{
-		BIO_printf(bio_err, 
-			"unable to load elliptic curve parameters\n");
-		ERR_print_errors(bio_err);
-		goto end;
-		}
+-> nm_client_main("6","-connect","10.10.10.102:443","-cipher","EXP-DES-CBC-SHA","-tls1","-fallback_scsv")
+creating ssl context
+calling SSL_new
+calling init_client
+CONNECTED(00000008)
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+verify error:num=18:self signed certificate
+verify return:1
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+verify error:num=7:certificate signature failure
+verify return:1
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+verify error:num=9:certificate is not yet valid
+notBefore=Nov 26 11:13:10 2014 GMT
+verify return:1
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+notBefore=Nov 26 11:13:10 2014 GMT
+verify return:1
+---
+Certificate chain
+ 0 s:/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+   i:/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIICRTCCAa4CCQD3HDO9S3AeDTANBgkqhkiG9w0BAQsFADBnMQswCQYDVQQGEwJJ
+TjELMAkGA1UECAwCS0ExDDAKBgNVBAcMA0JMUjENMAsGA1UECgwEZnNkZjENMAsG
+A1UECwwEZnNkZjEMMAoGA1UEAwwDZGZzMREwDwYJKoZIhvcNAQkBFgJmczAeFw0x
+NDExMjYxMTEzMTBaFw0xNTExMjYxMTEzMTBaMGcxCzAJBgNVBAYTAklOMQswCQYD
+VQQIDAJLQTEMMAoGA1UEBwwDQkxSMQ0wCwYDVQQKDARmc2RmMQ0wCwYDVQQLDARm
+c2RmMQwwCgYDVQQDDANkZnMxETAPBgkqhkiG9w0BCQEWAmZzMIGfMA0GCSqGSIb3
+DQEBAQUAA4GNADCBiQKBgQDRJHyfgWNE2IXoH7n/7i30YsoM0sAX7hje94l3HsD1
+SL3hNEX3yneGxCNqOpzl44zZRuZC2mXLwpDd6D3ZbIBoRtiXFYnbXazGRGgTKHFU
+27DQCTkD5aHHjZcEVs7RYHYoNWf8mMnLVNUZF+yGzDd2yLqRphg7NCHPY01mL6FV
+eQIDAQABMA0GCSqGSIb3DQEBCwUAA4GBAD3TIHzv6ShxxQ0zcoVQ7BBXXGUrVuZO
+l7O/5KzEzk4RW56QGGfuAzGEQvXROhYcEgAgbN1tvOAo6QU9sjS8+OTrwkzJhOBg
+T7MGlRq4XfgEyCHcmhWv3SzGRaLwkLAiEWzFsuxk+VB6kOAeu8EdqcxfwXGtwAtx
+hluhT2GQwqFl
+-----END CERTIFICATE-----
+subject=/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+issuer=/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+---
+No client certificate CA names sent
+---
+SSL handshake has read 949 bytes and written 178 bytes
+---
+New, TLSv1/SSLv3, Cipher is EXP-DES-CBC-SHA
+Server public key is 1024 bit
+SSL-Session:
+    Protocol  : TLSv1
+    Cipher    : EXP-DES-CBC-SHA
+    Session-ID: FA6F252756D2303EB98056712EDF3957F6F416A9201C4F111FFC9373FC5C1FBC
+    Session-ID-ctx:
+    Master-Key: EBA1FF520862E2106083B36E51DABEF4065139128DF9C8FF3679DCF88A08DB3012874B26701635BAD45D8389BCC975A9
+    Key-Arg   : None
+    Start Time: 157
+    Timeout   : 7200 (sec)
+    Verify return code: 9 (certificate is not yet valid)
+---
+ok
+ok
 
-	if (new_form)
-		EC_GROUP_set_point_conversion_form(group, form);
-
-	if (new_asn1_flag)
-		EC_GROUP_set_asn1_flag(group, asn1_flag);
-
-	if (no_seed)
-		{
-		EC_GROUP_set_seed(group, NULL, 0);
-		}
-
-	if (text)
-		{
-		if (!ECPKParameters_print(out, group, 0))
-			goto end;
-		}
-
-	if (check)
-		{
-		if (group == NULL)
-			BIO_printf(bio_err, "no elliptic curve parameters\n");
-		BIO_printf(bio_err, "checking elliptic curve parameters: ");
-		if (!EC_GROUP_check(group, NULL))
-			{
-			BIO_printf(bio_err, "failed\n");
-			ERR_print_errors(bio_err);
-			}
-		else
-			BIO_printf(bio_err, "ok\n");
-			
-		}
-
-	if (C)
-		{
-		size_t	buf_len = 0, tmp_len = 0;
-		const EC_POINT *point;
-		int	is_prime, len = 0;
-		const EC_METHOD *meth = EC_GROUP_method_of(group);
-
-		if ((ec_p = BN_new()) == NULL || (ec_a = BN_new()) == NULL ||
-		    (ec_b = BN_new()) == NULL || (ec_gen = BN_new()) == NULL ||
-		    (ec_order = BN_new()) == NULL || 
-		    (ec_cofactor = BN_new()) == NULL )
-			{
-			perror("OPENSSL_malloc");
-			goto end;
-			}
-
-		is_prime = (EC_METHOD_get_field_type(meth) == 
-			NID_X9_62_prime_field);
-
-		if (is_prime)
-			{
-			if (!EC_GROUP_get_curve_GFp(group, ec_p, ec_a,
-				ec_b, NULL))
-				goto end;
-			}
-		else
-			{
-			/* TODO */
-			goto end;
-			}
-
-		if ((point = EC_GROUP_get0_generator(group)) == NULL)
-			goto end;
-		if (!EC_POINT_point2bn(group, point, 
-			EC_GROUP_get_point_conversion_form(group), ec_gen, 
-			NULL))
-			goto end;
-		if (!EC_GROUP_get_order(group, ec_order, NULL))
-			goto end;
-		if (!EC_GROUP_get_cofactor(group, ec_cofactor, NULL))
-			goto end;
-
-		if (!ec_p || !ec_a || !ec_b || !ec_gen || 
-			!ec_order || !ec_cofactor)
-			goto end;
-
-		len = BN_num_bits(ec_order);
-
-		if ((tmp_len = (size_t)BN_num_bytes(ec_p)) > buf_len)
-			buf_len = tmp_len;
-		if ((tmp_len = (size_t)BN_num_bytes(ec_a)) > buf_len)
-			buf_len = tmp_len;
-		if ((tmp_len = (size_t)BN_num_bytes(ec_b)) > buf_len)
-			buf_len = tmp_len;
-		if ((tmp_len = (si

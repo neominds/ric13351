@@ -1,115 +1,57 @@
-rbose=0;
-	int ret=1,inl;
-	int nopad = 0;
-	unsigned char key[EVP_MAX_KEY_LENGTH],iv[EVP_MAX_IV_LENGTH];
-	unsigned char salt[PKCS5_SALT_LEN];
-	char *str=NULL, *passarg = NULL, *pass = NULL;
-	char *hkey=NULL,*hiv=NULL,*hsalt = NULL;
-	char *md=NULL;
-	int enc=1,printkey=0,i,base64=0;
-	int debug=0,olb64=0,nosalt=0;
-	const EVP_CIPHER *cipher=NULL,*c;
-	EVP_CIPHER_CTX *ctx = NULL;
-	char *inf=NULL,*outf=NULL;
-	BIO *in=NULL,*out=NULL,*b64=NULL,*benc=NULL,*rbio=NULL,*wbio=NULL;
-#define PROG_NAME_SIZE  39
-	char pname[PROG_NAME_SIZE+1];
-#ifndef OPENSSL_NO_ENGINE
-	char *engine = NULL;
-#endif
-	const EVP_MD *dgst=NULL;
-	int non_fips_allow = 0;
-
-	apps_startup();
-
-	if (bio_err == NULL)
-		if ((bio_err=BIO_new(BIO_s_file())) != NULL)
-			BIO_set_fp(bio_err,stderr,BIO_NOCLOSE|BIO_FP_TEXT);
-
-	if (!load_config(bio_err, NULL))
-		goto end;
-
-	/* first check the program name */
-	program_name(argv[0],pname,sizeof pname);
-	if (strcmp(pname,"base64") == 0)
-		base64=1;
-
-	cipher=EVP_get_cipherbyname(pname);
-	if (!base64 && (cipher == NULL) && (strcmp(pname,"enc") != 0))
-		{
-		BIO_printf(bio_err,"%s is an unknown cipher\n",pname);
-		goto bad;
-		}
-
-	argc--;
-	argv++;
-	while (argc >= 1)
-		{
-		if	(strcmp(*argv,"-e") == 0)
-			enc=1;
-		else if (strcmp(*argv,"-in") == 0)
-			{
-			if (--argc < 1) goto bad;
-			inf= *(++argv);
-			}
-		else if (strcmp(*argv,"-out") == 0)
-			{
-			if (--argc < 1) goto bad;
-			outf= *(++argv);
-			}
-		else if (strcmp(*argv,"-pass") == 0)
-			{
-			if (--argc < 1) goto bad;
-			passarg= *(++argv);
-			}
-#ifndef OPENSSL_NO_ENGINE
-		else if (strcmp(*argv,"-engine") == 0)
-			{
-			if (--argc < 1) goto bad;
-			engine= *(++argv);
-			}
-#endif
-		else if	(strcmp(*argv,"-d") == 0)
-			enc=0;
-		else if	(strcmp(*argv,"-p") == 0)
-			printkey=1;
-		else if	(strcmp(*argv,"-v") == 0)
-			verbose=1;
-		else if	(strcmp(*argv,"-nopad") == 0)
-			nopad=1;
-		else if	(strcmp(*argv,"-salt") == 0)
-			nosalt=0;
-		else if	(strcmp(*argv,"-nosalt") == 0)
-			nosalt=1;
-		else if	(strcmp(*argv,"-debug") == 0)
-			debug=1;
-		else if	(strcmp(*argv,"-P") == 0)
-			printkey=2;
-		else if	(strcmp(*argv,"-A") == 0)
-			olb64=1;
-		else if	(strcmp(*argv,"-a") == 0)
-			base64=1;
-		else if	(strcmp(*argv,"-base64") == 0)
-			base64=1;
-		else if (strcmp(*argv,"-bufsize") == 0)
-			{
-			if (--argc < 1) goto bad;
-			bufsize=(unsigned char *)*(++argv);
-			}
-		else if (strcmp(*argv,"-k") == 0)
-			{
-			if (--argc < 1) goto bad;
-			str= *(++argv);
-			}
-		else if (strcmp(*argv,"-kfile") == 0)
-			{
-			static char buf[128];
-			FILE *infile;
-			char *file;
-
-			if (--argc < 1) goto bad;
-			file= *(++argv);
-			infile=fopen(file,"r");
-			if (infile == NULL)
-				{
-				BIO_prin
+neominds@neominds-Vostro-1200:~/openssl-0.9.8zc$ ./apps/openssl s_client -connect 10.10.10.99:443 -cipher EDH-DSS-DES-CBC-SHA -ssl3 CONNECTED(00000003)
+depth=0 /C=in/ST=gfdg/L=fdg/O=Internet Widgits Pty Ltd/OU=gdfg/CN=gdf/emailAddress=fgd
+verify error:num=18:self signed certificate
+verify return:1
+depth=0 /C=in/ST=gfdg/L=fdg/O=Internet Widgits Pty Ltd/OU=gdfg/CN=gdf/emailAddress=fgd
+verify return:1
+---
+Certificate chain
+ 0 s:/C=in/ST=gfdg/L=fdg/O=Internet Widgits Pty Ltd/OU=gdfg/CN=gdf/emailAddress=fgd
+   i:/C=in/ST=gfdg/L=fdg/O=Internet Widgits Pty Ltd/OU=gdfg/CN=gdf/emailAddress=fgd
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIIDMTCCAvECCQDZWYdC6ox8JTAJBgcqhkjOOAQDMH4xCzAJBgNVBAYTAmluMQ0w
+CwYDVQQIDARnZmRnMQwwCgYDVQQHDANmZGcxITAfBgNVBAoMGEludGVybmV0IFdp
+ZGdpdHMgUHR5IEx0ZDENMAsGA1UECwwEZ2RmZzEMMAoGA1UEAwwDZ2RmMRIwEAYJ
+KoZIhvcNAQkBFgNmZ2QwHhcNMTQxMjE3MTE1NjIwWhcNMTUxMjE3MTE1NjIwWjB+
+MQswCQYDVQQGEwJpbjENMAsGA1UECAwEZ2ZkZzEMMAoGA1UEBwwDZmRnMSEwHwYD
+VQQKDBhJbnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQxDTALBgNVBAsMBGdkZmcxDDAK
+BgNVBAMMA2dkZjESMBAGCSqGSIb3DQEJARYDZmdkMIIBtzCCASsGByqGSM44BAEw
+ggEeAoGBAP851YTnnYD1cO1/ehGYI6cCKbSyIQt/H9tDNNndWnN3dAAtHKNd64p4
+//+nPHZibLiz7leIQ6VpfO1w/M3BJb4jh+kvRiW9ruCWbKEO/sII03baEHuJnmJu
+Qb/QrtKCL/WkylljexDtyw3PUtRsQaPGmctYxadfTtuy8IbNlYIrAhUA8tdkguH9
+s9q+zK+1cXggQ9OWyaUCgYBotR+xJCgYTlbmC9gF+LghRw8c2u1/2aq+neWeBoDN
+AVE925JeNSSrLgcI76BHhmoEReH002EizNOJ0xDqS3lqF7PCAy1KCoaRH91VGsdb
+oUBkgISgn1oyv0BeFvwHflVp5DSWct4861lsfZzgNg+j7Sy5xuKl0Hr3U8SVrptN
+vAOBhQACgYEA60B1L33WLlZXdTxf9UFopzVSx067GXoMphFGFscczuuRhsDlmkil
+EbwOyu9wawTTUp61ZiVtYFcSRwf9A9x7KqTagddxETdI8gTxT3kYL8LYThyx8r2z
+pRyklzW5rxP8CtTdvr4yy9jbnIqxiGRvDh4v1Is51woggCAIJMfvLvkwCQYHKoZI
+zjgEAwMvADAsAhQ3RSAzVI7k9U9AiEcPj918ygATtAIUNVr88vutx36R8x+cchcD
+pFFVAFk=
+-----END CERTIFICATE-----
+subject=/C=in/ST=gfdg/L=fdg/O=Internet Widgits Pty Ltd/OU=gdfg/CN=gdf/emailAddress=fgd
+issuer=/C=in/ST=gfdg/L=fdg/O=Internet Widgits Pty Ltd/OU=gdfg/CN=gdf/emailAddress=fgd
+---
+No client certificate CA names sent
+---
+SSL handshake has read 1191 bytes and written 202 bytes
+---
+New, TLSv1/SSLv3, Cipher is EDH-DSS-DES-CBC-SHA
+Server public key is 1024 bit
+Secure Renegotiation IS NOT supported
+Compression: NONE
+Expansion: NONE
+SSL-Session:
+    Protocol  : SSLv3
+    Cipher    : EDH-DSS-DES-CBC-SHA
+    Session-ID: 8AD9D130A6094F329EC6230102333E4EF7CDCA31B7CEC800455D9A6CB270AE28
+    Session-ID-ctx: 
+    Master-Key: 684B17C870295B62467B8B521370CD573BEA9006CF999A9BA4E11A027E35524F8A5C91ED0C78D2AD019C1FD746B65BB8
+    Key-Arg   : None
+    Start Time: 1419226160
+    Timeout   : 7200 (sec)
+    Verify return code: 18 (self signed certificate)
+---
+ok
+ok

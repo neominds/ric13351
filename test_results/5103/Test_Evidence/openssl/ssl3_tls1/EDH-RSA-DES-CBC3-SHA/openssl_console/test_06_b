@@ -1,42 +1,55 @@
-/* test/r160test.c */
-/* Copyright (C) 1995-1998 Eric Young (eay@cryptsoft.com)
- * All rights reserved.
- *
- * This package is an SSL implementation written
- * by Eric Young (eay@cryptsoft.com).
- * The implementation was written so as to conform with Netscapes SSL.
- * 
- * This library is free for commercial and non-commercial use as long as
- * the following conditions are aheared to.  The following conditions
- * apply to all code found in this distribution, be it the RC4, RSA,
- * lhash, DES, etc., code; not just the SSL code.  The SSL documentation
- * included with this distribution is covered by the same copyright terms
- * except that the holder is Tim Hudson (tjh@cryptsoft.com).
- * 
- * Copyright remains Eric Young's, and as such any Copyright notices in
- * the code are not to be removed.
- * If this package is used in a product, Eric Young should be given attribution
- * as the author of the parts of the library used.
- * This can be in the form of a textual message at program startup or
- * in documentation (online or textual) provided with the package.
- * 
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *    "This product includes cryptographic software written by
- *     Eric Young (eay@cryptsoft.com)"
- *    The word 'cryptographic' can be left out if the rouines from the library
- *    being used are not cryptographic related :-).
- * 4. If you include any Windows specific code (or a derivative thereof) from 
- *    the apps directory (application code) you must include an acknowledgement:
- *    "This product includes software written by Tim Hudson (tjh@cryptsoft.com)"
- * 
- * THIS SOFTWARE IS PROVIDED BY ERIC YOUNG ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCL
+
+
+neominds@neominds-Vostro-1200:~/openssl-0.9.8zc$ ./apps/openssl s_client -connect 10.10.10.99:443  -cipher EDH-RSA-DES-CBC3-SHA  -tls1 
+CONNECTED(00000003)
+depth=0 /C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+verify error:num=18:self signed certificate
+verify return:1
+depth=0 /C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+verify return:1
+---
+Certificate chain
+ 0 s:/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+   i:/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIICWzCCAcQCCQCdwITsGkNMLTANBgkqhkiG9w0BAQUFADByMQswCQYDVQQGEwJJ
+TjEMMAoGA1UECAwDZHNkMQwwCgYDVQQHDANkc2QxDDAKBgNVBAoMA2RzZDEQMA4G
+A1UECwwHamdqaGpnaDESMBAGA1UEAwwJZGZnZGdkZmdkMRMwEQYJKoZIhvcNAQkB
+FgRlcWVxMB4XDTE0MTIxMDEyNDc0NFoXDTE1MTIxMDEyNDc0NFowcjELMAkGA1UE
+BhMCSU4xDDAKBgNVBAgMA2RzZDEMMAoGA1UEBwwDZHNkMQwwCgYDVQQKDANkc2Qx
+EDAOBgNVBAsMB2pnamhqZ2gxEjAQBgNVBAMMCWRmZ2RnZGZnZDETMBEGCSqGSIb3
+DQEJARYEZXFlcTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAry5KtsSAqj92
+4LZHRK6JJyULgXm0iCfAjWMyUVZO/BYUaPaQK0UAgL+s11fkZmgAp5B5I3jsKdlV
+0DsGr4NiRyYLGxiBH96ma0r3wae3Qd+kJ1YRuvjfYb4gT9I4nJ7TLRNrjeq7zwQj
+CKcFqCKyDbOnqkOE8bx8oEBcAD4aHv0CAwEAATANBgkqhkiG9w0BAQUFAAOBgQBS
+lsUnKSE+5s438X1ui8tC6CgENne6SAXDzDRYCh0BP/OlDYQGI/DLs3RqsogHgy9e
+Y4zq0GdKHzCaaa5mxqlLT8yzIwEPHJcS2RXOc+e10BdT7NQsX6487T+bf7S55ET5
+2uMKQEvgoolvPZQW96Oaqg2xWWhW9QekF0bGNfGc8w==
+-----END CERTIFICATE-----
+subject=/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+issuer=/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+---
+No client certificate CA names sent
+---
+SSL handshake has read 1043 bytes and written 192 bytes
+---
+New, TLSv1/SSLv3, Cipher is DHE-RSA-AES256-SHA
+Server public key is 1024 bit
+Secure Renegotiation IS NOT supported
+Compression: NONE
+Expansion: NONE
+SSL-Session:
+    Protocol  : TLSv1
+    Cipher    : EDH-RSA-DES-CBC3-SHA
+    Session-ID: BA32103261F15ED36F136BC68579407D5A2F22741D08CE0CA3D857BA528E0600
+    Session-ID-ctx: 
+    Master-Key: 41845A57E6258D863AB8152D8C16F022E2B145CBA41C2E62BE029D661D97D1437B54D35E2ABE4CFC10F07DCF340F8DC2
+    Key-Arg   : None
+    Start Time: 1419080120
+    Timeout   : 7200 (sec)
+    Verify return code: 18 (self signed certificate)
+---
+ok
+ok

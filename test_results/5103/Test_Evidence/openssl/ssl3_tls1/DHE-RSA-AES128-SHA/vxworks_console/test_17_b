@@ -1,94 +1,63 @@
-rintf(bio_err,"%-14s encrypt\n","-e");
-			BIO_printf(bio_err,"%-14s decrypt\n","-d");
-			BIO_printf(bio_err,"%-14s base64 encode/decode, depending on encryption flag\n","-a/-base64");
-			BIO_printf(bio_err,"%-14s passphrase is the next argument\n","-k");
-			BIO_printf(bio_err,"%-14s passphrase is the first line of the file argument\n","-kfile");
-			BIO_printf(bio_err,"%-14s the next argument is the md to use to create a key\n","-md");
-			BIO_printf(bio_err,"%-14s   from a passphrase.  One of md2, md5, sha or sha1\n","");
-			BIO_printf(bio_err,"%-14s key/iv in hex is the next argument\n","-K/-iv");
-			BIO_printf(bio_err,"%-14s print the iv/key (then exit if -P)\n","-[pP]");
-			BIO_printf(bio_err,"%-14s buffer size\n","-bufsize <n>");
-#ifndef OPENSSL_NO_ENGINE
-			BIO_printf(bio_err,"%-14s use engine e, possibly a hardware device.\n","-engine e");
-#endif
+-> nm_client_main("5","-connect","10.10.10.102:443","-cipher","DHE-RSA-AES128-SHA","-ssl3")
+creating ssl context
+calling SSL_new
+calling init_client
+CONNECTED(00000008)
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+verify error:num=18:self signed certificate
+verify return:1
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+verify error:num=7:certificate signature failure
+verify return:1
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+verify error:num=9:certificate is not yet valid
+notBefore=Nov 26 11:13:10 2014 GMT
+verify return:1
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+notBefore=Nov 26 11:13:10 2014 GMT
+verify return:1
+---
+Certificate chain
+ 0 s:/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+   i:/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIICRTCCAa4CCQD3HDO9S3AeDTANBgkqhkiG9w0BAQsFADBnMQswCQYDVQQGEwJJ
+TjELMAkGA1UECAwCS0ExDDAKBgNVBAcMA0JMUjENMAsGA1UECgwEZnNkZjENMAsG
+A1UECwwEZnNkZjEMMAoGA1UEAwwDZGZzMREwDwYJKoZIhvcNAQkBFgJmczAeFw0x
+NDExMjYxMTEzMTBaFw0xNTExMjYxMTEzMTBaMGcxCzAJBgNVBAYTAklOMQswCQYD
+VQQIDAJLQTEMMAoGA1UEBwwDQkxSMQ0wCwYDVQQKDARmc2RmMQ0wCwYDVQQLDARm
+c2RmMQwwCgYDVQQDDANkZnMxETAPBgkqhkiG9w0BCQEWAmZzMIGfMA0GCSqGSIb3
+DQEBAQUAA4GNADCBiQKBgQDRJHyfgWNE2IXoH7n/7i30YsoM0sAX7hje94l3HsD1
+SL3hNEX3yneGxCNqOpzl44zZRuZC2mXLwpDd6D3ZbIBoRtiXFYnbXazGRGgTKHFU
+27DQCTkD5aHHjZcEVs7RYHYoNWf8mMnLVNUZF+yGzDd2yLqRphg7NCHPY01mL6FV
+eQIDAQABMA0GCSqGSIb3DQEBCwUAA4GBAD3TIHzv6ShxxQ0zcoVQ7BBXXGUrVuZO
+l7O/5KzEzk4RW56QGGfuAzGEQvXROhYcEgAgbN1tvOAo6QU9sjS8+OTrwkzJhOBg
+T7MGlRq4XfgEyCHcmhWv3SzGRaLwkLAiEWzFsuxk+VB6kOAeu8EdqcxfwXGtwAtx
+hluhT2GQwqFl
+-----END CERTIFICATE-----
+subject=/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+issuer=/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+---
+No client certificate CA names sent
+---
+SSL handshake has read 1037 bytes and written 200 bytes
+---
+New, TLSv1/SSLv3, Cipher is DHE-RSA-AES128-SHA
+Server public key is 1024 bit
+SSL-Session:
+    Protocol  : SSLv3
+    Cipher    : DHE-RSA-AES128-SHA
+    Session-ID: 1639B8BCBE54558B04149887F8A6399C2CAB6A7DE4DE9FC4956F08E2236466C7
+    Session-ID-ctx:
+    Master-Key: C646C8400B94B92075A3CB9CDE1BB993A5490FCBF7840A74F10E3F2A5CD54C392DF6DE0905BC8732FB5B95B8ED788335
+    Key-Arg   : None
+    Start Time: 1219
+    Timeout   : 7200 (sec)
+    Verify return code: 9 (certificate is not yet valid)
+---
+ok
+ok
 
-			BIO_printf(bio_err,"Cipher Types\n");
-			OBJ_NAME_do_all_sorted(OBJ_NAME_TYPE_CIPHER_METH,
-					       show_ciphers,
-					       bio_err);
-			BIO_printf(bio_err,"\n");
 
-			goto end;
-			}
-		argc--;
-		argv++;
-		}
-
-#ifndef OPENSSL_NO_ENGINE
-        setup_engine(bio_err, engine, 0);
-#endif
-
-	if (md && (dgst=EVP_get_digestbyname(md)) == NULL)
-		{
-		BIO_printf(bio_err,"%s is an unsupported message digest type\n",md);
-		goto end;
-		}
-
-	if (dgst == NULL)
-		{
-		if (in_FIPS_mode)
-			dgst = EVP_sha1();
-		else
-			dgst = EVP_md5();
-		}
-
-	if (bufsize != NULL)
-		{
-		unsigned long n;
-
-		for (n=0; *bufsize; bufsize++)
-			{
-			i= *bufsize;
-			if ((i <= '9') && (i >= '0'))
-				n=n*10+i-'0';
-			else if (i == 'k')
-				{
-				n*=1024;
-				bufsize++;
-				break;
-				}
-			}
-		if (*bufsize != '\0')
-			{
-			BIO_printf(bio_err,"invalid 'bufsize' specified.\n");
-			goto end;
-			}
-
-		/* It must be large enough for a base64 encoded line */
-		if (base64 && n < 80) n=80;
-
-		bsize=(int)n;
-		if (verbose) BIO_printf(bio_err,"bufsize=%d\n",bsize);
-		}
-
-	strbuf=OPENSSL_malloc(SIZE);
-	buff=(unsigned char *)OPENSSL_malloc(EVP_ENCODE_LENGTH(bsize));
-	if ((buff == NULL) || (strbuf == NULL))
-		{
-		BIO_printf(bio_err,"OPENSSL_malloc failure %ld\n",(long)EVP_ENCODE_LENGTH(bsize));
-		goto end;
-		}
-
-	in=BIO_new(BIO_s_file());
-	out=BIO_new(BIO_s_file());
-	if ((in == NULL) || (out == NULL))
-		{
-		ERR_print_errors(bio_err);
-		goto end;
-		}
-	if (debug)
-		{
-		BIO_set_callback(in,BIO_debug_callback);
-		BIO_set_callback(out,BIO_debug_callback);
-		BIO_set_callback_arg(in,(char *)bio_err);
-		BIO_set_callba

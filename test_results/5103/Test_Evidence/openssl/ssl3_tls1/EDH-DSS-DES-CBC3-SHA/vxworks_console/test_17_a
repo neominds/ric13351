@@ -1,80 +1,68 @@
-0 finally it gets released.
-
-24-Jun-97
-    Added a SSL_OP_EPHEMERAL_RSA option which causes all SSLv3 RSA keys to
-    use a temporary RSA key.  This is experimental and needs some more work.
-    Fixed a few Win16 build problems.
-
-23-Jun-97
-    SSLv3 bug. I was not doing the 'lookup' of the CERT structure
-    correctly. I was taking the SSL->ctx->default_cert when I should
-    have been using SSL->cert. The bug was in ssl/s3_srvr.c
-
-20-Jun-97
-    X509_ATTRIBUTES were being encoded wrongly by apps/reg.c and the
-    rest of the library. Even though I had the code required to do
-    it correctly, apps/req.c was doing the wrong thing.  I have fixed
-    and tested everything.
-
-    Missing a few #ifdef FIONBIO sections in crypto/bio/bss_acpt.c.
-
-19-Jun-97
-    Fixed a bug in the SSLv2 server side first packet handling. When
-    using the non-blocking test BIO, the ssl->s2->first_packet flag
-    was being reset when a would-block failure occurred when reading
-    the first 5 bytes of the first packet. This caused the checking
-    logic to run at the wrong time and cause an error.
-
-    Fixed a problem with specifying cipher. If RC4-MD5 were used,
-    only the SSLv3 version would be picked up.  Now this will pick
-    up both SSLv2 and SSLv3 versions. This required changing the
-    SSL_CIPHER->mask values so that they only mask the ciphers,
-    digests, authentication, export type and key-exchange algorithms.
-
-    I found that when a SSLv23 session is established, a reused
-    session, of type SSLv3 was attempting to write the SSLv2 
-    ciphers, which were invalid. The SSL_METHOD->put_cipher_by_char 
-    method has been modified so it will only write out cipher which
-    that method knows about.  
-
-
- Changes between 0.8.0 and 0.8.1
-
-  *) Mostly bug fixes. 
-     There is an Ephemeral DH cipher problem which is fixed.
-
- SSLeay 0.8.0
-
-This version of SSLeay has quite a lot of things different from the
-previous version.
-
-Basically check all callback parameters, I will be producing documentation
-about how to use things in th future.  Currently I'm just getting 080 out
-the door.  Please not that there are several ways to do everything, and
-most of the applications in the apps directory are hybrids, some using old
-methods and some using new methods.
-
-Have a look in demos/bio for some very simple programs and
-apps/s_client.c and apps/s_server.c for some more advanced versions.
-Notes are definitly needed but they are a week or so away.
-
-Anyway, some quick nots from Tim Hudson (tjh@cryptsoft.com)
+-> nm_client_main("6","-connect","10.10.10.102:443","-cipher","EDH-DSS-DES-CBC3-SHA","-ssl3","-fallback_scsv")
+creating ssl context
+calling SSL_new
+calling init_client
+CONNECTED(00000008)
+depth=0 /C=IN/ST=fdsgf/L=fsdf/O=Internet Widgits Pty Ltd/OU=fsdf/CN=fs/emailAddress=fsd
+verify error:num=18:self signed certificate
+verify return:1
+depth=0 /C=IN/ST=fdsgf/L=fsdf/O=Internet Widgits Pty Ltd/OU=fsdf/CN=fs/emailAddress=fsd
+verify error:num=7:certificate signature failure
+verify return:1
+depth=0 /C=IN/ST=fdsgf/L=fsdf/O=Internet Widgits Pty Ltd/OU=fsdf/CN=fs/emailAddress=fsd
+verify error:num=9:certificate is not yet valid
+notBefore=Nov 28 11:24:09 2014 GMT
+verify return:1
+depth=0 /C=IN/ST=fdsgf/L=fsdf/O=Internet Widgits Pty Ltd/OU=fsdf/CN=fs/emailAddress=fsd
+notBefore=Nov 28 11:24:09 2014 GMT
+verify return:1
 ---
-Quick porting notes for moving from SSLeay-0.6.x to SSLeay-0.8.x to
-get those people that want to move to using the new code base off to
-a quick start.
-
-Note that Eric has tidied up a lot of the areas of the API that were
-less than desirable and renamed quite a few things (as he had to break
-the API in lots of places anyrate). There are a whole pile of additional
-functions for making dealing with (and creating) certificates a lot
-cleaner.
-
-01-Jul-97
-Tim Hudson
-tjh@cryptsoft.com
-
----8<---
-
-To maintain code that uses both SSLeay-0.6.x and SSLeay-0.8.x you could
-use somethin
+Certificate chain
+ 0 s:/C=IN/ST=fdsgf/L=fsdf/O=Internet Widgits Pty Ltd/OU=fsdf/CN=fs/emailAddress=fsd
+   i:/C=IN/ST=fdsgf/L=fsdf/O=Internet Widgits Pty Ltd/OU=fsdf/CN=fs/emailAddress=fsd
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIIDjjCCA0ygAwIBAgIJAO5zVKZEn61wMAsGCWCGSAFlAwQDAjB/MQswCQYDVQQG
+EwJJTjEOMAwGA1UECAwFZmRzZ2YxDTALBgNVBAcMBGZzZGYxITAfBgNVBAoMGElu
+dGVybmV0IFdpZGdpdHMgUHR5IEx0ZDENMAsGA1UECwwEZnNkZjELMAkGA1UEAwwC
+ZnMxEjAQBgkqhkiG9w0BCQEWA2ZzZDAeFw0xNDExMjgxMTI0MDlaFw0xNDEyMjgx
+MTI0MDlaMH8xCzAJBgNVBAYTAklOMQ4wDAYDVQQIDAVmZHNnZjENMAsGA1UEBwwE
+ZnNkZjEhMB8GA1UECgwYSW50ZXJuZXQgV2lkZ2l0cyBQdHkgTHRkMQ0wCwYDVQQL
+DARmc2RmMQswCQYDVQQDDAJmczESMBAGCSqGSIb3DQEJARYDZnNkMIIBtzCCASsG
+ByqGSM44BAEwggEeAoGBAOEPdyKbDjDDx+EXS5ugEsjmAAp6N0VTsbSqMbYXvybM
+LUx3AGDOSj5aDkTZP5VF42yKQIIvUmYYRRxAK6P4NdjmhORZU4sOQ6x4oGO+h7IO
+LQerlqVaWTsL6+lgWM7Wow0sIeq6rs/nmdAohH9y7Pc0dQfS4AZi/8IFiZ/wnoyx
+AhUA2ktDAnmfHf6/8dJq+55QeD8zgT8CgYBrw8fU1ZEZCX17IKdUSoFRqZSQ9qEF
+BaplwiLI8o/mlRMojY0IxNFKvKzDnBnyo/TahVhNhNB66ae4psz67ytD9bCgS15E
+UTvomqfRS24q0cNNPSjQGfd1gIk3CM6ZyTmM1qItkV4I1ABlbADwwI3vdmRkOBSX
+zwqpzbpjwmeOqgOBhQACgYEAjckcbgPFO6oYtjEfiR8RwNYQatE6/AbksbG55WSO
+Ita02xcEwb3+39l9q8ug5+V+9pla50J4vQmRVylGK7mlG1mxfPv29Fnm+qG7audC
+3ufK6s/XOsDI7GMohZTFj5QJUStpRDHl7xAMpu3cSL3zAlGJOe/ewOjniL9yYYKA
+QUSjUDBOMB0GA1UdDgQWBBTPQP8KYiz97PpsrFrLLhPiuHWwwDAfBgNVHSMEGDAW
+gBTPQP8KYiz97PpsrFrLLhPiuHWwwDAMBgNVHRMEBTADAQH/MAsGCWCGSAFlAwQD
+AgMvADAsAhQ0XM+sCpY+cu3SxbQxQumLSjQEIAIUBDTtJMfB8+LGepFyi5S12/E3
+eRY=
+-----END CERTIFICATE-----
+subject=/C=IN/ST=fdsgf/L=fsdf/O=Internet Widgits Pty Ltd/OU=fsdf/CN=fs/emailAddress=fsd
+issuer=/C=IN/ST=fdsgf/L=fsdf/O=Internet Widgits Pty Ltd/OU=fsdf/CN=fs/emailAddress=fsd
+---
+No client certificate CA names sent
+---
+SSL handshake has read 1286 bytes and written 202 bytes
+---
+New, TLSv1/SSLv3, Cipher is EDH-DSS-DES-CBC3-SHA
+Server public key is 1024 bit
+SSL-Session:
+    Protocol  : SSLv3
+    Cipher    : EDH-DSS-DES-CBC3-SHA
+    Session-ID: F1FD34F2287DCDE6E2093C5BEB39D8160B2E9DB785CC2311D21E122D11CFD200
+    Session-ID-ctx:
+    Master-Key: AF6046950D1C7D6F2498FD0A6052D9016238D61B8AD075FC931B17D4C82A4A37F780FDBFB303EEEE6AB4F43026645CC3
+    Key-Arg   : None
+    Start Time: 377
+    Timeout   : 7200 (sec)
+    Verify return code: 9 (certificate is not yet valid)
+---
+ok
+ok

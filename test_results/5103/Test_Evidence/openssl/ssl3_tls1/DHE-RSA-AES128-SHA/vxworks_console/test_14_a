@@ -1,126 +1,63 @@
-put a public key\n");
-#ifndef OPENSSL_NO_ENGINE
-		BIO_printf(bio_err," -engine e       use engine e, possibly a hardware device.\n");
-#endif
-		goto end;
-		}
 
-	ERR_load_crypto_strings();
+-> nm_client_main("6","-connect","10.10.10.102:443","-cipher","DHE-RSA-AES128-SHA","-tls1","-fallback_scsv")
+creating ssl context
+calling SSL_new
+calling init_client
+CONNECTED(00000008)
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+verify error:num=18:self signed certificate
+verify return:1
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+verify error:num=7:certificate signature failure
+verify return:1
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+verify error:num=9:certificate is not yet valid
+notBefore=Nov 26 11:13:10 2014 GMT
+verify return:1
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+notBefore=Nov 26 11:13:10 2014 GMT
+verify return:1
+---
+Certificate chain
+ 0 s:/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+   i:/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIICRTCCAa4CCQD3HDO9S3AeDTANBgkqhkiG9w0BAQsFADBnMQswCQYDVQQGEwJJ
+TjELMAkGA1UECAwCS0ExDDAKBgNVBAcMA0JMUjENMAsGA1UECgwEZnNkZjENMAsG
+A1UECwwEZnNkZjEMMAoGA1UEAwwDZGZzMREwDwYJKoZIhvcNAQkBFgJmczAeFw0x
+NDExMjYxMTEzMTBaFw0xNTExMjYxMTEzMTBaMGcxCzAJBgNVBAYTAklOMQswCQYD
+VQQIDAJLQTEMMAoGA1UEBwwDQkxSMQ0wCwYDVQQKDARmc2RmMQ0wCwYDVQQLDARm
+c2RmMQwwCgYDVQQDDANkZnMxETAPBgkqhkiG9w0BCQEWAmZzMIGfMA0GCSqGSIb3
+DQEBAQUAA4GNADCBiQKBgQDRJHyfgWNE2IXoH7n/7i30YsoM0sAX7hje94l3HsD1
+SL3hNEX3yneGxCNqOpzl44zZRuZC2mXLwpDd6D3ZbIBoRtiXFYnbXazGRGgTKHFU
+27DQCTkD5aHHjZcEVs7RYHYoNWf8mMnLVNUZF+yGzDd2yLqRphg7NCHPY01mL6FV
+eQIDAQABMA0GCSqGSIb3DQEBCwUAA4GBAD3TIHzv6ShxxQ0zcoVQ7BBXXGUrVuZO
+l7O/5KzEzk4RW56QGGfuAzGEQvXROhYcEgAgbN1tvOAo6QU9sjS8+OTrwkzJhOBg
+T7MGlRq4XfgEyCHcmhWv3SzGRaLwkLAiEWzFsuxk+VB6kOAeu8EdqcxfwXGtwAtx
+hluhT2GQwqFl
+-----END CERTIFICATE-----
+subject=/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+issuer=/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+---
+No client certificate CA names sent
+---
+SSL handshake has read 747 bytes and written 250 bytes
+---
+New, TLSv1/SSLv3, Cipher is AES128-SHA
+Server public key is 1024 bit
+SSL-Session:
+    Protocol  : TLSv1
+    Cipher    : DHE-RSA-AES128-SHA
+    Session-ID: 98C3FC4671CCFD71E35DC063989C4320775D3673F4726ECB8D3B70D4433A2E40
+    Session-ID-ctx:
+    Master-Key: D6394B4968CBB1C83EE4EC62A4514B248ACB03DB826FBF36302EB15986E5B1DEFD4E05057277417A3CA4E4F5A3EF89FF
+    Key-Arg   : None
+    Start Time: 57
+    Timeout   : 7200 (sec)
+    Verify return code: 9 (certificate is not yet valid)
+---
+test succcess
+ok
 
-#ifndef OPENSSL_NO_ENGINE
-        e = setup_engine(bio_err, engine, 0);
-#endif
-
-	if(!app_passwd(bio_err, passargin, passargout, &passin, &passout)) {
-		BIO_printf(bio_err, "Error getting passwords\n");
-		goto end;
-	}
-
-	if(check && pubin) {
-		BIO_printf(bio_err, "Only private keys can be checked\n");
-		goto end;
-	}
-
-	out=BIO_new(BIO_s_file());
-
-	{
-		EVP_PKEY	*pkey;
-
-		if (pubin)
-			pkey = load_pubkey(bio_err, infile,
-				(informat == FORMAT_NETSCAPE && sgckey ?
-					FORMAT_IISSGC : informat), 1,
-				passin, e, "Public Key");
-		else
-			pkey = load_key(bio_err, infile,
-				(informat == FORMAT_NETSCAPE && sgckey ?
-					FORMAT_IISSGC : informat), 1,
-				passin, e, "Private Key");
-
-		if (pkey != NULL)
-		rsa = pkey == NULL ? NULL : EVP_PKEY_get1_RSA(pkey);
-		EVP_PKEY_free(pkey);
-	}
-
-	if (rsa == NULL)
-		{
-		ERR_print_errors(bio_err);
-		goto end;
-		}
-
-	if (outfile == NULL)
-		{
-		BIO_set_fp(out,stdout,BIO_NOCLOSE);
-#ifdef OPENSSL_SYS_VMS
-		{
-		BIO *tmpbio = BIO_new(BIO_f_linebuffer());
-		out = BIO_push(tmpbio, out);
-		}
-#endif
-		}
-	else
-		{
-		if (BIO_write_filename(out,outfile) <= 0)
-			{
-			perror(outfile);
-			goto end;
-			}
-		}
-
-	if (text) 
-		if (!RSA_print(out,rsa,0))
-			{
-			perror(outfile);
-			ERR_print_errors(bio_err);
-			goto end;
-			}
-
-	if (modulus)
-		{
-		BIO_printf(out,"Modulus=");
-		BN_print(out,rsa->n);
-		BIO_printf(out,"\n");
-		}
-
-	if (check)
-		{
-		int r = RSA_check_key(rsa);
-
-		if (r == 1)
-			BIO_printf(out,"RSA key ok\n");
-		else if (r == 0)
-			{
-			unsigned long err;
-
-			while ((err = ERR_peek_error()) != 0 &&
-				ERR_GET_LIB(err) == ERR_LIB_RSA &&
-				ERR_GET_FUNC(err) == RSA_F_RSA_CHECK_KEY &&
-				ERR_GET_REASON(err) != ERR_R_MALLOC_FAILURE)
-				{
-				BIO_printf(out, "RSA key error: %s\n", ERR_reason_error_string(err));
-				ERR_get_error(); /* remove e from error stack */
-				}
-			}
-		
-		if (r == -1 || ERR_peek_error() != 0) /* should happen only if r == -1 */
-			{
-			ERR_print_errors(bio_err);
-			goto end;
-			}
-		}
-		
-	if (noout)
-		{
-		ret = 0;
-		goto end;
-		}
-	BIO_printf(bio_err,"writing RSA key\n");
-	if 	(outformat == FORMAT_ASN1) {
-		if(pubout || pubin) i=i2d_RSA_PUBKEY_bio(out,rsa);
-		else i=i2d_RSAPrivateKey_bio(out,rsa);
-	}
-#ifndef OPENSSL_NO_RC4
-	else if (outformat == FORMAT_NETSCAPE)
-		{
-		unsigned char *p,*pp;
-		int s

@@ -1,68 +1,64 @@
-=pod
 
-=head1 NAME
+-> nm_client_main("5","-connect","10.10.10.102:443","-cipher","AES128-SHA","-tls1")
+creating ssl context
+calling SSL_new
+calling init_client
+CONNECTED(00000008)
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+verify error:num=18:self signed certificate
+verify return:1
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+verify error:num=7:certificate signature failure
+verify return:1
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+verify error:num=9:certificate is not yet valid
+notBefore=Nov 26 11:13:10 2014 GMT
+verify return:1
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+notBefore=Nov 26 11:13:10 2014 GMT
+verify return:1
+---
+Certificate chain
+ 0 s:/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+   i:/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIICRTCCAa4CCQD3HDO9S3AeDTANBgkqhkiG9w0BAQsFADBnMQswCQYDVQQGEwJJ
+TjELMAkGA1UECAwCS0ExDDAKBgNVBAcMA0JMUjENMAsGA1UECgwEZnNkZjENMAsG
+A1UECwwEZnNkZjEMMAoGA1UEAwwDZGZzMREwDwYJKoZIhvcNAQkBFgJmczAeFw0x
+NDExMjYxMTEzMTBaFw0xNTExMjYxMTEzMTBaMGcxCzAJBgNVBAYTAklOMQswCQYD
+VQQIDAJLQTEMMAoGA1UEBwwDQkxSMQ0wCwYDVQQKDARmc2RmMQ0wCwYDVQQLDARm
+c2RmMQwwCgYDVQQDDANkZnMxETAPBgkqhkiG9w0BCQEWAmZzMIGfMA0GCSqGSIb3
+DQEBAQUAA4GNADCBiQKBgQDRJHyfgWNE2IXoH7n/7i30YsoM0sAX7hje94l3HsD1
+SL3hNEX3yneGxCNqOpzl44zZRuZC2mXLwpDd6D3ZbIBoRtiXFYnbXazGRGgTKHFU
+27DQCTkD5aHHjZcEVs7RYHYoNWf8mMnLVNUZF+yGzDd2yLqRphg7NCHPY01mL6FV
+eQIDAQABMA0GCSqGSIb3DQEBCwUAA4GBAD3TIHzv6ShxxQ0zcoVQ7BBXXGUrVuZO
+l7O/5KzEzk4RW56QGGfuAzGEQvXROhYcEgAgbN1tvOAo6QU9sjS8+OTrwkzJhOBg
+T7MGlRq4XfgEyCHcmhWv3SzGRaLwkLAiEWzFsuxk+VB6kOAeu8EdqcxfwXGtwAtx
+hluhT2GQwqFl
+-----END CERTIFICATE-----
+subject=/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+issuer=/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+---
+No client certificate CA names sent
+---
+SSL handshake has read 747 bytes and written 248 bytes
+---
+New, TLSv1/SSLv3, Cipher is AES128-SHA
+Server public key is 1024 bit
+SSL-Session:
+    Protocol  : TLSv1
+    Cipher    : AES128-SHA
+    Session-ID: 98CD4A4E5A2DEC46938DA2B4B83580A2A6AA0DA3E70EDB0F203A70593CEF48B7
+    Session-ID-ctx:
+    Master-Key: 859202C26A5B2E09C381A2BD73016F3DA8059D78B5411D4EA00F1D65C4A4514B741BCC88C5C4DE795F50D9A657B90DC3
+    Key-Arg   : None
+    Start Time: 112
+    Timeout   : 7200 (sec)
+    Verify return code: 9 (certificate is not yet valid)
+---
+test success
 
-CRYPTO_set_locking_callback, CRYPTO_set_id_callback, CRYPTO_num_locks,
-CRYPTO_set_dynlock_create_callback, CRYPTO_set_dynlock_lock_callback,
-CRYPTO_set_dynlock_destroy_callback, CRYPTO_get_new_dynlockid,
-CRYPTO_destroy_dynlockid, CRYPTO_lock - OpenSSL thread support
+ok
 
-=head1 SYNOPSIS
-
- #include <openssl/crypto.h>
-
- void CRYPTO_set_locking_callback(void (*locking_function)(int mode,
-        int n, const char *file, int line));
-
- void CRYPTO_set_id_callback(unsigned long (*id_function)(void));
-
- int CRYPTO_num_locks(void);
-
-
- /* struct CRYPTO_dynlock_value needs to be defined by the user */
- struct CRYPTO_dynlock_value;
-
- void CRYPTO_set_dynlock_create_callback(struct CRYPTO_dynlock_value *
-	(*dyn_create_function)(char *file, int line));
- void CRYPTO_set_dynlock_lock_callback(void (*dyn_lock_function)
-	(int mode, struct CRYPTO_dynlock_value *l,
-	const char *file, int line));
- void CRYPTO_set_dynlock_destroy_callback(void (*dyn_destroy_function)
-	(struct CRYPTO_dynlock_value *l, const char *file, int line));
-
- int CRYPTO_get_new_dynlockid(void);
-
- void CRYPTO_destroy_dynlockid(int i);
-
- void CRYPTO_lock(int mode, int n, const char *file, int line);
-
- #define CRYPTO_w_lock(type)	\
-	CRYPTO_lock(CRYPTO_LOCK|CRYPTO_WRITE,type,__FILE__,__LINE__)
- #define CRYPTO_w_unlock(type)	\
-	CRYPTO_lock(CRYPTO_UNLOCK|CRYPTO_WRITE,type,__FILE__,__LINE__)
- #define CRYPTO_r_lock(type)	\
-	CRYPTO_lock(CRYPTO_LOCK|CRYPTO_READ,type,__FILE__,__LINE__)
- #define CRYPTO_r_unlock(type)	\
-	CRYPTO_lock(CRYPTO_UNLOCK|CRYPTO_READ,type,__FILE__,__LINE__)
- #define CRYPTO_add(addr,amount,type)	\
-	CRYPTO_add_lock(addr,amount,type,__FILE__,__LINE__)
-
-=head1 DESCRIPTION
-
-OpenSSL can safely be used in multi-threaded applications provided
-that at least two callback functions are set.
-
-locking_function(int mode, int n, const char *file, int line) is
-needed to perform locking on shared data structures. 
-(Note that OpenSSL uses a number of global data structures that
-will be implicitly shared whenever multiple threads use OpenSSL.)
-Multi-threaded applications will crash at random if it is not set.
-
-locking_function() must be able to handle up to CRYPTO_num_locks()
-different mutex locks. It sets the B<n>-th lock if B<mode> &
-B<CRYPTO_LOCK>, and releases it otherwise.
-
-B<file> and B<line> are the file number of the function setting the
-lock. They can be useful for debugging.
-
-id_function(void) is a function that retur

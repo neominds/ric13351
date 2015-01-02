@@ -1,93 +1,61 @@
-rgv,"-passin") == 0)
-			{
-			if (--argc < 1) goto bad;
-			passargin= *(++argv);
-			}
-		else if (strcmp(*argv,"-key") == 0)
-			{
-			if (--argc < 1) goto bad;
-			keyfile= *(++argv);
-			}
-		else if (strcmp(*argv,"-challenge") == 0)
-			{
-			if (--argc < 1) goto bad;
-			challenge= *(++argv);
-			}
-		else if (strcmp(*argv,"-spkac") == 0)
-			{
-			if (--argc < 1) goto bad;
-			spkac= *(++argv);
-			}
-		else if (strcmp(*argv,"-spksect") == 0)
-			{
-			if (--argc < 1) goto bad;
-			spksect= *(++argv);
-			}
-#ifndef OPENSSL_NO_ENGINE
-		else if (strcmp(*argv,"-engine") == 0)
-			{
-			if (--argc < 1) goto bad;
-			engine= *(++argv);
-			}
-#endif
-		else if (strcmp(*argv,"-noout") == 0)
-			noout=1;
-		else if (strcmp(*argv,"-pubkey") == 0)
-			pubkey=1;
-		else if (strcmp(*argv,"-verify") == 0)
-			verify=1;
-		else badops = 1;
-		argc--;
-		argv++;
-		}
-
-	if (badops)
-		{
-bad:
-		BIO_printf(bio_err,"%s [options]\n",prog);
-		BIO_printf(bio_err,"where options are\n");
-		BIO_printf(bio_err," -in arg        input file\n");
-		BIO_printf(bio_err," -out arg       output file\n");
-		BIO_printf(bio_err," -key arg       create SPKAC using private key\n");
-		BIO_printf(bio_err," -passin arg    input file pass phrase source\n");
-		BIO_printf(bio_err," -challenge arg challenge string\n");
-		BIO_printf(bio_err," -spkac arg     alternative SPKAC name\n");
-		BIO_printf(bio_err," -noout         don't print SPKAC\n");
-		BIO_printf(bio_err," -pubkey        output public key\n");
-		BIO_printf(bio_err," -verify        verify SPKAC signature\n");
-#ifndef OPENSSL_NO_ENGINE
-		BIO_printf(bio_err," -engine e      use engine e, possibly a hardware device.\n");
-#endif
-		goto end;
-		}
-
-	ERR_load_crypto_strings();
-	if(!app_passwd(bio_err, passargin, NULL, &passin, NULL)) {
-		BIO_printf(bio_err, "Error getting password\n");
-		goto end;
-	}
-
-#ifndef OPENSSL_NO_ENGINE
-        e = setup_engine(bio_err, engine, 0);
-#endif
-
-	if(keyfile) {
-		pkey = load_key(bio_err,
-				strcmp(keyfile, "-") ? keyfile : NULL,
-				FORMAT_PEM, 1, passin, e, "private key");
-		if(!pkey) {
-			goto end;
-		}
-		spki = NETSCAPE_SPKI_new();
-		if(challenge) ASN1_STRING_set(spki->spkac->challenge,
-						 challenge, (int)strlen(challenge));
-		NETSCAPE_SPKI_set_pubkey(spki, pkey);
-		NETSCAPE_SPKI_sign(spki, pkey, EVP_md5());
-		spkstr = NETSCAPE_SPKI_b64_encode(spki);
-
-		if (outfile) out = BIO_new_file(outfile, "w");
-		else {
-			out = BIO_new_fp(stdout, BIO_NOCLOSE);
-#ifdef OPENSSL_SYS_VMS
-			{
-			    B
+-> nm_client_main("5","-connect","10.10.10.102:443","-cipher","EDH-RSA-DES-CBC-SHA","-ssl3")
+creating ssl context
+calling SSL_new
+calling init_client
+CONNECTED(00000008)
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+verify error:num=18:self signed certificate
+verify return:1
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+verify error:num=7:certificate signature failure
+verify return:1
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+verify error:num=9:certificate is not yet valid
+notBefore=Nov 26 11:13:10 2014 GMT
+verify return:1
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+notBefore=Nov 26 11:13:10 2014 GMT
+verify return:1
+---
+Certificate chain
+ 0 s:/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+   i:/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIICRTCCAa4CCQD3HDO9S3AeDTANBgkqhkiG9w0BAQsFADBnMQswCQYDVQQGEwJJ
+TjELMAkGA1UECAwCS0ExDDAKBgNVBAcMA0JMUjENMAsGA1UECgwEZnNkZjENMAsG
+A1UECwwEZnNkZjEMMAoGA1UEAwwDZGZzMREwDwYJKoZIhvcNAQkBFgJmczAeFw0x
+NDExMjYxMTEzMTBaFw0xNTExMjYxMTEzMTBaMGcxCzAJBgNVBAYTAklOMQswCQYD
+VQQIDAJLQTEMMAoGA1UEBwwDQkxSMQ0wCwYDVQQKDARmc2RmMQ0wCwYDVQQLDARm
+c2RmMQwwCgYDVQQDDANkZnMxETAPBgkqhkiG9w0BCQEWAmZzMIGfMA0GCSqGSIb3
+DQEBAQUAA4GNADCBiQKBgQDRJHyfgWNE2IXoH7n/7i30YsoM0sAX7hje94l3HsD1
+SL3hNEX3yneGxCNqOpzl44zZRuZC2mXLwpDd6D3ZbIBoRtiXFYnbXazGRGgTKHFU
+27DQCTkD5aHHjZcEVs7RYHYoNWf8mMnLVNUZF+yGzDd2yLqRphg7NCHPY01mL6FV
+eQIDAQABMA0GCSqGSIb3DQEBCwUAA4GBAD3TIHzv6ShxxQ0zcoVQ7BBXXGUrVuZO
+l7O/5KzEzk4RW56QGGfuAzGEQvXROhYcEgAgbN1tvOAo6QU9sjS8+OTrwkzJhOBg
+T7MGlRq4XfgEyCHcmhWv3SzGRaLwkLAiEWzFsuxk+VB6kOAeu8EdqcxfwXGtwAtx
+hluhT2GQwqFl
+-----END CERTIFICATE-----
+subject=/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+issuer=/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+---
+No client certificate CA names sent
+---
+SSL handshake has read 1037 bytes and written 200 bytes
+---
+New, TLSv1/SSLv3, Cipher is EDH-RSA-DES-CBC-SHA
+Server public key is 1024 bit
+SSL-Session:
+    Protocol  : SSLv3
+    Cipher    : EDH-RSA-DES-CBC-SHA
+    Session-ID: 1B1F1329E6D3B02CD1E5ED4D2077DB6A6FFD27D8291420D0651452813F09175B
+    Session-ID-ctx:
+    Master-Key: 7F1947C9B35F5ABAB6E11808A203F1395A0980141A32A81D503A17EAD44A050F3F8E63ADBBB674E1B75D8FEAEBD63DB5
+    Key-Arg   : None
+    Start Time: 152
+    Timeout   : 7200 (sec)
+    Verify return code: 9 (certificate is not yet valid)
+---
+ok
+ok

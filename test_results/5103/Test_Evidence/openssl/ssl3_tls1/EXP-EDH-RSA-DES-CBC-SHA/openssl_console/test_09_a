@@ -1,104 +1,54 @@
-ta );
 
-my @cleanup = ( "cms.out", "cms.err", "tmp.der", "tmp.txt" );
-
-$data = "";
-
-open( IN, $exfile ) || die "Can't Open RFC examples file $exfile";
-
-while (<IN>) {
-    next unless (/^\|/);
-    s/^\|//;
-    next if (/^\*/);
-    if (/^>(.*)$/) {
-        $filename = $1;
-        next;
-    }
-    if (/^</) {
-        $filename = "$exdir/$filename";
-        if ( $filename =~ /\.bin$/ || $filename =~ /\.eml$/ ) {
-            $data = decode_base64($data);
-            open OUT, ">$filename";
-            binmode OUT;
-            print OUT $data;
-            close OUT;
-            push @cleanup, $filename;
-        }
-        elsif ( $filename =~ /\.cer$/ ) {
-            write_pem( $filename, "CERTIFICATE", $data );
-        }
-        elsif ( $filename =~ /\.pri$/ ) {
-            write_pem( $filename, "PRIVATE KEY", $data );
-        }
-        $data     = "";
-        $filename = "";
-    }
-    else {
-        $data .= $_;
-    }
-
-}
-
-my $secretkey =
-  "73:7c:79:1f:25:ea:d0:e0:46:29:25:43:52:f7:dc:62:91:e5:cb:26:91:7a:da:32";
-
-foreach (@test_list) {
-    my ( $file, $tlist ) = @$_;
-    print "Example file $file:\n";
-    if ( $tlist =~ /encode/ ) {
-        run_reencode_test( $exdir, $file );
-    }
-    if ( $tlist =~ /certsout/ ) {
-        run_certsout_test( $exdir, $file );
-    }
-    if ( $tlist =~ /dataout/ ) {
-        run_dataout_test( $exdir, $file );
-    }
-    if ( $tlist =~ /verify/ ) {
-        run_verify_test( $exdir, $tlist, $file );
-    }
-    if ( $tlist =~ /digest/ ) {
-        run_digest_test( $exdir, $tlist, $file );
-    }
-    if ( $tlist =~ /encrypted/ ) {
-        run_encrypted_test( $exdir, $tlist, $file, $secretkey );
-    }
-    if ( $tlist =~ /envelope/ ) {
-        run_envelope_test( $exdir, $tlist, $file );
-    }
-
-}
-
-foreach (@cleanup) {
-    unlink $_;
-}
-
-if ($badtest) {
-    print "\n$badtest TESTS FAILED!!\n";
-}
-else {
-    print "\n***All tests successful***\n";
-}
-
-sub write_pem {
-    my ( $filename, $str, $data ) = @_;
-
-    $filename =~ s/\.[^.]*$/.pem/;
-
-    push @cleanup, $filename;
-
-    open OUT, ">$filename";
-
-    print OUT "-----BEGIN $str-----\n";
-    print OUT $data;
-    print OUT "-----END $str-----\n";
-
-    close OUT;
-}
-
-sub run_reencode_test {
-    my ( $cmsdir, $tfile ) = @_;
-    unlink "tmp.der";
-
-    system( "$cmscmd -cmsout -inform DER -outform DER"
-      
+neominds@neominds-Vostro-1200:~/openssl-0.9.8zc$ ./apps/openssl s_client -connect 10.10.10.99:443  -cipher EXP-EDH-RSA-DES-CBC-SHA  -ssl3 -fallback_scsv
+CONNECTED(00000003)
+depth=0 /C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+verify error:num=18:self signed certificate
+verify return:1
+depth=0 /C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+verify return:1
+---
+Certificate chain
+ 0 s:/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+   i:/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIICWzCCAcQCCQCdwITsGkNMLTANBgkqhkiG9w0BAQUFADByMQswCQYDVQQGEwJJ
+TjEMMAoGA1UECAwDZHNkMQwwCgYDVQQHDANkc2QxDDAKBgNVBAoMA2RzZDEQMA4G
+A1UECwwHamdqaGpnaDESMBAGA1UEAwwJZGZnZGdkZmdkMRMwEQYJKoZIhvcNAQkB
+FgRlcWVxMB4XDTE0MTIxMDEyNDc0NFoXDTE1MTIxMDEyNDc0NFowcjELMAkGA1UE
+BhMCSU4xDDAKBgNVBAgMA2RzZDEMMAoGA1UEBwwDZHNkMQwwCgYDVQQKDANkc2Qx
+EDAOBgNVBAsMB2pnamhqZ2gxEjAQBgNVBAMMCWRmZ2RnZGZnZDETMBEGCSqGSIb3
+DQEJARYEZXFlcTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAry5KtsSAqj92
+4LZHRK6JJyULgXm0iCfAjWMyUVZO/BYUaPaQK0UAgL+s11fkZmgAp5B5I3jsKdlV
+0DsGr4NiRyYLGxiBH96ma0r3wae3Qd+kJ1YRuvjfYb4gT9I4nJ7TLRNrjeq7zwQj
+CKcFqCKyDbOnqkOE8bx8oEBcAD4aHv0CAwEAATANBgkqhkiG9w0BAQUFAAOBgQBS
+lsUnKSE+5s438X1ui8tC6CgENne6SAXDzDRYCh0BP/OlDYQGI/DLs3RqsogHgy9e
+Y4zq0GdKHzCaaa5mxqlLT8yzIwEPHJcS2RXOc+e10BdT7NQsX6487T+bf7S55ET5
+2uMKQEvgoolvPZQW96Oaqg2xWWhW9QekF0bGNfGc8w==
+-----END CERTIFICATE-----
+subject=/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+issuer=/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+---
+No client certificate CA names sent
+---
+SSL handshake has read 1059 bytes and written 204 bytes
+---
+New, TLSv1/SSLv3, Cipher is EXP-EDH-RSA-DES-CBC-SHA
+Server public key is 1024 bit
+Secure Renegotiation IS NOT supported
+Compression: NONE
+Expansion: NONE
+SSL-Session:
+    Protocol  : SSLv3
+    Cipher    : EXP-EDH-RSA-DES-CBC-SHA
+    Session-ID: 91D8DFB87DAE7E7D8D9871629350AC4AA897EB387C08652E0AC883BBC6B73EEB
+    Session-ID-ctx: 
+    Master-Key: 453B58502E9174D1A92321D51E82260D532FB116C72EDBBA0BC89EAACEF7A74C534F06C93905D2973154A9BBBB7E4045
+    Key-Arg   : None
+    Start Time: 1419088228
+    Timeout   : 7200 (sec)
+    Verify return code: 18 (self signed certificate)
+---
+ok
+ok

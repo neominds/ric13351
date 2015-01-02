@@ -1,40 +1,61 @@
-(This file must be converted with BinHex 4.0)
-
-:#dp`C@j68d`ZE@0`!%e08(*$9dP&!!!!!jeU!!!!!0U2Bfp[E!!!!!-!!!%S!!1
-%3J!$K@S!!"J!!!!"!!%#!3!!!!!!!!!!!%0[C'9ABA*bD@pb)&"bEfTPBh3!!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"(CA4)9&4
-38b"38%-k4'9LG@GRCA)J8R9ZG'PYC3"(CA4)9&438b"38%-k8fpeFQ0P)&4bC@9
-c!%GPG%K89&"6)&"33cT$GA0dEfdJ5f9jGfpbC(-!4f9d5&488&-J8&"$1N&MBf9
-cFb"3BA4SF`"(CA4)9&438b"38%-k9'&bCf9d)&0PG(4TEQGc!%GPG%K89&"6)&"
-33cT'D@aP)%eKF("TEQGc!%GPG%K89&"6)&"33cT#G@PXC#"&H(4bBA-!4f9d5&4
-88&-J8&"$1N4PBR9RCf9b)&4KFQGPG!"(CA4)9&438b"38%-k0MK,)%0[C'9(C@i
-!4f9d5&488&-J8&"$1MBi5b"%DA0KFh0PE@*XCA)!4f9d5&488&-J8&"$1MBi5b"
-(E'pLB@`J6h"dD@eTHQ9b!%GPG%K89&"6)&"33cSf1%XJ6'PZDf9b!%GPG%K89&"
-6)&"33cSf1%XJ8(*[DQ9MG!"(CA4)9&438b"38%-k3bp$+bXJ3fpYF'PXCA)!4f9
-d5&488&-J8&"$1N-[3bXV)&GKFQjTEQGc!%GPG%K89&"6)&"33cT$4Ndf1%X!4f9
-d5&488&-J8&"$1NeKBdp6)%ePFQGP)&"KEQ9X!%GPG%K89&"6)&"33cT38%-J3fp
-NC8GPEJ"(CA4)9&438b"38%-k8&"$)%4TFf&cFf9YBQaPFJ"(CA4)9&438b"38%-
-k8&"$)%GXEf*KE#"2F(4TE@PkCA)!4f9d5&488&-J8&"$1P"33b"-D@jVCA)!4f9
-d5&488&-J8&"$1P"33b"348B!4f9d5&488&-J8&"$1P"33b"3FQpUC@0d!%GPG%K
-89&"6)&"33cT38%0"FfdJ8'&ZC@`!4f9d5&488&-J8&"$1P*PHL"$Efe`D@aPFJ"
-2F'9Z8e0-)&"33cT%C@*eCfGPFL"5G@jdD@eP!%p`C@j68d`J8&"$1P0[GA*MC5"
-8FQ9PF`"2F'9Z8e0-)&"33cT$GA0dEfdJ5f9jGfpbC(-!6h"PEP066#"38%-k3@0
-MCA0c)&"KG'Kc!%p`C@j68d`J8&"$1P4KFQGPG#"6CA4dD@jRF`"2F'9Z8e0-)&"
-33cT'D@aP)%eKF("TEQGc!%p`C@j68d`J8&"$1N*eD@aN)%9iG(*KF`"2F'9Z8e0
--)&"33cT%C@*eCfGPFL"8BA*RCA3!6h"PEP066#"38%-k0MK,)%0[C'9(C@i!6h"
-PEP066#"38%-k0MK,)%4TFf&cFf9YBQaPFJ"2F'9Z8e0-)&"33cSf1%XJ4fa[BQ&
-X)%p`G'PYDATPFJ"2F'9Z8e0-)&"33cSf1%XJ6'PZDf9b!%p`C@j68d`J8&"$1MB
-i5b"3FQpUC@0d!%p`C@j68d`J8&"$1N-[3bXV)%0[EA"TE'9b!%p`C@j68d`J8&"
-$1N-[3bXV)&GKFQjTEQGc!%p`C@j68d`J8&"$1N0'66Bi5`"2F'9Z8e0-)&"33cT
-0B@028b"0CA*RC5"3B@jPE!"2F'9Z8e0-)&"33cT38%-J3fpNC8GPEJ"2F'9Z8e0
--)&"33cT38%-J4'PcBA0cC@eLE'9b!%p`C@j68d`J8&"$1P"33b"(E'pLB@`J6h"
-dD@eTHQ9b!%p`C@j68d`J8&"$1P"33b"-D@jVCA)!6h"PEP066#"38%-k8&"$)&"
-&4J"2F'9Z8e0-)&"33cT38%-J8(*[DQ9MG!"2F'9Z8e0-)&"33cT38%0"FfdJ8'&
-ZC@`!6h"PEP066#"38%-k8Q9k)%0[EA"TE'9b!%GPG%K89&"6)$Bi5cT%C@*eCfG
-PFL"5G@jdD@eP!%GPG%K89&"6)$Bi5cT6Eh9bBf8J9(*PCA-!4f9d5&488&-J0MK
-,1N0eFh4[E5",CAPhEh*NF`"(CA4)9&438b!f1%Xk3@0MCA0c)&"KG'Kc!%GPG%K
-89&"6)$Bi5cT
+-> nm_client_main("6","-connect","10.10.10.102:443","-cipher","EDH-RSA-DES-CBC3-SHA","-ssl3","-fallback_scsv")
+creating ssl context
+calling SSL_new
+calling init_client
+CONNECTED(00000008)
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+verify error:num=18:self signed certificate
+verify return:1
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+verify error:num=7:certificate signature failure
+verify return:1
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+verify error:num=9:certificate is not yet valid
+notBefore=Nov 26 11:13:10 2014 GMT
+verify return:1
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+notBefore=Nov 26 11:13:10 2014 GMT
+verify return:1
+---
+Certificate chain
+ 0 s:/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+   i:/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIICRTCCAa4CCQD3HDO9S3AeDTANBgkqhkiG9w0BAQsFADBnMQswCQYDVQQGEwJJ
+TjELMAkGA1UECAwCS0ExDDAKBgNVBAcMA0JMUjENMAsGA1UECgwEZnNkZjENMAsG
+A1UECwwEZnNkZjEMMAoGA1UEAwwDZGZzMREwDwYJKoZIhvcNAQkBFgJmczAeFw0x
+NDExMjYxMTEzMTBaFw0xNTExMjYxMTEzMTBaMGcxCzAJBgNVBAYTAklOMQswCQYD
+VQQIDAJLQTEMMAoGA1UEBwwDQkxSMQ0wCwYDVQQKDARmc2RmMQ0wCwYDVQQLDARm
+c2RmMQwwCgYDVQQDDANkZnMxETAPBgkqhkiG9w0BCQEWAmZzMIGfMA0GCSqGSIb3
+DQEBAQUAA4GNADCBiQKBgQDRJHyfgWNE2IXoH7n/7i30YsoM0sAX7hje94l3HsD1
+SL3hNEX3yneGxCNqOpzl44zZRuZC2mXLwpDd6D3ZbIBoRtiXFYnbXazGRGgTKHFU
+27DQCTkD5aHHjZcEVs7RYHYoNWf8mMnLVNUZF+yGzDd2yLqRphg7NCHPY01mL6FV
+eQIDAQABMA0GCSqGSIb3DQEBCwUAA4GBAD3TIHzv6ShxxQ0zcoVQ7BBXXGUrVuZO
+l7O/5KzEzk4RW56QGGfuAzGEQvXROhYcEgAgbN1tvOAo6QU9sjS8+OTrwkzJhOBg
+T7MGlRq4XfgEyCHcmhWv3SzGRaLwkLAiEWzFsuxk+VB6kOAeu8EdqcxfwXGtwAtx
+hluhT2GQwqFl
+-----END CERTIFICATE-----
+subject=/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+issuer=/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+---
+No client certificate CA names sent
+---
+SSL handshake has read 1037 bytes and written 202 bytes
+---
+New, TLSv1/SSLv3, Cipher is EDH-RSA-DES-CBC3-SHA
+Server public key is 1024 bit
+SSL-Session:
+    Protocol  : SSLv3
+    Cipher    : EDH-RSA-DES-CBC3-SHA
+    Session-ID: CC176E8C75B6212C5B6C296AE8ACEEFEA586256AA241080C529EC6E31B2C9A01
+    Session-ID-ctx:
+    Master-Key: 1293E38885979B9C75F4A633854487A3575A5B77CF6D1034A24861C2B73C3E4B5D6A18E2E1D0D12F251ACB94CC8F46C3
+    Key-Arg   : None
+    Start Time: 406
+    Timeout   : 7200 (sec)
+    Verify return code: 9 (certificate is not yet valid)
+---
+ok
+ok

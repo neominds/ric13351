@@ -1,80 +1,61 @@
-_password_cb *cb, void *u);
-
- int PEM_write_bio_DSAPrivateKey(BIO *bp, DSA *x, const EVP_CIPHER *enc,
-					unsigned char *kstr, int klen,
-					pem_password_cb *cb, void *u);
-
- int PEM_write_DSAPrivateKey(FILE *fp, DSA *x, const EVP_CIPHER *enc,
-					unsigned char *kstr, int klen,
-					pem_password_cb *cb, void *u);
-
- DSA *PEM_read_bio_DSA_PUBKEY(BIO *bp, DSA **x,
-					pem_password_cb *cb, void *u);
-
- DSA *PEM_read_DSA_PUBKEY(FILE *fp, DSA **x,
-					pem_password_cb *cb, void *u);
-
- int PEM_write_bio_DSA_PUBKEY(BIO *bp, DSA *x);
-
- int PEM_write_DSA_PUBKEY(FILE *fp, DSA *x);
-
- DSA *PEM_read_bio_DSAparams(BIO *bp, DSA **x, pem_password_cb *cb, void *u);
-
- DSA *PEM_read_DSAparams(FILE *fp, DSA **x, pem_password_cb *cb, void *u);
-
- int PEM_write_bio_DSAparams(BIO *bp, DSA *x);
-
- int PEM_write_DSAparams(FILE *fp, DSA *x);
-
- DH *PEM_read_bio_DHparams(BIO *bp, DH **x, pem_password_cb *cb, void *u);
-
- DH *PEM_read_DHparams(FILE *fp, DH **x, pem_password_cb *cb, void *u);
-
- int PEM_write_bio_DHparams(BIO *bp, DH *x);
-
- int PEM_write_DHparams(FILE *fp, DH *x);
-
- X509 *PEM_read_bio_X509(BIO *bp, X509 **x, pem_password_cb *cb, void *u);
-
- X509 *PEM_read_X509(FILE *fp, X509 **x, pem_password_cb *cb, void *u);
-
- int PEM_write_bio_X509(BIO *bp, X509 *x);
-
- int PEM_write_X509(FILE *fp, X509 *x);
-
- X509 *PEM_read_bio_X509_AUX(BIO *bp, X509 **x, pem_password_cb *cb, void *u);
-
- X509 *PEM_read_X509_AUX(FILE *fp, X509 **x, pem_password_cb *cb, void *u);
-
- int PEM_write_bio_X509_AUX(BIO *bp, X509 *x);
-
- int PEM_write_X509_AUX(FILE *fp, X509 *x);
-
- X509_REQ *PEM_read_bio_X509_REQ(BIO *bp, X509_REQ **x,
-					pem_password_cb *cb, void *u);
-
- X509_REQ *PEM_read_X509_REQ(FILE *fp, X509_REQ **x,
-					pem_password_cb *cb, void *u);
-
- int PEM_write_bio_X509_REQ(BIO *bp, X509_REQ *x);
-
- int PEM_write_X509_REQ(FILE *fp, X509_REQ *x);
-
- int PEM_write_bio_X509_REQ_NEW(BIO *bp, X509_REQ *x);
-
- int PEM_write_X509_REQ_NEW(FILE *fp, X509_REQ *x);
-
- X509_CRL *PEM_read_bio_X509_CRL(BIO *bp, X509_CRL **x,
-					pem_password_cb *cb, void *u);
- X509_CRL *PEM_read_X509_CRL(FILE *fp, X509_CRL **x,
-					pem_password_cb *cb, void *u);
- int PEM_write_bio_X509_CRL(BIO *bp, X509_CRL *x);
- int PEM_write_X509_CRL(FILE *fp, X509_CRL *x);
-
- PKCS7 *PEM_read_bio_PKCS7(BIO *bp, PKCS7 **x, pem_password_cb *cb, void *u);
-
- PKCS7 *PEM_read_PKCS7(FILE *fp, PKCS7 **x, pem_password_cb *cb, void *u);
-
- int PEM_write_bio_PKCS7(BIO *bp, PKCS7 *x);
-
- int PEM_write_PKCS7(
+-> nm_client_main("5","-connect","10.10.10.102:443","-cipher","EDH-RSA-DES-CBC3-SHA","-ssl3")
+creating ssl context
+calling SSL_new
+calling init_client
+CONNECTED(00000008)
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+verify error:num=18:self signed certificate
+verify return:1
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+verify error:num=7:certificate signature failure
+verify return:1
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+verify error:num=9:certificate is not yet valid
+notBefore=Nov 26 11:13:10 2014 GMT
+verify return:1
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+notBefore=Nov 26 11:13:10 2014 GMT
+verify return:1
+---
+Certificate chain
+ 0 s:/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+   i:/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIICRTCCAa4CCQD3HDO9S3AeDTANBgkqhkiG9w0BAQsFADBnMQswCQYDVQQGEwJJ
+TjELMAkGA1UECAwCS0ExDDAKBgNVBAcMA0JMUjENMAsGA1UECgwEZnNkZjENMAsG
+A1UECwwEZnNkZjEMMAoGA1UEAwwDZGZzMREwDwYJKoZIhvcNAQkBFgJmczAeFw0x
+NDExMjYxMTEzMTBaFw0xNTExMjYxMTEzMTBaMGcxCzAJBgNVBAYTAklOMQswCQYD
+VQQIDAJLQTEMMAoGA1UEBwwDQkxSMQ0wCwYDVQQKDARmc2RmMQ0wCwYDVQQLDARm
+c2RmMQwwCgYDVQQDDANkZnMxETAPBgkqhkiG9w0BCQEWAmZzMIGfMA0GCSqGSIb3
+DQEBAQUAA4GNADCBiQKBgQDRJHyfgWNE2IXoH7n/7i30YsoM0sAX7hje94l3HsD1
+SL3hNEX3yneGxCNqOpzl44zZRuZC2mXLwpDd6D3ZbIBoRtiXFYnbXazGRGgTKHFU
+27DQCTkD5aHHjZcEVs7RYHYoNWf8mMnLVNUZF+yGzDd2yLqRphg7NCHPY01mL6FV
+eQIDAQABMA0GCSqGSIb3DQEBCwUAA4GBAD3TIHzv6ShxxQ0zcoVQ7BBXXGUrVuZO
+l7O/5KzEzk4RW56QGGfuAzGEQvXROhYcEgAgbN1tvOAo6QU9sjS8+OTrwkzJhOBg
+T7MGlRq4XfgEyCHcmhWv3SzGRaLwkLAiEWzFsuxk+VB6kOAeu8EdqcxfwXGtwAtx
+hluhT2GQwqFl
+-----END CERTIFICATE-----
+subject=/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+issuer=/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+---
+No client certificate CA names sent
+---
+SSL handshake has read 1037 bytes and written 200 bytes
+---
+New, TLSv1/SSLv3, Cipher is EDH-RSA-DES-CBC3-SHA
+Server public key is 1024 bit
+SSL-Session:
+    Protocol  : SSLv3
+    Cipher    : EDH-RSA-DES-CBC3-SHA
+    Session-ID: 8607F4D4BA79D668512FA973283A4E7AD229A2C496413B57FA726617FB0A3230
+    Session-ID-ctx:
+    Master-Key: C77F6B802DCD61980AA1D7D3C0B8D3ED36470C88256A8E8F03A33A80437D4D43A829F4923898988C7142AB9D66326556
+    Key-Arg   : None
+    Start Time: 72
+    Timeout   : 7200 (sec)
+    Verify return code: 9 (certificate is not yet valid)
+---
+ok
+ok

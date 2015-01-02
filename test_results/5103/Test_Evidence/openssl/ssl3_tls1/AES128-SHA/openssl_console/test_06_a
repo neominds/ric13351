@@ -1,58 +1,54 @@
-=pod
+neominds@neominds-Vostro-1200:~/openssl-0.9.8zc$ ./apps/openssl s_client -connect 10.10.10.99:443  -cipher AES128-SHA -tls1 -fallback_scsv
+CONNECTED(00000003)
+depth=0 /C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+verify error:num=18:self signed certificate
+verify return:1
+depth=0 /C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+verify return:1
+---
+Certificate chain
+ 0 s:/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+   i:/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIICWzCCAcQCCQCdwITsGkNMLTANBgkqhkiG9w0BAQUFADByMQswCQYDVQQGEwJJ
+TjEMMAoGA1UECAwDZHNkMQwwCgYDVQQHDANkc2QxDDAKBgNVBAoMA2RzZDEQMA4G
+A1UECwwHamdqaGpnaDESMBAGA1UEAwwJZGZnZGdkZmdkMRMwEQYJKoZIhvcNAQkB
+FgRlcWVxMB4XDTE0MTIxMDEyNDc0NFoXDTE1MTIxMDEyNDc0NFowcjELMAkGA1UE
+BhMCSU4xDDAKBgNVBAgMA2RzZDEMMAoGA1UEBwwDZHNkMQwwCgYDVQQKDANkc2Qx
+EDAOBgNVBAsMB2pnamhqZ2gxEjAQBgNVBAMMCWRmZ2RnZGZnZDETMBEGCSqGSIb3
+DQEJARYEZXFlcTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAry5KtsSAqj92
+4LZHRK6JJyULgXm0iCfAjWMyUVZO/BYUaPaQK0UAgL+s11fkZmgAp5B5I3jsKdlV
+0DsGr4NiRyYLGxiBH96ma0r3wae3Qd+kJ1YRuvjfYb4gT9I4nJ7TLRNrjeq7zwQj
+CKcFqCKyDbOnqkOE8bx8oEBcAD4aHv0CAwEAATANBgkqhkiG9w0BAQUFAAOBgQBS
+lsUnKSE+5s438X1ui8tC6CgENne6SAXDzDRYCh0BP/OlDYQGI/DLs3RqsogHgy9e
+Y4zq0GdKHzCaaa5mxqlLT8yzIwEPHJcS2RXOc+e10BdT7NQsX6487T+bf7S55ET5
+2uMKQEvgoolvPZQW96Oaqg2xWWhW9QekF0bGNfGc8w==
+-----END CERTIFICATE-----
+subject=/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+issuer=/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+---
+No client certificate CA names sent
+---
+SSL handshake has read 769 bytes and written 258 bytes
+---
+New, TLSv1/SSLv3, Cipher is AES128-SHA
+Server public key is 1024 bit
+Secure Renegotiation IS NOT supported
+Compression: NONE
+Expansion: NONE
+SSL-Session:
+    Protocol  : TLSv1
+    Cipher    : AES128-SHA
+    Session-ID: 30187DA2208FE5DAC254F81CF24AE4F70311A48AED90299D32324EDB151E849B
+    Session-ID-ctx: 
+    Master-Key: 1236B2FF98676B29C843BC069A0165270CC4BEDFA81C1EAB169A9379BCE69B93A7D2E9F62B7FD0FF2454F5CB052CFA9A
+    Key-Arg   : None
+    Start Time: 1419056514
+    Timeout   : 7200 (sec)
+    Verify return code: 18 (self signed certificate)
+---
+test success
+ok
 
-=head1 NAME
-
-BIO_read, BIO_write, BIO_gets, BIO_puts - BIO I/O functions
-
-=head1 SYNOPSIS
-
- #include <openssl/bio.h>
-
- int	BIO_read(BIO *b, void *buf, int len);
- int	BIO_gets(BIO *b,char *buf, int size);
- int	BIO_write(BIO *b, const void *buf, int len);
- int	BIO_puts(BIO *b,const char *buf);
-
-=head1 DESCRIPTION
-
-BIO_read() attempts to read B<len> bytes from BIO B<b> and places
-the data in B<buf>.
-
-BIO_gets() performs the BIOs "gets" operation and places the data
-in B<buf>. Usually this operation will attempt to read a line of data
-from the BIO of maximum length B<len>. There are exceptions to this
-however, for example BIO_gets() on a digest BIO will calculate and
-return the digest and other BIOs may not support BIO_gets() at all.
-
-BIO_write() attempts to write B<len> bytes from B<buf> to BIO B<b>.
-
-BIO_puts() attempts to write a null terminated string B<buf> to BIO B<b>
-
-=head1 RETURN VALUES
-
-All these functions return either the amount of data successfully read or
-written (if the return value is positive) or that no data was successfully
-read or written if the result is 0 or -1. If the return value is -2 then
-the operation is not implemented in the specific BIO type.
-
-=head1 NOTES
-
-A 0 or -1 return is not necessarily an indication of an error. In
-particular when the source/sink is non-blocking or of a certain type
-it may merely be an indication that no data is currently available and that
-the application should retry the operation later.
-
-One technique sometimes used with blocking sockets is to use a system call
-(such as select(), poll() or equivalent) to determine when data is available
-and then call read() to read the data. The equivalent with BIOs (that is call
-select() on the underlying I/O structure and then call BIO_read() to
-read the data) should B<not> be used because a single call to BIO_read()
-can cause several reads (and writes in the case of SSL BIOs) on the underlying
-I/O structure and may block as a result. Instead select() (or equivalent)
-should be combined with non blocking I/O so successive reads will request
-a retry instead of blocking.
-
-See L<BIO_should_retry(3)|BIO_should_retry(3)> for details of how to
-determine the cause of a retry and other I/O issues.
-
-If the BIO_gets() function is not supported by a B

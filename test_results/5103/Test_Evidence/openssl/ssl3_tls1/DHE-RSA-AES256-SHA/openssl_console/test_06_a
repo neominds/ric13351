@@ -1,73 +1,53 @@
-$! CA - wrapper around ca to make it easier to use ... basically ca requires
-$!      some setup stuff to be done before you can use it and this makes
-$!      things easier between now and when Eric is convinced to fix it :-)
-$!
-$! CA -newca ... will setup the right stuff
-$! CA -newreq ... will generate a certificate request 
-$! CA -sign ... will sign the generated request and output 
-$!
-$! At the end of that grab newreq.pem and newcert.pem (one has the key 
-$! and the other the certificate) and cat them together and that is what
-$! you want/need ... I'll make even this a little cleaner later.
-$!
-$!
-$! 12-Jan-96 tjh    Added more things ... including CA -signcert which
-$!                  converts a certificate to a request and then signs it.
-$! 10-Jan-96 eay    Fixed a few more bugs and added the SSLEAY_CONFIG
-$!                 environment variable so this can be driven from
-$!                 a script.
-$! 25-Jul-96 eay    Cleaned up filenames some more.
-$! 11-Jun-96 eay    Fixed a few filename missmatches.
-$! 03-May-96 eay    Modified to use 'openssl cmd' instead of 'cmd'.
-$! 18-Apr-96 tjh    Original hacking
-$!
-$! Tim Hudson
-$! tjh@cryptsoft.com
-$!
-$!
-$! default ssleay.cnf file has setup as per the following
-$! demoCA ... where everything is stored
-$
-$ IF F$TYPE(SSLEAY_CONFIG) .EQS. "" THEN SSLEAY_CONFIG := SSLLIB:SSLEAY.CNF
-$
-$ DAYS   = "-days 365"
-$ REQ    = openssl + " req " + SSLEAY_CONFIG
-$ CA     = openssl + " ca " + SSLEAY_CONFIG
-$ VERIFY = openssl + " verify"
-$ X509   = openssl + " x509"
-$ PKCS12 = openssl + " pkcs12"
-$ echo   = "write sys$Output"
-$!
-$ s = F$PARSE(F$ENVIRONMENT("DEFAULT"),"[]") - "].;"
-$ CATOP  := 's'.demoCA
-$ CAKEY  := ]cakey.pem
-$ CACERT := ]cacert.pem
-$
-$ __INPUT := SYS$COMMAND
-$ RET = 1
-$!
-$ i = 1
-$opt_loop:
-$ if i .gt. 8 then goto opt_loop_end
-$
-$ prog_opt = F$EDIT(P'i',"lowercase")
-$
-$ IF (prog_opt .EQS. "?" .OR. prog_opt .EQS. "-h" .OR. prog_opt .EQS. "-help") 
-$ THEN
-$   echo "usage: CA -newcert|-newreq|-newca|-sign|-verify" 
-$   exit
-$ ENDIF
-$!
-$ IF (prog_opt .EQS. "-input")
-$ THEN
-$   ! Get input from somewhere other than SYS$COMMAND
-$   i = i + 1
-$   __INPUT = P'i'
-$   GOTO opt_loop_continue
-$ ENDIF
-$!
-$ IF (prog_opt .EQS. "-newcert")
-$ THEN
-$   ! Create a certificate.
-$   DEFINE/USER SYS$INPUT '__INPUT'
-$   
+neominds@neominds-Vostro-1200:~/openssl-0.9.8zc$ ./apps/openssl s_client -connect 10.10.10.99:443  -cipher DHE-RSA-AES256-SHA  -tls1 -fallback_scsv
+CONNECTED(00000003)
+depth=0 /C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+verify error:num=18:self signed certificate
+verify return:1
+depth=0 /C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+verify return:1
+---
+Certificate chain
+ 0 s:/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+   i:/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIICWzCCAcQCCQCdwITsGkNMLTANBgkqhkiG9w0BAQUFADByMQswCQYDVQQGEwJJ
+TjEMMAoGA1UECAwDZHNkMQwwCgYDVQQHDANkc2QxDDAKBgNVBAoMA2RzZDEQMA4G
+A1UECwwHamdqaGpnaDESMBAGA1UEAwwJZGZnZGdkZmdkMRMwEQYJKoZIhvcNAQkB
+FgRlcWVxMB4XDTE0MTIxMDEyNDc0NFoXDTE1MTIxMDEyNDc0NFowcjELMAkGA1UE
+BhMCSU4xDDAKBgNVBAgMA2RzZDEMMAoGA1UEBwwDZHNkMQwwCgYDVQQKDANkc2Qx
+EDAOBgNVBAsMB2pnamhqZ2gxEjAQBgNVBAMMCWRmZ2RnZGZnZDETMBEGCSqGSIb3
+DQEJARYEZXFlcTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAry5KtsSAqj92
+4LZHRK6JJyULgXm0iCfAjWMyUVZO/BYUaPaQK0UAgL+s11fkZmgAp5B5I3jsKdlV
+0DsGr4NiRyYLGxiBH96ma0r3wae3Qd+kJ1YRuvjfYb4gT9I4nJ7TLRNrjeq7zwQj
+CKcFqCKyDbOnqkOE8bx8oEBcAD4aHv0CAwEAATANBgkqhkiG9w0BAQUFAAOBgQBS
+lsUnKSE+5s438X1ui8tC6CgENne6SAXDzDRYCh0BP/OlDYQGI/DLs3RqsogHgy9e
+Y4zq0GdKHzCaaa5mxqlLT8yzIwEPHJcS2RXOc+e10BdT7NQsX6487T+bf7S55ET5
+2uMKQEvgoolvPZQW96Oaqg2xWWhW9QekF0bGNfGc8w==
+-----END CERTIFICATE-----
+subject=/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+issuer=/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+---
+No client certificate CA names sent
+---
+SSL handshake has read 1043 bytes and written 194 bytes
+---
+New, TLSv1/SSLv3, Cipher is DHE-RSA-AES256-SHA
+Server public key is 1024 bit
+Secure Renegotiation IS NOT supported
+Compression: NONE
+Expansion: NONE
+SSL-Session:
+    Protocol  : TLSv1
+    Cipher    : DHE-RSA-AES256-SHA
+    Session-ID: 83DE1BBF24C1A78A6F98198175A8A00BAE4E7ACB450E4E6DBB08CFD37250A010
+    Session-ID-ctx: 
+    Master-Key: 77EC71F2E4DF7A3A1F143BFEEEDEC5AD5190C494932CA4E6486B59527A4F0AE32195F0C39E10C4FF50599F3EACE07009
+    Key-Arg   : None
+    Start Time: 1419080097
+    Timeout   : 7200 (sec)
+    Verify return code: 18 (self signed certificate)
+---
+ok
+ok

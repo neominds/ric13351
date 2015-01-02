@@ -1,136 +1,64 @@
-io_err, "Error getting passwords\n");
-		goto end;
-		}
 
-	in = BIO_new(BIO_s_file());
-	out = BIO_new(BIO_s_file());
-	if ((in == NULL) || (out == NULL))
-		{
-		ERR_print_errors(bio_err);
-		goto end;
-		}
+-> nm_client_main("5","-connect","10.10.10.102:443","-cipher","DHE-RSA-AES128-SHA","-tls1")
+creating ssl context
+calling SSL_new
+calling init_client
+CONNECTED(00000008)
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+verify error:num=18:self signed certificate
+verify return:1
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+verify error:num=7:certificate signature failure
+verify return:1
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+verify error:num=9:certificate is not yet valid
+notBefore=Nov 26 11:13:10 2014 GMT
+verify return:1
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+notBefore=Nov 26 11:13:10 2014 GMT
+verify return:1
+---
+Certificate chain
+ 0 s:/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+   i:/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIICRTCCAa4CCQD3HDO9S3AeDTANBgkqhkiG9w0BAQsFADBnMQswCQYDVQQGEwJJ
+TjELMAkGA1UECAwCS0ExDDAKBgNVBAcMA0JMUjENMAsGA1UECgwEZnNkZjENMAsG
+A1UECwwEZnNkZjEMMAoGA1UEAwwDZGZzMREwDwYJKoZIhvcNAQkBFgJmczAeFw0x
+NDExMjYxMTEzMTBaFw0xNTExMjYxMTEzMTBaMGcxCzAJBgNVBAYTAklOMQswCQYD
+VQQIDAJLQTEMMAoGA1UEBwwDQkxSMQ0wCwYDVQQKDARmc2RmMQ0wCwYDVQQLDARm
+c2RmMQwwCgYDVQQDDANkZnMxETAPBgkqhkiG9w0BCQEWAmZzMIGfMA0GCSqGSIb3
+DQEBAQUAA4GNADCBiQKBgQDRJHyfgWNE2IXoH7n/7i30YsoM0sAX7hje94l3HsD1
+SL3hNEX3yneGxCNqOpzl44zZRuZC2mXLwpDd6D3ZbIBoRtiXFYnbXazGRGgTKHFU
+27DQCTkD5aHHjZcEVs7RYHYoNWf8mMnLVNUZF+yGzDd2yLqRphg7NCHPY01mL6FV
+eQIDAQABMA0GCSqGSIb3DQEBCwUAA4GBAD3TIHzv6ShxxQ0zcoVQ7BBXXGUrVuZO
+l7O/5KzEzk4RW56QGGfuAzGEQvXROhYcEgAgbN1tvOAo6QU9sjS8+OTrwkzJhOBg
+T7MGlRq4XfgEyCHcmhWv3SzGRaLwkLAiEWzFsuxk+VB6kOAeu8EdqcxfwXGtwAtx
+hluhT2GQwqFl
+-----END CERTIFICATE-----
+subject=/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+issuer=/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+---
+No client certificate CA names sent
+---
+SSL handshake has read 747 bytes and written 248 bytes
+---
+New, TLSv1/SSLv3, Cipher is AES128-SHA
+Server public key is 1024 bit
+SSL-Session:
+    Protocol  : TLSv1
+    Cipher    : AES128-SHA
+    Session-ID: A6D37E68BFD366159EDA26AB22B30CBD5041B8CA4E8CC46B043706B8B4D07EC4
+    Session-ID-ctx:
+    Master-Key: 289E6101E1B8514C5A0B92D9D2D5A2EAC393F7C46C1B568B3C9B19EE17D667B911D600B6E6FDF9F7EB8FFA7D33D4FDC8
+    Key-Arg   : None
+    Start Time: 94
+    Timeout   : 7200 (sec)
+    Verify return code: 9 (certificate is not yet valid)
+---
+success
+ok
 
-	if (infile == NULL)
-		BIO_set_fp(in, stdin, BIO_NOCLOSE);
-	else
-		{
-		if (BIO_read_filename(in, infile) <= 0)
-			{
-			perror(infile);
-			goto end;
-			}
-		}
 
-	BIO_printf(bio_err, "read EC key\n");
-	if (informat == FORMAT_ASN1) 
-		{
-		if (pubin) 
-			eckey = d2i_EC_PUBKEY_bio(in, NULL);
-		else 
-			eckey = d2i_ECPrivateKey_bio(in, NULL);
-		} 
-	else if (informat == FORMAT_PEM) 
-		{
-		if (pubin) 
-			eckey = PEM_read_bio_EC_PUBKEY(in, NULL, NULL, 
-				NULL);
-		else 
-			eckey = PEM_read_bio_ECPrivateKey(in, NULL, NULL,
-				passin);
-		} 
-	else
-		{
-		BIO_printf(bio_err, "bad input format specified for key\n");
-		goto end;
-		}
-	if (eckey == NULL)
-		{
-		BIO_printf(bio_err,"unable to load Key\n");
-		ERR_print_errors(bio_err);
-		goto end;
-		}
-
-	if (outfile == NULL)
-		{
-		BIO_set_fp(out, stdout, BIO_NOCLOSE);
-#ifdef OPENSSL_SYS_VMS
-			{
-			BIO *tmpbio = BIO_new(BIO_f_linebuffer());
-			out = BIO_push(tmpbio, out);
-			}
-#endif
-		}
-	else
-		{
-		if (BIO_write_filename(out, outfile) <= 0)
-			{
-			perror(outfile);
-			goto end;
-			}
-		}
-
-	group = EC_KEY_get0_group(eckey);
-
-	if (new_form)
-		EC_KEY_set_conv_form(eckey, form);
-
-	if (new_asn1_flag)
-		EC_KEY_set_asn1_flag(eckey, asn1_flag);
-
-	if (text) 
-		if (!EC_KEY_print(out, eckey, 0))
-			{
-			perror(outfile);
-			ERR_print_errors(bio_err);
-			goto end;
-			}
-
-	if (noout) 
-		{
-		ret = 0;
-		goto end;
-		}
-
-	BIO_printf(bio_err, "writing EC key\n");
-	if (outformat == FORMAT_ASN1) 
-		{
-		if (param_out)
-			i = i2d_ECPKParameters_bio(out, group);
-		else if (pubin || pubout) 
-			i = i2d_EC_PUBKEY_bio(out, eckey);
-		else 
-			i = i2d_ECPrivateKey_bio(out, eckey);
-		} 
-	else if (outformat == FORMAT_PEM) 
-		{
-		if (param_out)
-			i = PEM_write_bio_ECPKParameters(out, group);
-		else if (pubin || pubout)
-			i = PEM_write_bio_EC_PUBKEY(out, eckey);
-		else 
-			i = PEM_write_bio_ECPrivateKey(out, eckey, enc,
-						NULL, 0, NULL, passout);
-		} 
-	else 
-		{
-		BIO_printf(bio_err, "bad output format specified for "
-			"outfile\n");
-		goto end;
-		}
-
-	if (!i)
-		{
-		BIO_printf(bio_err, "unable to write private key\n");
-		ERR_print_errors(bio_err);
-		}
-	else
-		ret=0;
-end:
-	if (in)
-		BIO_free(in);
-	if (out)
-		BIO_free_all(out);
-	if (eckey)
-		EC_KEY_free(eckey);
-	if (passin)
-		OPENSSL_free(passin

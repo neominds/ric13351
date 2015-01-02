@@ -1,72 +1,54 @@
-$! TREQ.COM  --  Tests req keys
-$
-$	__arch := VAX
-$	if f$getsyi("cpu") .ge. 128 then -
-	   __arch = f$edit( f$getsyi( "ARCH_NAME"), "UPCASE")
-$	if __arch .eqs. "" then __arch := UNK
-$	exe_dir := sys$disk:[-.'__arch'.exe.apps]
-$
-$	cmd := mcr 'exe_dir'openssl req -config [-.apps]openssl-vms.cnf
-$
-$	t := testreq.pem
-$	if p1 .nes. "" then t = p1
-$
-$	write sys$output "testing req conversions"
-$	if f$search("fff.*") .nes "" then delete fff.*;*
-$	if f$search("ff.*") .nes "" then delete ff.*;*
-$	if f$search("f.*") .nes "" then delete f.*;*
-$	convert/fdl=sys$input: 't' fff.p
-RECORD
-	FORMAT STREAM_LF
-$
-$	write sys$output "p -> d"
-$	'cmd' -in fff.p -inform p -outform d -out f.d
-$	if $severity .ne. 1 then exit 3
-$!	write sys$output "p -> t"
-$!	'cmd' -in fff.p -inform p -outform t -out f.t
-$!	if $severity .ne. 1 then exit 3
-$	write sys$output "p -> p"
-$	'cmd' -in fff.p -inform p -outform p -out f.p
-$	if $severity .ne. 1 then exit 3
-$
-$	write sys$output "d -> d"
-$	'cmd' -verify -in f.d -inform d -outform d -out ff.d1
-$	if $severity .ne. 1 then exit 3
-$!	write sys$output "t -> d"
-$!	'cmd' -verify -in f.t -inform t -outform d -out ff.d2
-$!	if $severity .ne. 1 then exit 3
-$	write sys$output "p -> d"
-$	'cmd' -verify -in f.p -inform p -outform d -out ff.d3
-$	if $severity .ne. 1 then exit 3
-$
-$!	write sys$output "d -> t"
-$!	'cmd' -in f.d -inform d -outform t -out ff.t1
-$!	if $severity .ne. 1 then exit 3
-$!	write sys$output "t -> t"
-$!	'cmd' -in f.t -inform t -outform t -out ff.t2
-$!	if $severity .ne. 1 then exit 3
-$!	write sys$output "p -> t"
-$!	'cmd' -in f.p -inform p -outform t -out ff.t3
-$!	if $severity .ne. 1 then exit 3
-$
-$	write sys$output "d -> p"
-$	'cmd' -in f.d -inform d -outform p -out ff.p1
-$	if $severity .ne. 1 then exit 3
-$!	write sys$output "t -> p"
-$!	'cmd' -in f.t -inform t -outform p -out ff.p2
-$!	if $severity .ne. 1 then exit 3
-$	write sys$output "p -> p"
-$	'cmd' -in f.p -inform p -outform p -out ff.p3
-$	if $severity .ne. 1 then exit 3
-$
-$	backup/compare fff.p f.p
-$	if $severity .ne. 1 then exit 3
-$	backup/compare fff.p ff.p1
-$	if $severity .ne. 1 then exit 3
-$!	backup/compare fff.p ff.p2
-$!	if $severity .ne. 1 then exit 3
-$	backup/compare fff.p ff.p3
-$	if $severity .ne. 1 then exit 3
-$
-$!	backup/compare f.t ff.t1
-$!	if $severity .ne. 1 then
+neominds@neominds-Vostro-1200:~/openssl-0.9.8zc$ ./apps/openssl s_client -connect 10.10.10.99:443  -cipher EDH-RSA-DES-CBC3-SHA  -ssl3  
+CONNECTED(00000003)
+depth=0 /C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+verify error:num=18:self signed certificate
+verify return:1
+depth=0 /C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+verify return:1
+---
+Certificate chain
+ 0 s:/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+   i:/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIICWzCCAcQCCQCdwITsGkNMLTANBgkqhkiG9w0BAQUFADByMQswCQYDVQQGEwJJ
+TjEMMAoGA1UECAwDZHNkMQwwCgYDVQQHDANkc2QxDDAKBgNVBAoMA2RzZDEQMA4G
+A1UECwwHamdqaGpnaDESMBAGA1UEAwwJZGZnZGdkZmdkMRMwEQYJKoZIhvcNAQkB
+FgRlcWVxMB4XDTE0MTIxMDEyNDc0NFoXDTE1MTIxMDEyNDc0NFowcjELMAkGA1UE
+BhMCSU4xDDAKBgNVBAgMA2RzZDEMMAoGA1UEBwwDZHNkMQwwCgYDVQQKDANkc2Qx
+EDAOBgNVBAsMB2pnamhqZ2gxEjAQBgNVBAMMCWRmZ2RnZGZnZDETMBEGCSqGSIb3
+DQEJARYEZXFlcTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAry5KtsSAqj92
+4LZHRK6JJyULgXm0iCfAjWMyUVZO/BYUaPaQK0UAgL+s11fkZmgAp5B5I3jsKdlV
+0DsGr4NiRyYLGxiBH96ma0r3wae3Qd+kJ1YRuvjfYb4gT9I4nJ7TLRNrjeq7zwQj
+CKcFqCKyDbOnqkOE8bx8oEBcAD4aHv0CAwEAATANBgkqhkiG9w0BAQUFAAOBgQBS
+lsUnKSE+5s438X1ui8tC6CgENne6SAXDzDRYCh0BP/OlDYQGI/DLs3RqsogHgy9e
+Y4zq0GdKHzCaaa5mxqlLT8yzIwEPHJcS2RXOc+e10BdT7NQsX6487T+bf7S55ET5
+2uMKQEvgoolvPZQW96Oaqg2xWWhW9QekF0bGNfGc8w==
+-----END CERTIFICATE-----
+subject=/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+issuer=/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+---
+No client certificate CA names sent
+---
+SSL handshake has read 1059 bytes and written 202 bytes
+---
+New, TLSv1/SSLv3, Cipher is DHE-RSA-AES256-SHA
+Server public key is 1024 bit
+Secure Renegotiation IS NOT supported
+Compression: NONE
+Expansion: NONE
+SSL-Session:
+    Protocol  : SSLv3
+    Cipher    : EDH-RSA-DES-CBC3-SHA
+    Session-ID: 265878F32B0EB4787C651F26986C068150CEE9B14D230E645E665616D42785A6
+    Session-ID-ctx: 
+    Master-Key: 81476C480B09386141768F09F4C085868ECE3026076768BE83DFBC605E139821DE0136C2FBC19CDA5D2B0CF5766D04F0
+    Key-Arg   : None
+    Start Time: 1419080327
+    Timeout   : 7200 (sec)
+    Verify return code: 18 (self signed certificate)
+---
+ok
+ok
+

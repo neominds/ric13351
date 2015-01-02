@@ -1,131 +1,62 @@
-	errstr, mode, type, file, line);
-		}
-	}
+-> nm_client_main("5","-connect","10.10.10.102:443","-cipher","DHE-RSA-AES128-SHA","-tls1")
+creating ssl context
+calling SSL_new
+calling init_client
+CONNECTED(00000008)
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+verify error:num=18:self signed certificate
+verify return:1
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+verify error:num=7:certificate signature failure
+verify return:1
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+verify error:num=9:certificate is not yet valid
+notBefore=Nov 26 11:13:10 2014 GMT
+verify return:1
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+notBefore=Nov 26 11:13:10 2014 GMT
+verify return:1
+---
+Certificate chain
+ 0 s:/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+   i:/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIICRTCCAa4CCQD3HDO9S3AeDTANBgkqhkiG9w0BAQsFADBnMQswCQYDVQQGEwJJ
+TjELMAkGA1UECAwCS0ExDDAKBgNVBAcMA0JMUjENMAsGA1UECgwEZnNkZjENMAsG
+A1UECwwEZnNkZjEMMAoGA1UEAwwDZGZzMREwDwYJKoZIhvcNAQkBFgJmczAeFw0x
+NDExMjYxMTEzMTBaFw0xNTExMjYxMTEzMTBaMGcxCzAJBgNVBAYTAklOMQswCQYD
+VQQIDAJLQTEMMAoGA1UEBwwDQkxSMQ0wCwYDVQQKDARmc2RmMQ0wCwYDVQQLDARm
+c2RmMQwwCgYDVQQDDANkZnMxETAPBgkqhkiG9w0BCQEWAmZzMIGfMA0GCSqGSIb3
+DQEBAQUAA4GNADCBiQKBgQDRJHyfgWNE2IXoH7n/7i30YsoM0sAX7hje94l3HsD1
+SL3hNEX3yneGxCNqOpzl44zZRuZC2mXLwpDd6D3ZbIBoRtiXFYnbXazGRGgTKHFU
+27DQCTkD5aHHjZcEVs7RYHYoNWf8mMnLVNUZF+yGzDd2yLqRphg7NCHPY01mL6FV
+eQIDAQABMA0GCSqGSIb3DQEBCwUAA4GBAD3TIHzv6ShxxQ0zcoVQ7BBXXGUrVuZO
+l7O/5KzEzk4RW56QGGfuAzGEQvXROhYcEgAgbN1tvOAo6QU9sjS8+OTrwkzJhOBg
+T7MGlRq4XfgEyCHcmhWv3SzGRaLwkLAiEWzFsuxk+VB6kOAeu8EdqcxfwXGtwAtx
+hluhT2GQwqFl
+-----END CERTIFICATE-----
+subject=/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+issuer=/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+---
+No client certificate CA names sent
+---
+SSL handshake has read 1021 bytes and written 184 bytes
+---
+New, TLSv1/SSLv3, Cipher is DHE-RSA-AES128-SHA
+Server public key is 1024 bit
+SSL-Session:
+    Protocol  : TLSv1
+    Cipher    : DHE-RSA-AES128-SHA
+    Session-ID: F80584706F344745BBA3BCFF7FFB57A3F9844A9A155F90FC65E46D8C3313FE38
+    Session-ID-ctx:
+    Master-Key: 7B2542F81AD1F0B416763ADF94CC1AF6060ADB3496BCF120770B9E050A5915237CB84ED0CF8DE4C945B1FE81FF64509E
+    Key-Arg   : None
+    Start Time: 363
+    Timeout   : 7200 (sec)
+    Verify return code: 9 (certificate is not yet valid)
+---
+ok
+ok
 
-
-int main(int Argc, char *Argv[])
-	{
-	ARGS arg;
-#define PROG_NAME_SIZE	39
-	char pname[PROG_NAME_SIZE+1];
-	FUNCTION f,*fp;
-	MS_STATIC const char *prompt;
-	MS_STATIC char buf[1024];
-	char *to_free=NULL;
-	int n,i,ret=0;
-	int argc;
-	char **argv,*p;
-	LHASH *prog=NULL;
-	long errline;
- 
-	arg.data=NULL;
-	arg.count=0;
-
-	in_FIPS_mode = 0;
-
-	if(getenv("OPENSSL_FIPS")) {
-#ifdef OPENSSL_FIPS
-		if (!FIPS_mode_set(1)) {
-			ERR_load_crypto_strings();
-			ERR_print_errors(BIO_new_fp(stderr,BIO_NOCLOSE));
-			EXIT(1);
-		}
-		in_FIPS_mode = 1;
-#else
-		fprintf(stderr, "FIPS mode not supported.\n");
-		EXIT(1);
-#endif
-		}
-
-	if (bio_err == NULL)
-		if ((bio_err=BIO_new(BIO_s_file())) != NULL)
-			BIO_set_fp(bio_err,stderr,BIO_NOCLOSE|BIO_FP_TEXT);
-
-	if (getenv("OPENSSL_DEBUG_MEMORY") != NULL) /* if not defined, use compiled-in library defaults */
-		{
-		if (!(0 == strcmp(getenv("OPENSSL_DEBUG_MEMORY"), "off")))
-			{
-			CRYPTO_malloc_debug_init();
-			CRYPTO_set_mem_debug_options(V_CRYPTO_MDEBUG_ALL);
-			}
-		else
-			{
-			/* OPENSSL_DEBUG_MEMORY=off */
-			CRYPTO_set_mem_debug_functions(0, 0, 0, 0, 0);
-			}
-		}
-	CRYPTO_mem_ctrl(CRYPTO_MEM_CHECK_ON);
-
-#if 0
-	if (getenv("OPENSSL_DEBUG_LOCKING") != NULL)
-#endif
-		{
-		CRYPTO_set_locking_callback(lock_dbg_cb);
-		}
-
-	apps_startup();
-
-	/* Lets load up our environment a little */
-	p=getenv("OPENSSL_CONF");
-	if (p == NULL)
-		p=getenv("SSLEAY_CONF");
-	if (p == NULL)
-		p=to_free=make_config_name();
-
-	default_config_file=p;
-
-	config=NCONF_new(NULL);
-	i=NCONF_load(config,p,&errline);
-	if (i == 0)
-		{
-		NCONF_free(config);
-		config = NULL;
-		ERR_clear_error();
-		}
-
-	prog=prog_init();
-
-	/* first check the program name */
-	program_name(Argv[0],pname,sizeof pname);
-
-	f.name=pname;
-	fp=(FUNCTION *)lh_retrieve(prog,&f);
-	if (fp != NULL)
-		{
-		Argv[0]=pname;
-		ret=fp->func(Argc,Argv);
-		goto end;
-		}
-
-	/* ok, now check that there are not arguments, if there are,
-	 * run with them, shifting the ssleay off the front */
-	if (Argc != 1)
-		{
-		Argc--;
-		Argv++;
-		ret=do_cmd(prog,Argc,Argv);
-		if (ret < 0) ret=0;
-		goto end;
-		}
-
-	/* ok, lets enter the old 'OpenSSL>' mode */
-	
-	for (;;)
-		{
-		ret=0;
-		p=buf;
-		n=sizeof buf;
-		i=0;
-		for (;;)
-			{
-			p[0]='\0';
-			if (i++)
-				prompt=">";
-			else	prompt="OpenSSL> ";
-			fputs(prompt,stdout);
-			fflush(stdout);
-			if (!fgets(p,n,stdin))
-				goto end;
-			if (p[0] == '\0') goto end;
-			i=strlen(p);
-			if (i <= 1) break;

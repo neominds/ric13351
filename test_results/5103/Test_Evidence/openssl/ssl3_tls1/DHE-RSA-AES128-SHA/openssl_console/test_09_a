@@ -1,93 +1,55 @@
- signal calls */
+neominds@neominds-Vostro-1200:~/openssl-0.9.8zc$ ./apps/openssl s_client -connect 10.10.10.99:443  -cipher DHE-RSA-AES128-SHA  -ssl3 -fallback_scsv
+CONNECTED(00000003)
+depth=0 /C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+verify error:num=18:self signed certificate
+verify return:1
+depth=0 /C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+verify return:1
+---
+Certificate chain
+ 0 s:/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+   i:/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIICWzCCAcQCCQCdwITsGkNMLTANBgkqhkiG9w0BAQUFADByMQswCQYDVQQGEwJJ
+TjEMMAoGA1UECAwDZHNkMQwwCgYDVQQHDANkc2QxDDAKBgNVBAoMA2RzZDEQMA4G
+A1UECwwHamdqaGpnaDESMBAGA1UEAwwJZGZnZGdkZmdkMRMwEQYJKoZIhvcNAQkB
+FgRlcWVxMB4XDTE0MTIxMDEyNDc0NFoXDTE1MTIxMDEyNDc0NFowcjELMAkGA1UE
+BhMCSU4xDDAKBgNVBAgMA2RzZDEMMAoGA1UEBwwDZHNkMQwwCgYDVQQKDANkc2Qx
+EDAOBgNVBAsMB2pnamhqZ2gxEjAQBgNVBAMMCWRmZ2RnZGZnZDETMBEGCSqGSIb3
+DQEJARYEZXFlcTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAry5KtsSAqj92
+4LZHRK6JJyULgXm0iCfAjWMyUVZO/BYUaPaQK0UAgL+s11fkZmgAp5B5I3jsKdlV
+0DsGr4NiRyYLGxiBH96ma0r3wae3Qd+kJ1YRuvjfYb4gT9I4nJ7TLRNrjeq7zwQj
+CKcFqCKyDbOnqkOE8bx8oEBcAD4aHv0CAwEAATANBgkqhkiG9w0BAQUFAAOBgQBS
+lsUnKSE+5s438X1ui8tC6CgENne6SAXDzDRYCh0BP/OlDYQGI/DLs3RqsogHgy9e
+Y4zq0GdKHzCaaa5mxqlLT8yzIwEPHJcS2RXOc+e10BdT7NQsX6487T+bf7S55ET5
+2uMKQEvgoolvPZQW96Oaqg2xWWhW9QekF0bGNfGc8w==
+-----END CERTIFICATE-----
+subject=/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+issuer=/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+---
+No client certificate CA names sent
+---
+SSL handshake has read 1059 bytes and written 204 bytes
+---
+New, TLSv1/SSLv3, Cipher is DHE-RSA-AES128-SHA
+Server public key is 1024 bit
+Secure Renegotiation IS NOT supported
+Compression: NONE
+Expansion: NONE
+SSL-Session:
+    Protocol  : SSLv3
+    Cipher    : DHE-RSA-AES128-SHA
+    Session-ID: A29D22EFE386495728D7C3EEC6FFC94E77FCD263B376FC1B1A5EFA6744AF5353
+    Session-ID-ctx: 
+    Master-Key: ECDC1ED5AA9C55F5F14E4E99EC7C8B7728E8ACBFC2F395D91F1768CDF975651F49F9B1F6015C399FBC8D8C755B094825
+    Key-Arg   : None
+    Start Time: 1419077794
+    Timeout   : 7200 (sec)
+    Verify return code: 18 (self signed certificate)
+---
+ok
+ok
 
-#undef PROG
-#define PROG speed_main
 
-#include <stdio.h>
-#include <stdlib.h>
-
-#include <string.h>
-#include <math.h>
-#include "apps.h"
-#ifdef OPENSSL_NO_STDIO
-#define APPS_WIN16
-#endif
-#include <openssl/crypto.h>
-#include <openssl/rand.h>
-#include <openssl/err.h>
-#include <openssl/evp.h>
-#include <openssl/objects.h>
-#if !defined(OPENSSL_SYS_MSDOS)
-#include OPENSSL_UNISTD
-#endif
-
-#ifndef OPENSSL_SYS_NETWARE
-#include <signal.h>
-#endif
-
-#if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(OPENSSL_SYS_MACOSX)
-# define USE_TOD
-#elif !defined(OPENSSL_SYS_MSDOS) && !defined(OPENSSL_SYS_VXWORKS) && (!defined(OPENSSL_SYS_VMS) || defined(__DECC))
-# define TIMES
-#endif
-#if !defined(_UNICOS) && !defined(__OpenBSD__) && !defined(sgi) && !defined(__FreeBSD__) && !(defined(__bsdi) || defined(__bsdi__)) && !defined(_AIX) && !defined(OPENSSL_SYS_MPE) && !defined(__NetBSD__) && !defined(OPENSSL_SYS_VXWORKS) /* FIXME */
-# define TIMEB
-#endif
-
-#if defined(OPENSSL_SYS_NETWARE)
-#undef TIMES
-#undef TIMEB
-#include <time.h>
-#endif
-
-#ifndef _IRIX
-# include <time.h>
-#endif
-#ifdef TIMES
-# include <sys/types.h>
-# include <sys/times.h>
-#endif
-#ifdef USE_TOD
-# include <sys/time.h>
-# include <sys/resource.h>
-#endif
-
-/* Depending on the VMS version, the tms structure is perhaps defined.
-   The __TMS macro will show if it was.  If it wasn't defined, we should
-   undefine TIMES, since that tells the rest of the program how things
-   should be handled.				-- Richard Levitte */
-#if defined(OPENSSL_SYS_VMS_DECC) && !defined(__TMS)
-#undef TIMES
-#endif
-
-#ifdef TIMEB
-#include <sys/timeb.h>
-#endif
-
-#if !defined(TIMES) && !defined(TIMEB) && !defined(USE_TOD) && !defined(OPENSSL_SYS_VXWORKS) && !defined(OPENSSL_SYS_NETWARE)
-#error "It seems neither struct tms nor struct timeb is supported in this platform!"
-#endif
-
-#if defined(sun) || defined(__ultrix)
-#define _POSIX_SOURCE
-#include <limits.h>
-#include <sys/param.h>
-#endif
-
-#include <openssl/bn.h>
-#ifndef OPENSSL_NO_DES
-#include <openssl/des.h>
-#endif
-#ifndef OPENSSL_NO_AES
-#include <openssl/aes.h>
-#endif
-#ifndef OPENSSL_NO_CAMELLIA
-#include <openssl/camellia.h>
-#endif
-#ifndef OPENSSL_NO_MD2
-#include <openssl/md2.h>
-#endif
-#ifndef OPENSSL_NO_MDC2
-#include <openssl/mdc2.h>
-#endif
-#ifndef OPENSSL_NO

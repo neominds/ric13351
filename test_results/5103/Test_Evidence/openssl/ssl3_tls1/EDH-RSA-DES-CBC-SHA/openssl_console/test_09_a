@@ -1,80 +1,53 @@
-)> application.
-Authors may also generate their own set of parameters using
-L<dhparam(1)|dhparam(1)>, but a user may not be sure how the parameters were
-generated. The generation of DH parameters during installation is therefore
-recommended.
-
-An application may either directly specify the DH parameters or
-can supply the DH parameters via a callback function. The callback approach
-has the advantage, that the callback may supply DH parameters for different
-key lengths.
-
-The B<tmp_dh_callback> is called with the B<keylength> needed and
-the B<is_export> information. The B<is_export> flag is set, when the
-ephemeral DH key exchange is performed with an export cipher.
-
-=head1 EXAMPLES
-
-Handle DH parameters for key lengths of 512 and 1024 bits. (Error handling
-partly left out.)
-
- ...
- /* Set up ephemeral DH stuff */
- DH *dh_512 = NULL;
- DH *dh_1024 = NULL;
- FILE *paramfile;
-
- ...
- /* "openssl dhparam -out dh_param_512.pem -2 512" */
- paramfile = fopen("dh_param_512.pem", "r");
- if (paramfile) {
-   dh_512 = PEM_read_DHparams(paramfile, NULL, NULL, NULL);
-   fclose(paramfile);
- }
- /* "openssl dhparam -out dh_param_1024.pem -2 1024" */
- paramfile = fopen("dh_param_1024.pem", "r");
- if (paramfile) {
-   dh_1024 = PEM_read_DHparams(paramfile, NULL, NULL, NULL);
-   fclose(paramfile);
- }
- ...
-
- /* "openssl dhparam -C -2 512" etc... */
- DH *get_dh512() { ... }
- DH *get_dh1024() { ... }
-
- DH *tmp_dh_callback(SSL *s, int is_export, int keylength)
- {
-    DH *dh_tmp=NULL;
-
-    switch (keylength) {
-    case 512:
-      if (!dh_512)
-        dh_512 = get_dh512();
-      dh_tmp = dh_512;
-      break;
-    case 1024:
-      if (!dh_1024) 
-        dh_1024 = get_dh1024();
-      dh_tmp = dh_1024;
-      break;
-    default:
-      /* Generating a key on the fly is very costly, so use what is there */
-      setup_dh_parameters_like_above();
-    }
-    return(dh_tmp);
- }
-
-=head1 RETURN VALUES
-
-SSL_CTX_set_tmp_dh_callback() and SSL_set_tmp_dh_callback() do not return
-diagnostic output.
-
-SSL_CTX_set_tmp_dh() and SSL_set_tmp_dh() do return 1 on success and 0
-on failure. Check the error queue to find out the reason of failure.
-
-=head1 SEE ALSO
-
-L<ssl(3)|ssl(3)>, L<SSL_CTX_set_cipher_list(3)|SSL_CTX_set_cipher_list(3)>,
-L<SSL_CTX_set_tmp_rsa_callback(3)|SSL_CTX_set_tmp_rsa_callback(3)>,
-L<SSL_
+neominds@neominds-Vostro-1200:~/openssl-0.9.8zc$ ./apps/openssl s_client -connect 10.10.10.99:443  -cipher EDH-RSA-DES-CBC-SHA  -ssl3 -fallback_scsv
+CONNECTED(00000003)
+depth=0 /C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+verify error:num=18:self signed certificate
+verify return:1
+depth=0 /C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+verify return:1
+---
+Certificate chain
+ 0 s:/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+   i:/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIICWzCCAcQCCQCdwITsGkNMLTANBgkqhkiG9w0BAQUFADByMQswCQYDVQQGEwJJ
+TjEMMAoGA1UECAwDZHNkMQwwCgYDVQQHDANkc2QxDDAKBgNVBAoMA2RzZDEQMA4G
+A1UECwwHamdqaGpnaDESMBAGA1UEAwwJZGZnZGdkZmdkMRMwEQYJKoZIhvcNAQkB
+FgRlcWVxMB4XDTE0MTIxMDEyNDc0NFoXDTE1MTIxMDEyNDc0NFowcjELMAkGA1UE
+BhMCSU4xDDAKBgNVBAgMA2RzZDEMMAoGA1UEBwwDZHNkMQwwCgYDVQQKDANkc2Qx
+EDAOBgNVBAsMB2pnamhqZ2gxEjAQBgNVBAMMCWRmZ2RnZGZnZDETMBEGCSqGSIb3
+DQEJARYEZXFlcTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAry5KtsSAqj92
+4LZHRK6JJyULgXm0iCfAjWMyUVZO/BYUaPaQK0UAgL+s11fkZmgAp5B5I3jsKdlV
+0DsGr4NiRyYLGxiBH96ma0r3wae3Qd+kJ1YRuvjfYb4gT9I4nJ7TLRNrjeq7zwQj
+CKcFqCKyDbOnqkOE8bx8oEBcAD4aHv0CAwEAATANBgkqhkiG9w0BAQUFAAOBgQBS
+lsUnKSE+5s438X1ui8tC6CgENne6SAXDzDRYCh0BP/OlDYQGI/DLs3RqsogHgy9e
+Y4zq0GdKHzCaaa5mxqlLT8yzIwEPHJcS2RXOc+e10BdT7NQsX6487T+bf7S55ET5
+2uMKQEvgoolvPZQW96Oaqg2xWWhW9QekF0bGNfGc8w==
+-----END CERTIFICATE-----
+subject=/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+issuer=/C=IN/ST=dsd/L=dsd/O=dsd/OU=jgjhjgh/CN=dfgdgdfgd/emailAddress=eqeq
+---
+No client certificate CA names sent
+---
+SSL handshake has read 1059 bytes and written 204 bytes
+---
+New, TLSv1/SSLv3, Cipher is EDH-RSA-DES-CBC-SHA
+Server public key is 1024 bit
+Secure Renegotiation IS NOT supported
+Compression: NONE
+Expansion: NONE
+SSL-Session:
+    Protocol  : SSLv3
+    Cipher    : EDH-RSA-DES-CBC-SHA
+    Session-ID: C4D50B2FD49D00F0BC9EDA12E8A7184D798098117D94CB07BA1CCF984F15C85C
+    Session-ID-ctx: 
+    Master-Key: 28208F66F339AB7E121F29A2E78DF6E67F0E40D29DA0DCEC94ED79C24A714EAE86AC3F3DC08CFCC09F01E755E4CCD7B2
+    Key-Arg   : None
+    Start Time: 1419084386
+    Timeout   : 7200 (sec)
+    Verify return code: 18 (self signed certificate)
+---
+ok
+ok

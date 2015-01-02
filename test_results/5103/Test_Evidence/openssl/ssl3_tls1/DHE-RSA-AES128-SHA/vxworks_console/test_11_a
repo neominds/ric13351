@@ -1,111 +1,64 @@
-return(0);
-			}
+-> nm_client_main("6","-connect","10.10.10.102:443","-cipher","DHE-RSA-AES128-SHA","-tls1","-fallback_scsv")
+creating ssl context
+calling SSL_new
+calling init_client
+CONNECTED(00000008)
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+verify error:num=18:self signed certificate
+verify return:1
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+verify error:num=7:certificate signature failure
+verify return:1
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+verify error:num=9:certificate is not yet valid
+notBefore=Nov 26 11:13:10 2014 GMT
+verify return:1
+depth=0 /C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+notBefore=Nov 26 11:13:10 2014 GMT
+verify return:1
+---
+Certificate chain
+ 0 s:/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+   i:/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIICRTCCAa4CCQD3HDO9S3AeDTANBgkqhkiG9w0BAQsFADBnMQswCQYDVQQGEwJJ
+TjELMAkGA1UECAwCS0ExDDAKBgNVBAcMA0JMUjENMAsGA1UECgwEZnNkZjENMAsG
+A1UECwwEZnNkZjEMMAoGA1UEAwwDZGZzMREwDwYJKoZIhvcNAQkBFgJmczAeFw0x
+NDExMjYxMTEzMTBaFw0xNTExMjYxMTEzMTBaMGcxCzAJBgNVBAYTAklOMQswCQYD
+VQQIDAJLQTEMMAoGA1UEBwwDQkxSMQ0wCwYDVQQKDARmc2RmMQ0wCwYDVQQLDARm
+c2RmMQwwCgYDVQQDDANkZnMxETAPBgkqhkiG9w0BCQEWAmZzMIGfMA0GCSqGSIb3
+DQEBAQUAA4GNADCBiQKBgQDRJHyfgWNE2IXoH7n/7i30YsoM0sAX7hje94l3HsD1
+SL3hNEX3yneGxCNqOpzl44zZRuZC2mXLwpDd6D3ZbIBoRtiXFYnbXazGRGgTKHFU
+27DQCTkD5aHHjZcEVs7RYHYoNWf8mMnLVNUZF+yGzDd2yLqRphg7NCHPY01mL6FV
+eQIDAQABMA0GCSqGSIb3DQEBCwUAA4GBAD3TIHzv6ShxxQ0zcoVQ7BBXXGUrVuZO
+l7O/5KzEzk4RW56QGGfuAzGEQvXROhYcEgAgbN1tvOAo6QU9sjS8+OTrwkzJhOBg
+T7MGlRq4XfgEyCHcmhWv3SzGRaLwkLAiEWzFsuxk+VB6kOAeu8EdqcxfwXGtwAtx
+hluhT2GQwqFl
+-----END CERTIFICATE-----
+subject=/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+issuer=/C=IN/ST=KA/L=BLR/O=fsdf/OU=fsdf/CN=dfs/emailAddress=fs
+---
+No client certificate CA names sent
+---
+SSL handshake has read 1021 bytes and written 186 bytes
+---
+New, TLSv1/SSLv3, Cipher is DHE-RSA-AES128-SHA
+Server public key is 1024 bit
+SSL-Session:
+    Protocol  : TLSv1
+    Cipher    : DHE-RSA-AES128-SHA
+    Session-ID: 36F9CF659AC5E45F744B5EF46765538D142F214AFD4F7003082B90354F634CBF
+    Session-ID-ctx:
+    Master-Key: 4FDCECC363B6B03C942C1DA6BD8A21A4E37FA1FE69CEEE1AEEC1D6B889575399D42272C660B2DC8FFC648B6B334A867A
+    Key-Arg   : None
+    Start Time: 228
+    Timeout   : 7200 (sec)
+    Verify return code: 9 (certificate is not yet valid)
+---
+ok
+ok
 
-		/*
-		In theory this is no longer needed 
-		ssl=SSL_new(ctx);
-		x509=SSL_get_certificate(ssl);
 
-		if (x509 != NULL) {
-			EVP_PKEY *pktmp;
-			pktmp = X509_get_pubkey(x509);
-			EVP_PKEY_copy_parameters(pktmp,
-						SSL_get_privatekey(ssl));
-			EVP_PKEY_free(pktmp);
-		}
-		SSL_free(ssl);
-		*/
 
-		/* If we are using DSA, we can copy the parameters from
-		 * the private key */
-		
-		
-		/* Now we know that a key and cert have been set against
-		 * the SSL context */
-		if (!SSL_CTX_check_private_key(ctx))
-			{
-			BIO_printf(bio_err,"Private key does not match the certificate public key\n");
-			return(0);
-			}
-		}
-	return(1);
-	}
-
-int set_cert_key_stuff(SSL_CTX *ctx, X509 *cert, EVP_PKEY *key)
-	{
-	if (cert ==  NULL)
-		return 1;
-	if (SSL_CTX_use_certificate(ctx,cert) <= 0)
-		{
-		BIO_printf(bio_err,"error setting certificate\n");
-		ERR_print_errors(bio_err);
-		return 0;
-		}
-	if (SSL_CTX_use_PrivateKey(ctx,key) <= 0)
-		{
-		BIO_printf(bio_err,"error setting private key\n");
-		ERR_print_errors(bio_err);
-		return 0;
-		}
-
-		
-		/* Now we know that a key and cert have been set against
-		 * the SSL context */
-	if (!SSL_CTX_check_private_key(ctx))
-		{
-		BIO_printf(bio_err,"Private key does not match the certificate public key\n");
-		return 0;
-		}
-	return 1;
-	}
-
-long MS_CALLBACK bio_dump_callback(BIO *bio, int cmd, const char *argp,
-	int argi, long argl, long ret)
-	{
-	BIO *out;
-
-	out=(BIO *)BIO_get_callback_arg(bio);
-	if (out == NULL) return(ret);
-
-	if (cmd == (BIO_CB_READ|BIO_CB_RETURN))
-		{
-		BIO_printf(out,"read from %p [%p] (%d bytes => %ld (0x%lX))\n",
- 			(void *)bio,argp,argi,ret,ret);
-		BIO_dump(out,argp,(int)ret);
-		return(ret);
-		}
-	else if (cmd == (BIO_CB_WRITE|BIO_CB_RETURN))
-		{
-		BIO_printf(out,"write to %p [%p] (%d bytes => %ld (0x%lX))\n",
-			(void *)bio,argp,argi,ret,ret);
-		BIO_dump(out,argp,(int)ret);
-		}
-	return(ret);
-	}
-
-void MS_CALLBACK apps_ssl_info_callback(const SSL *s, int where, int ret)
-	{
-	const char *str;
-	int w;
-
-	w=where& ~SSL_ST_MASK;
-
-	if (w & SSL_ST_CONNECT) str="SSL_connect";
-	else if (w & SSL_ST_ACCEPT) str="SSL_accept";
-	else str="undefined";
-
-	if (where & SSL_CB_LOOP)
-		{
-		BIO_printf(bio_err,"%s:%s\n",str,SSL_state_string_long(s));
-		}
-	else if (where & SSL_CB_ALERT)
-		{
-		str=(where & SSL_CB_READ)?"read":"write";
-		BIO_printf(bio_err,"SSL3 alert %s:%s:%s\n",
-			str,
-			SSL_alert_type_string_long(ret),
-			SSL_alert_desc_string_long(ret));
-		}
-	else if (where & SSL_CB_EXIT)
-		{
-		if (r

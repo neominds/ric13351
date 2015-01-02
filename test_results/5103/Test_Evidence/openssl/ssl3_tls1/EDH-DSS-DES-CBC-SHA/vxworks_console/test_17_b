@@ -1,120 +1,68 @@
-out = 0, dump = 0;
-	char *infile=NULL,*str=NULL,*prog,*oidfile=NULL, *derfile=NULL;
-	char *genstr=NULL, *genconf=NULL;
-	unsigned char *tmpbuf;
-	const unsigned char *ctmpbuf;
-	BUF_MEM *buf=NULL;
-	STACK *osk=NULL;
-	ASN1_TYPE *at=NULL;
-
-	informat=FORMAT_PEM;
-
-	apps_startup();
-
-	if (bio_err == NULL)
-		if ((bio_err=BIO_new(BIO_s_file())) != NULL)
-			BIO_set_fp(bio_err,stderr,BIO_NOCLOSE|BIO_FP_TEXT);
-
-	if (!load_config(bio_err, NULL))
-		goto end;
-
-	prog=argv[0];
-	argc--;
-	argv++;
-	if ((osk=sk_new_null()) == NULL)
-		{
-		BIO_printf(bio_err,"Memory allocation failure\n");
-		goto end;
-		}
-	while (argc >= 1)
-		{
-		if 	(strcmp(*argv,"-inform") == 0)
-			{
-			if (--argc < 1) goto bad;
-			informat=str2fmt(*(++argv));
-			}
-		else if (strcmp(*argv,"-in") == 0)
-			{
-			if (--argc < 1) goto bad;
-			infile= *(++argv);
-			}
-		else if (strcmp(*argv,"-out") == 0)
-			{
-			if (--argc < 1) goto bad;
-			derfile= *(++argv);
-			}
-		else if (strcmp(*argv,"-i") == 0)
-			{
-			indent=1;
-			}
-		else if (strcmp(*argv,"-noout") == 0) noout = 1;
-		else if (strcmp(*argv,"-oid") == 0)
-			{
-			if (--argc < 1) goto bad;
-			oidfile= *(++argv);
-			}
-		else if (strcmp(*argv,"-offset") == 0)
-			{
-			if (--argc < 1) goto bad;
-			offset= atoi(*(++argv));
-			}
-		else if (strcmp(*argv,"-length") == 0)
-			{
-			if (--argc < 1) goto bad;
-			length= atoi(*(++argv));
-			if (length == 0) goto bad;
-			}
-		else if (strcmp(*argv,"-dump") == 0)
-			{
-			dump= -1;
-			}
-		else if (strcmp(*argv,"-dlimit") == 0)
-			{
-			if (--argc < 1) goto bad;
-			dump= atoi(*(++argv));
-			if (dump <= 0) goto bad;
-			}
-		else if (strcmp(*argv,"-strparse") == 0)
-			{
-			if (--argc < 1) goto bad;
-			sk_push(osk,*(++argv));
-			}
-		else if (strcmp(*argv,"-genstr") == 0)
-			{
-			if (--argc < 1) goto bad;
-			genstr= *(++argv);
-			}
-		else if (strcmp(*argv,"-genconf") == 0)
-			{
-			if (--argc < 1) goto bad;
-			genconf= *(++argv);
-			}
-		else
-			{
-			BIO_printf(bio_err,"unknown option %s\n",*argv);
-			badops=1;
-			break;
-			}
-		argc--;
-		argv++;
-		}
-
-	if (badops)
-		{
-bad:
-		BIO_printf(bio_err,"%s [options] <infile\n",prog);
-		BIO_printf(bio_err,"where options are\n");
-		BIO_printf(bio_err," -inform arg   input format - one of DER PEM\n");
-		BIO_printf(bio_err," -in arg       input file\n");
-		BIO_printf(bio_err," -out arg      output file (output format is always DER\n");
-		BIO_printf(bio_err," -noout arg    don't produce any output\n");
-		BIO_printf(bio_err," -offset arg   offset into file\n");
-		BIO_printf(bio_err," -length arg   length of section in file\n");
-		BIO_printf(bio_err," -i            indent entries\n");
-		BIO_printf(bio_err," -dump         dump unknown data in hex form\n");
-		BIO_printf(bio_err," -dlimit arg   dump the first arg bytes of unknown data in hex form\n");
-		BIO_printf(bio_err," -oid file     file of extra oid definitions\n");
-		BIO_printf(bio_err," -strparse offset\n");
-		BIO_printf(bio_err,"               a series of these can be used to 'dig' into multiple\n");
-		BIO_printf(bio_err,"               ASN1 blob wrappings\n");
-		BIO_printf(bio_err," -genstr str   string to generate ASN1 st
+-> nm_client_main("5","-connect","10.10.10.102:443","-cipher","EDH-DSS-DES-CBC-SHA","-ssl3")
+creating ssl context
+calling SSL_new
+calling init_client
+CONNECTED(00000008)
+depth=0 /C=IN/ST=fdsgf/L=fsdf/O=Internet Widgits Pty Ltd/OU=fsdf/CN=fs/emailAddress=fsd
+verify error:num=18:self signed certificate
+verify return:1
+depth=0 /C=IN/ST=fdsgf/L=fsdf/O=Internet Widgits Pty Ltd/OU=fsdf/CN=fs/emailAddress=fsd
+verify error:num=7:certificate signature failure
+verify return:1
+depth=0 /C=IN/ST=fdsgf/L=fsdf/O=Internet Widgits Pty Ltd/OU=fsdf/CN=fs/emailAddress=fsd
+verify error:num=9:certificate is not yet valid
+notBefore=Nov 28 11:24:09 2014 GMT
+verify return:1
+depth=0 /C=IN/ST=fdsgf/L=fsdf/O=Internet Widgits Pty Ltd/OU=fsdf/CN=fs/emailAddress=fsd
+notBefore=Nov 28 11:24:09 2014 GMT
+verify return:1
+---
+Certificate chain
+ 0 s:/C=IN/ST=fdsgf/L=fsdf/O=Internet Widgits Pty Ltd/OU=fsdf/CN=fs/emailAddress=fsd
+   i:/C=IN/ST=fdsgf/L=fsdf/O=Internet Widgits Pty Ltd/OU=fsdf/CN=fs/emailAddress=fsd
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIIDjjCCA0ygAwIBAgIJAO5zVKZEn61wMAsGCWCGSAFlAwQDAjB/MQswCQYDVQQG
+EwJJTjEOMAwGA1UECAwFZmRzZ2YxDTALBgNVBAcMBGZzZGYxITAfBgNVBAoMGElu
+dGVybmV0IFdpZGdpdHMgUHR5IEx0ZDENMAsGA1UECwwEZnNkZjELMAkGA1UEAwwC
+ZnMxEjAQBgkqhkiG9w0BCQEWA2ZzZDAeFw0xNDExMjgxMTI0MDlaFw0xNDEyMjgx
+MTI0MDlaMH8xCzAJBgNVBAYTAklOMQ4wDAYDVQQIDAVmZHNnZjENMAsGA1UEBwwE
+ZnNkZjEhMB8GA1UECgwYSW50ZXJuZXQgV2lkZ2l0cyBQdHkgTHRkMQ0wCwYDVQQL
+DARmc2RmMQswCQYDVQQDDAJmczESMBAGCSqGSIb3DQEJARYDZnNkMIIBtzCCASsG
+ByqGSM44BAEwggEeAoGBAOEPdyKbDjDDx+EXS5ugEsjmAAp6N0VTsbSqMbYXvybM
+LUx3AGDOSj5aDkTZP5VF42yKQIIvUmYYRRxAK6P4NdjmhORZU4sOQ6x4oGO+h7IO
+LQerlqVaWTsL6+lgWM7Wow0sIeq6rs/nmdAohH9y7Pc0dQfS4AZi/8IFiZ/wnoyx
+AhUA2ktDAnmfHf6/8dJq+55QeD8zgT8CgYBrw8fU1ZEZCX17IKdUSoFRqZSQ9qEF
+BaplwiLI8o/mlRMojY0IxNFKvKzDnBnyo/TahVhNhNB66ae4psz67ytD9bCgS15E
+UTvomqfRS24q0cNNPSjQGfd1gIk3CM6ZyTmM1qItkV4I1ABlbADwwI3vdmRkOBSX
+zwqpzbpjwmeOqgOBhQACgYEAjckcbgPFO6oYtjEfiR8RwNYQatE6/AbksbG55WSO
+Ita02xcEwb3+39l9q8ug5+V+9pla50J4vQmRVylGK7mlG1mxfPv29Fnm+qG7audC
+3ufK6s/XOsDI7GMohZTFj5QJUStpRDHl7xAMpu3cSL3zAlGJOe/ewOjniL9yYYKA
+QUSjUDBOMB0GA1UdDgQWBBTPQP8KYiz97PpsrFrLLhPiuHWwwDAfBgNVHSMEGDAW
+gBTPQP8KYiz97PpsrFrLLhPiuHWwwDAMBgNVHRMEBTADAQH/MAsGCWCGSAFlAwQD
+AgMvADAsAhQ0XM+sCpY+cu3SxbQxQumLSjQEIAIUBDTtJMfB8+LGepFyi5S12/E3
+eRY=
+-----END CERTIFICATE-----
+subject=/C=IN/ST=fdsgf/L=fsdf/O=Internet Widgits Pty Ltd/OU=fsdf/CN=fs/emailAddress=fsd
+issuer=/C=IN/ST=fdsgf/L=fsdf/O=Internet Widgits Pty Ltd/OU=fsdf/CN=fs/emailAddress=fsd
+---
+No client certificate CA names sent
+---
+SSL handshake has read 1286 bytes and written 200 bytes
+---
+New, TLSv1/SSLv3, Cipher is EDH-DSS-DES-CBC-SHA
+Server public key is 1024 bit
+SSL-Session:
+    Protocol  : SSLv3
+    Cipher    : EDH-DSS-DES-CBC-SHA
+    Session-ID: 14B1E5162F4809B04A3D6FFED10A35D1ACFFF7FB955CFD0408C2F77CE576F0A2
+    Session-ID-ctx:
+    Master-Key: 0C7899F255CE2CC11316A3BF2E895B8002EE862D2D46F1CF4BD5A20234738F19B45C9C53E55D47892FC6EF6460A06296
+    Key-Arg   : None
+    Start Time: 371
+    Timeout   : 7200 (sec)
+    Verify return code: 9 (certificate is not yet valid)
+---
+ok
+ok

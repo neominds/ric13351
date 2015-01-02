@@ -1,103 +1,58 @@
-OPENSSL_NO_SSL2) && defined(OPENSSL_NO_SSL3))
-	{FUNC_TYPE_GENERAL,"ciphers",ciphers_main},
-#endif
-	{FUNC_TYPE_GENERAL,"nseq",nseq_main},
-#if !defined(OPENSSL_NO_DES) && !defined(OPENSSL_NO_SHA1)
-	{FUNC_TYPE_GENERAL,"pkcs12",pkcs12_main},
-#endif
-	{FUNC_TYPE_GENERAL,"pkcs8",pkcs8_main},
-	{FUNC_TYPE_GENERAL,"spkac",spkac_main},
-	{FUNC_TYPE_GENERAL,"smime",smime_main},
-	{FUNC_TYPE_GENERAL,"rand",rand_main},
-#ifndef OPENSSL_NO_ENGINE
-	{FUNC_TYPE_GENERAL,"engine",engine_main},
-#endif
-	{FUNC_TYPE_GENERAL,"ocsp",ocsp_main},
-	{FUNC_TYPE_GENERAL,"prime",prime_main},
-#ifndef OPENSSL_NO_MD2
-	{FUNC_TYPE_MD,"md2",dgst_main},
-#endif
-#ifndef OPENSSL_NO_MD4
-	{FUNC_TYPE_MD,"md4",dgst_main},
-#endif
-#ifndef OPENSSL_NO_MD5
-	{FUNC_TYPE_MD,"md5",dgst_main},
-#endif
-#ifndef OPENSSL_NO_SHA
-	{FUNC_TYPE_MD,"sha",dgst_main},
-#endif
-#ifndef OPENSSL_NO_SHA1
-	{FUNC_TYPE_MD,"sha1",dgst_main},
-#endif
-#ifndef OPENSSL_NO_MDC2
-	{FUNC_TYPE_MD,"mdc2",dgst_main},
-#endif
-#ifndef OPENSSL_NO_RMD160
-	{FUNC_TYPE_MD,"rmd160",dgst_main},
-#endif
-#ifndef OPENSSL_NO_AES
-	{FUNC_TYPE_CIPHER,"aes-128-cbc",enc_main},
-#endif
-#ifndef OPENSSL_NO_AES
-	{FUNC_TYPE_CIPHER,"aes-128-ecb",enc_main},
-#endif
-#ifndef OPENSSL_NO_AES
-	{FUNC_TYPE_CIPHER,"aes-192-cbc",enc_main},
-#endif
-#ifndef OPENSSL_NO_AES
-	{FUNC_TYPE_CIPHER,"aes-192-ecb",enc_main},
-#endif
-#ifndef OPENSSL_NO_AES
-	{FUNC_TYPE_CIPHER,"aes-256-cbc",enc_main},
-#endif
-#ifndef OPENSSL_NO_AES
-	{FUNC_TYPE_CIPHER,"aes-256-ecb",enc_main},
-#endif
-#ifndef OPENSSL_NO_CAMELLIA
-	{FUNC_TYPE_CIPHER,"camellia-128-cbc",enc_main},
-#endif
-#ifndef OPENSSL_NO_CAMELLIA
-	{FUNC_TYPE_CIPHER,"camellia-128-ecb",enc_main},
-#endif
-#ifndef OPENSSL_NO_CAMELLIA
-	{FUNC_TYPE_CIPHER,"camellia-192-cbc",enc_main},
-#endif
-#ifndef OPENSSL_NO_CAMELLIA
-	{FUNC_TYPE_CIPHER,"camellia-192-ecb",enc_main},
-#endif
-#ifndef OPENSSL_NO_CAMELLIA
-	{FUNC_TYPE_CIPHER,"camellia-256-cbc",enc_main},
-#endif
-#ifndef OPENSSL_NO_CAMELLIA
-	{FUNC_TYPE_CIPHER,"camellia-256-ecb",enc_main},
-#endif
-	{FUNC_TYPE_CIPHER,"base64",enc_main},
-#ifndef OPENSSL_NO_DES
-	{FUNC_TYPE_CIPHER,"des",enc_main},
-#endif
-#ifndef OPENSSL_NO_DES
-	{FUNC_TYPE_CIPHER,"des3",enc_main},
-#endif
-#ifndef OPENSSL_NO_DES
-	{FUNC_TYPE_CIPHER,"desx",enc_main},
-#endif
-#ifndef OPENSSL_NO_IDEA
-	{FUNC_TYPE_CIPHER,"idea",enc_main},
-#endif
-#ifndef OPENSSL_NO_SEED
-	{FUNC_TYPE_CIPHER,"seed",enc_main},
-#endif
-#ifndef OPENSSL_NO_RC4
-	{FUNC_TYPE_CIPHER,"rc4",enc_main},
-#endif
-#ifndef OPENSSL_NO_RC4
-	{FUNC_TYPE_CIPHER,"rc4-40",enc_main},
-#endif
-#ifndef OPENSSL_NO_RC2
-	{FUNC_TYPE_CIPHER,"rc2",enc_main},
-#endif
-#ifndef OPENSSL_NO_BF
-	{FUNC_TYPE_CIPHER,"bf",enc_main},
-#endif
-#ifndef OPENSSL_NO_CAST
-	{FUNC_T
+neominds@neominds-Vostro-1200:~/openssl-0.9.8zc$ ./apps/openssl s_client -connect 10.10.10.99:443 -cipher EDH-DSS-DES-CBC-SHA -tls1
+CONNECTED(00000003)
+depth=0 /C=in/ST=gfdg/L=fdg/O=Internet Widgits Pty Ltd/OU=gdfg/CN=gdf/emailAddress=fgd
+verify error:num=18:self signed certificate
+verify return:1
+depth=0 /C=in/ST=gfdg/L=fdg/O=Internet Widgits Pty Ltd/OU=gdfg/CN=gdf/emailAddress=fgd
+verify return:1
+---
+Certificate chain
+ 0 s:/C=in/ST=gfdg/L=fdg/O=Internet Widgits Pty Ltd/OU=gdfg/CN=gdf/emailAddress=fgd
+   i:/C=in/ST=gfdg/L=fdg/O=Internet Widgits Pty Ltd/OU=gdfg/CN=gdf/emailAddress=fgd
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIIDMTCCAvECCQDZWYdC6ox8JTAJBgcqhkjOOAQDMH4xCzAJBgNVBAYTAmluMQ0w
+CwYDVQQIDARnZmRnMQwwCgYDVQQHDANmZGcxITAfBgNVBAoMGEludGVybmV0IFdp
+ZGdpdHMgUHR5IEx0ZDENMAsGA1UECwwEZ2RmZzEMMAoGA1UEAwwDZ2RmMRIwEAYJ
+KoZIhvcNAQkBFgNmZ2QwHhcNMTQxMjE3MTE1NjIwWhcNMTUxMjE3MTE1NjIwWjB+
+MQswCQYDVQQGEwJpbjENMAsGA1UECAwEZ2ZkZzEMMAoGA1UEBwwDZmRnMSEwHwYD
+VQQKDBhJbnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQxDTALBgNVBAsMBGdkZmcxDDAK
+BgNVBAMMA2dkZjESMBAGCSqGSIb3DQEJARYDZmdkMIIBtzCCASsGByqGSM44BAEw
+ggEeAoGBAP851YTnnYD1cO1/ehGYI6cCKbSyIQt/H9tDNNndWnN3dAAtHKNd64p4
+//+nPHZibLiz7leIQ6VpfO1w/M3BJb4jh+kvRiW9ruCWbKEO/sII03baEHuJnmJu
+Qb/QrtKCL/WkylljexDtyw3PUtRsQaPGmctYxadfTtuy8IbNlYIrAhUA8tdkguH9
+s9q+zK+1cXggQ9OWyaUCgYBotR+xJCgYTlbmC9gF+LghRw8c2u1/2aq+neWeBoDN
+AVE925JeNSSrLgcI76BHhmoEReH002EizNOJ0xDqS3lqF7PCAy1KCoaRH91VGsdb
+oUBkgISgn1oyv0BeFvwHflVp5DSWct4861lsfZzgNg+j7Sy5xuKl0Hr3U8SVrptN
+vAOBhQACgYEA60B1L33WLlZXdTxf9UFopzVSx067GXoMphFGFscczuuRhsDlmkil
+EbwOyu9wawTTUp61ZiVtYFcSRwf9A9x7KqTagddxETdI8gTxT3kYL8LYThyx8r2z
+pRyklzW5rxP8CtTdvr4yy9jbnIqxiGRvDh4v1Is51woggCAIJMfvLvkwCQYHKoZI
+zjgEAwMvADAsAhQ3RSAzVI7k9U9AiEcPj918ygATtAIUNVr88vutx36R8x+cchcD
+pFFVAFk=
+-----END CERTIFICATE-----
+subject=/C=in/ST=gfdg/L=fdg/O=Internet Widgits Pty Ltd/OU=gdfg/CN=gdf/emailAddress=fgd
+issuer=/C=in/ST=gfdg/L=fdg/O=Internet Widgits Pty Ltd/OU=gdfg/CN=gdf/emailAddress=fgd
+---
+No client certificate CA names sent
+---
+SSL handshake has read 1168 bytes and written 184 bytes
+---
+New, TLSv1/SSLv3, Cipher is EDH-DSS-DES-CBC-SHA
+Server public key is 1024 bit
+Secure Renegotiation IS NOT supported
+Compression: NONE
+Expansion: NONE
+SSL-Session:
+    Protocol  : TLSv1
+    Cipher    : EDH-DSS-DES-CBC-SHA
+    Session-ID: A7B964F50AC0CDCC994D4A53A7ECDA5EA7CB5FEE5DB50F500188E0342705AF0C
+    Session-ID-ctx: 
+    Master-Key: 8C434BCAC18B837D0861A2146C66F43EEB52BF929106B4D2B09A9E38B5C55E41C44434EBA7257D297848E051F5B3E498
+    Key-Arg   : None
+    Start Time: 1419225740
+    Timeout   : 7200 (sec)
+    Verify return code: 18 (self signed certificate)
+---
+ok
+ok
